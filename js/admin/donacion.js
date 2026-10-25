@@ -111,7 +111,7 @@ export const renderFormulario = conSesion(({ subcategoriaId }, centro) => {
 
   return {
     html: `
-      <section class="vista vista-admin">
+      <section class="vista vista-admin vista-formulario-admin">
         ${renderEncabezado({ atras: `#/admin/donacion/${categoria.id}`, titulo: 'Registrar donación', centro })}
         <form class="tarjeta formulario" novalidate>
           <p class="formulario__categoria">

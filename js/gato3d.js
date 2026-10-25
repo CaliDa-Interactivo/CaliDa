@@ -100,14 +100,7 @@ async function montarUno(el) {
   escena.add(borde);
 
   const camara = new THREE.PerspectiveCamera(26, 1, 0.05, 50);
-  const escenario = 'escenario' in el.dataset;
-  if (escenario) {
-    // Pantalla principal: vista de escenario, un poco desde arriba y de lado,
-    // para que se vea la tarima en perspectiva.
-    camara.fov = 30;
-    camara.position.set(0.8, 1.35, 3.2);
-    camara.lookAt(0, 0.36, 0);
-  } else if (el.dataset.encuadre === 'medio') {
+  if (el.dataset.encuadre === 'medio') {
     // Medio cuerpo: de la cintura a las orejas (para asomarse por un lado).
     camara.position.set(0, 0.8, 1.5);
     camara.lookAt(0, 0.74, 0);
@@ -245,36 +238,20 @@ async function montarUno(el) {
   lienzoSombra.width = lienzoSombra.height = 128;
   const ctxS = lienzoSombra.getContext('2d');
   const grad = ctxS.createRadialGradient(64, 64, 4, 64, 64, 62);
-  grad.addColorStop(0, 'rgba(90, 40, 20, 0.32)');
-  grad.addColorStop(1, 'rgba(90, 40, 20, 0)');
+  // tono verde azulado del fondo salvia: la sombra se funde con el piso
+  grad.addColorStop(0, 'rgba(24, 66, 58, 0.34)');
+  grad.addColorStop(0.55, 'rgba(24, 66, 58, 0.14)');
+  grad.addColorStop(1, 'rgba(24, 66, 58, 0)');
   ctxS.fillStyle = grad;
   ctxS.fillRect(0, 0, 128, 128);
   const texSombra = new THREE.CanvasTexture(lienzoSombra);
   const sombra = new THREE.Mesh(
-    new THREE.PlaneGeometry(0.85, 0.5),
+    new THREE.PlaneGeometry(1.0, 0.56),
     new THREE.MeshBasicMaterial({ map: texSombra, transparent: true, depthWrite: false })
   );
   sombra.rotation.x = -Math.PI / 2;
   sombra.position.y = 0.002;
   if (el.dataset.encuadre !== 'medio') escena.add(sombra);
-
-  if (escenario) {
-    // El gato gira hacia la cámara y se para sobre una tarima redonda de
-    // dos escalones (marfil y azul petróleo, borde rojo), con material mate.
-    raiz.rotation.y = Math.atan2(camara.position.x, camara.position.z);
-    const mate = (color) => new THREE.MeshStandardMaterial({ color, roughness: 0.85, metalness: 0 });
-    const tarima = new THREE.Group();
-    const piso = new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.48, 0.08, 72), mate('#FFF8ED'));
-    piso.position.y = -0.04;
-    const borde = new THREE.Mesh(new THREE.TorusGeometry(0.465, 0.02, 12, 96), mate('#CC0100'));
-    borde.rotation.x = Math.PI / 2;
-    borde.position.y = -0.005;
-    const escalon = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.61, 0.1, 72), mate('#426D8C'));
-    escalon.position.y = -0.13;
-    tarima.add(piso, borde, escalon);
-    escena.add(tarima);
-    sombra.position.y = 0.003;
-  }
 
   el.appendChild(canvas);
   el.classList.add('gato3d--listo');

@@ -26,7 +26,7 @@ export function renderBienvenida() {
             y lleva tu donación a donde de verdad sirve.
           </p>
         </div>
-        ${renderMascota({ pose: 'saluda', mensaje: null, escenario: true })}
+        ${renderMascota({ pose: 'saluda', mensaje: null })}
       </div>
 
       <div class="bienvenida-inicio__acciones">

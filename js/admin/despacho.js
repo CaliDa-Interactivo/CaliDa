@@ -25,7 +25,7 @@ export const render = conSesion((_params, centro) => {
   const hoy = hoyISO();
   return {
     html: `
-      <section class="vista vista-admin">
+      <section class="vista vista-admin vista-formulario-admin">
         ${renderEncabezado({ atras: '#/admin/menu', titulo: 'Registro salida de donaciones', centro })}
         <form class="tarjeta formulario" novalidate>
           <p class="formulario__categoria"><span aria-hidden="true">🚚</span> Despacho de la semana</p>

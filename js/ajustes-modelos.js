@@ -72,25 +72,204 @@ const CALCOMANIAS = {
   'alimento-animal': dibujarHuella,
 };
 
-// Ropa: los modelos eran planos como recortes; se engruesan para que se
-// vean acolchados y mates, como los demás productos.
-const GROSOR_ROPA = 2.6;
-const ROPA = new Set(['ropa-hombre', 'ropa-mujer', 'ropa-ninos']);
+// --- Ropa con formas orgánicas ------------------------------------------
+// Los modelos de ropa eran recortes planos sin forma. Se reemplazan por
+// prendas "infladas" (silueta redondeada con mucho bisel), con material
+// mate, del mismo tamaño y en el mismo lugar que el modelo original.
 
-function ajustarForma(subcategoriaId, objeto) {
-  if (ROPA.has(subcategoriaId)) {
-    objeto.traverse((n) => {
-      if (!n.isMesh) return;
-      n.geometry.scale(1, 1, GROSOR_ROPA);
-      // un poco de lado (tres cuartos) para que se note el volumen
-      n.geometry.rotateY(-0.42);
-      n.geometry.computeVertexNormals();
-      (Array.isArray(n.material) ? n.material : [n.material]).forEach((m) => {
-        m.roughness = 0.9;
-        m.metalness = 0;
-      });
+function inflar(THREE, forma, { grosor = 0.2, bisel = 0.15 } = {}) {
+  const g = new THREE.ExtrudeGeometry(forma, {
+    depth: grosor,
+    bevelEnabled: true,
+    bevelThickness: bisel,
+    bevelSize: bisel * 0.8,
+    bevelSegments: 10,
+    curveSegments: 28,
+  });
+  g.translate(0, 0, -grosor / 2);
+  return g;
+}
+
+function rectRedondeado(THREE, ancho, alto, r) {
+  const f = new THREE.Shape();
+  const [x, y] = [-ancho / 2, -alto / 2];
+  f.moveTo(x + r, y);
+  f.lineTo(x + ancho - r, y);
+  f.quadraticCurveTo(x + ancho, y, x + ancho, y + r);
+  f.lineTo(x + ancho, y + alto - r);
+  f.quadraticCurveTo(x + ancho, y + alto, x + ancho - r, y + alto);
+  f.lineTo(x + r, y + alto);
+  f.quadraticCurveTo(x, y + alto, x, y + alto - r);
+  f.lineTo(x, y + r);
+  f.quadraticCurveTo(x, y, x + r, y);
+  return f;
+}
+
+const FRENTE = 0.27; // z de la cara delantera de una prenda inflada
+
+const PRENDAS = {
+  // Camisa: mangas cortas redondeadas, cuello marfil, botones y bolsillo.
+  'ropa-hombre'(THREE, mate) {
+    const g = new THREE.Group();
+    const s = new THREE.Shape();
+    s.moveTo(-0.6, 0.06);
+    s.quadraticCurveTo(0, -0.04, 0.6, 0.06);
+    s.quadraticCurveTo(0.66, 0.5, 0.64, 0.9);
+    s.quadraticCurveTo(0.8, 0.8, 1.02, 0.86);
+    s.quadraticCurveTo(1.14, 1.02, 1.04, 1.2);
+    s.quadraticCurveTo(0.82, 1.44, 0.4, 1.52);
+    s.quadraticCurveTo(0, 1.3, -0.4, 1.52);
+    s.quadraticCurveTo(-0.82, 1.44, -1.04, 1.2);
+    s.quadraticCurveTo(-1.14, 1.02, -1.02, 0.86);
+    s.quadraticCurveTo(-0.8, 0.8, -0.64, 0.9);
+    s.quadraticCurveTo(-0.66, 0.5, -0.6, 0.06);
+    g.add(new THREE.Mesh(inflar(THREE, s), mate('#5B8DB8')));
+    for (const lado of [-1, 1]) {
+      const c = new THREE.Shape();
+      c.moveTo(0, 0);
+      c.quadraticCurveTo(lado * 0.22, 0.02, lado * 0.34, 0.16);
+      c.quadraticCurveTo(lado * 0.16, 0.2, 0, 0.16);
+      c.lineTo(0, 0);
+      const cuello = new THREE.Mesh(inflar(THREE, c, { grosor: 0.04, bisel: 0.05 }), mate('#FFF8ED'));
+      cuello.position.set(0, 1.3, FRENTE);
+      g.add(cuello);
+    }
+    [0.98, 0.72, 0.46].forEach((y) => {
+      const boton = new THREE.Mesh(new THREE.SphereGeometry(0.055, 18, 12), mate('#FFF8ED'));
+      boton.scale.z = 0.6;
+      boton.position.set(0, y, FRENTE + 0.02);
+      g.add(boton);
     });
-  }
+    const bolsillo = new THREE.Mesh(
+      inflar(THREE, rectRedondeado(THREE, 0.26, 0.24, 0.06), { grosor: 0.02, bisel: 0.04 }),
+      mate('#3E6E96')
+    );
+    bolsillo.position.set(0.32, 1.02, FRENTE);
+    g.add(bolsillo);
+    return g;
+  },
+
+  // Vestido: cuerpo con tirantes, falda acampanada, cinturón y un moño.
+  'ropa-mujer'(THREE, mate) {
+    const g = new THREE.Group();
+    const s = new THREE.Shape();
+    s.moveTo(-0.78, 0.04);
+    s.quadraticCurveTo(0, -0.1, 0.78, 0.04);
+    s.quadraticCurveTo(0.52, 0.5, 0.3, 0.92);
+    s.quadraticCurveTo(0.38, 1.12, 0.34, 1.32);
+    s.quadraticCurveTo(0.36, 1.52, 0.24, 1.58);
+    s.quadraticCurveTo(0.2, 1.6, 0.16, 1.54);
+    s.quadraticCurveTo(0, 1.36, -0.16, 1.54);
+    s.quadraticCurveTo(-0.2, 1.6, -0.24, 1.58);
+    s.quadraticCurveTo(-0.36, 1.52, -0.34, 1.32);
+    s.quadraticCurveTo(-0.38, 1.12, -0.3, 0.92);
+    s.quadraticCurveTo(-0.52, 0.5, -0.78, 0.04);
+    g.add(new THREE.Mesh(inflar(THREE, s), mate('#F67751')));
+    const cinturon = new THREE.Mesh(
+      inflar(THREE, rectRedondeado(THREE, 0.66, 0.12, 0.05), { grosor: 0.03, bisel: 0.05 }),
+      mate('#FDD794')
+    );
+    cinturon.position.set(0, 0.93, FRENTE - 0.04);
+    g.add(cinturon);
+    for (const lado of [-1, 1]) {
+      const lazo = new THREE.Mesh(new THREE.SphereGeometry(0.08, 18, 12), mate('#FDD794'));
+      lazo.scale.set(1.3, 0.8, 0.6);
+      lazo.position.set(lado * 0.09, 0.93, FRENTE + 0.03);
+      g.add(lazo);
+    }
+    // ruedo marfil abajo
+    const ruedo = new THREE.Shape();
+    ruedo.moveTo(-0.78, 0.04);
+    ruedo.quadraticCurveTo(0, -0.1, 0.78, 0.04);
+    ruedo.quadraticCurveTo(0.74, 0.11, 0.71, 0.16);
+    ruedo.quadraticCurveTo(0, 0.04, -0.71, 0.16);
+    ruedo.quadraticCurveTo(-0.74, 0.11, -0.78, 0.04);
+    const franja = new THREE.Mesh(inflar(THREE, ruedo, { grosor: 0.03, bisel: 0.04 }), mate('#FFF8ED'));
+    franja.position.z = FRENTE - 0.06;
+    g.add(franja);
+    return g;
+  },
+
+  // Overol de niño: pantalón corto, peto con bolsillo y tirantes.
+  'ropa-ninos'(THREE, mate) {
+    const g = new THREE.Group();
+    const s = new THREE.Shape();
+    s.moveTo(-0.58, 0.04);
+    s.quadraticCurveTo(-0.33, -0.04, -0.08, 0.04);
+    s.quadraticCurveTo(0, 0.26, 0.08, 0.04);
+    s.quadraticCurveTo(0.33, -0.04, 0.58, 0.04);
+    s.quadraticCurveTo(0.64, 0.5, 0.52, 0.84);
+    s.quadraticCurveTo(0.4, 0.86, 0.36, 0.92);
+    s.lineTo(0.36, 1.28);
+    s.quadraticCurveTo(0.36, 1.38, 0.26, 1.38);
+    s.lineTo(-0.26, 1.38);
+    s.quadraticCurveTo(-0.36, 1.38, -0.36, 1.28);
+    s.lineTo(-0.36, 0.92);
+    s.quadraticCurveTo(-0.4, 0.86, -0.52, 0.84);
+    s.quadraticCurveTo(-0.64, 0.5, -0.58, 0.04);
+    g.add(new THREE.Mesh(inflar(THREE, s), mate('#86B5A9')));
+    for (const lado of [-1, 1]) {
+      const tirante = new THREE.Mesh(new THREE.CapsuleGeometry(0.07, 0.42, 8, 16), mate('#86B5A9'));
+      tirante.position.set(lado * 0.27, 1.6, -0.02);
+      tirante.rotation.z = lado * -0.25;
+      g.add(tirante);
+      const boton = new THREE.Mesh(new THREE.SphereGeometry(0.065, 18, 12), mate('#FDD794'));
+      boton.scale.z = 0.6;
+      boton.position.set(lado * 0.24, 1.28, FRENTE + 0.02);
+      g.add(boton);
+    }
+    const bolsillo = new THREE.Mesh(
+      inflar(THREE, rectRedondeado(THREE, 0.32, 0.24, 0.08), { grosor: 0.02, bisel: 0.04 }),
+      mate('#5E9C8E')
+    );
+    bolsillo.position.set(0, 1.08, FRENTE);
+    g.add(bolsillo);
+    return g;
+  },
+};
+
+function cambiarPrenda(subcategoriaId, objeto, THREE) {
+  objeto.updateMatrixWorld(true);
+  const mallas = [];
+  objeto.traverse((n) => n.isMesh && mallas.push(n));
+  if (!mallas.length) return;
+  const padre = mallas[0].parent;
+  // Caja del modelo original en el espacio de su padre.
+  const caja = new THREE.Box3();
+  mallas.forEach((m) => {
+    m.geometry.computeBoundingBox();
+    caja.union(m.geometry.boundingBox.clone().applyMatrix4(m.matrix));
+  });
+  mallas.forEach((m) => m.parent.remove(m));
+
+  const mate = (color) => new THREE.MeshStandardMaterial({ color, roughness: 0.85, metalness: 0 });
+  const prenda = PRENDAS[subcategoriaId](THREE, mate);
+  prenda.rotation.y = -0.3; // un poco de lado: se nota el volumen
+  prenda.traverse((n) => {
+    if (n.isMesh) {
+      n.castShadow = true;
+      n.receiveShadow = true;
+    }
+  });
+  prenda.updateMatrixWorld(true);
+  const propia = new THREE.Box3().setFromObject(prenda);
+  const tam = propia.getSize(new THREE.Vector3());
+  const objetivo = caja.getSize(new THREE.Vector3());
+  const escala = Math.min(objetivo.x / tam.x, objetivo.y / tam.y);
+  const raiz = new THREE.Group();
+  raiz.add(prenda);
+  prenda.position.set(
+    -(propia.min.x + propia.max.x) / 2,
+    -propia.min.y,
+    -(propia.min.z + propia.max.z) / 2
+  );
+  raiz.scale.setScalar(escala);
+  raiz.position.set((caja.min.x + caja.max.x) / 2, caja.min.y, (caja.min.z + caja.max.z) / 2);
+  padre.add(raiz);
+}
+
+function ajustarForma(subcategoriaId, objeto, THREE) {
+  if (PRENDAS[subcategoriaId]) cambiarPrenda(subcategoriaId, objeto, THREE);
   if (subcategoriaId === 'aseo-bucal') {
     // Los dos cepillos venían uno detrás del otro (de frente se veía uno
     // solo): se giran un cuarto de vuelta alrededor del eje del vaso para
@@ -110,7 +289,7 @@ function ajustarForma(subcategoriaId, objeto) {
  * @param {typeof import('three')} THREE
  */
 export function ajustarModelo(subcategoriaId, objeto, THREE) {
-  ajustarForma(subcategoriaId, objeto);
+  ajustarForma(subcategoriaId, objeto, THREE);
   const colores = COLORES[subcategoriaId];
   if (colores) {
     objeto.traverse((n) => {

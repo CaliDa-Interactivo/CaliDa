@@ -2324,19 +2324,6 @@ a.boton {
       5px 8px 10px rgba(1, 30, 65, 0.25);
   }
 }
-/* La tarima del gato ya hace de piso: sin la sombra plana de CSS */
-.bienvenida-inicio .mascota--escenario::after {
-  display: none !important;
-}
-.bienvenida-inicio .mascota--escenario {
-  width: min(34vw, 420px) !important;
-}
-@media (max-width: 859px) {
-  .bienvenida-inicio .mascota--escenario {
-    width: min(80vw, 340px) !important;
-  }
-}
-
 /* --- Mapa: el mensaje del gato va centrado --- */
 :is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-guia__globo,
 :is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-guia__globo p {
@@ -2573,7 +2560,7 @@ a.boton {
   --fondo-pantalla:
     radial-gradient(ellipse 34% 58% at 50% -4%, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.16) 42%, rgba(255, 255, 255, 0) 72%),
     radial-gradient(ellipse 36% 7% at 50% 89%, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0) 72%),
-    linear-gradient(180deg, rgba(1, 30, 65, 0) 0%, rgba(1, 30, 65, 0) 76%, rgba(1, 30, 65, 0.1) 77%, rgba(1, 30, 65, 0.03) 100%),
+    linear-gradient(180deg, rgba(1, 30, 65, 0) 0%, rgba(1, 30, 65, 0) 66%, rgba(1, 30, 65, 0.07) 80%, rgba(1, 30, 65, 0.03) 100%),
     radial-gradient(ellipse 85% 80% at 50% 42%, rgba(1, 30, 65, 0) 45%, rgba(1, 30, 65, 0.3) 100%),
     linear-gradient(180deg, #7DAC9F 0%, #86B5A9 55%, #7AA89B 100%);
 }
@@ -2780,4 +2767,210 @@ body:has(.vista-admin) .zoom-capa__panel:has(.pasos-insumo) {
 }
 .zoom-capa__panel .pasos-insumo .pasos-insumo__indicador {
   align-self: flex-start;
+}
+
+/* ===================================================================
+   Pantalla principal orgánica e integrada (referencia del equipo):
+   fondo continuo sin línea de piso, una luz suave detrás del gato y
+   el título como letras de arcilla blanda, con la misma sombra verde
+   azulada del gato. Vista frontal, sin tarima.
+   =================================================================== */
+body:has(.bienvenida-inicio) {
+  background:
+    radial-gradient(ellipse 30% 42% at 72% 46%, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 75%),
+    radial-gradient(ellipse 60% 18% at 50% 92%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 70%),
+    radial-gradient(ellipse 95% 85% at 55% 45%, rgba(24, 66, 58, 0) 50%, rgba(24, 66, 58, 0.22) 100%),
+    linear-gradient(180deg, #8DBBAF 0%, #86B5A9 50%, #7DAC9F 100%) !important;
+  background-attachment: fixed !important;
+}
+.bienvenida-inicio h1 {
+  transform: none !important;
+  -webkit-text-stroke: 0 !important;
+  color: #011E41;
+  text-shadow:
+    0 1px 0 #1B3B55,
+    0 2px 0 #1F4560,
+    0 3px 0 #244D69,
+    0 4px 0 #295571,
+    0 5px 1px #2D5C78,
+    0 7px 3px rgba(24, 66, 58, 0.35),
+    0 14px 18px rgba(24, 66, 58, 0.3) !important;
+}
+.bienvenida-inicio h1::after {
+  left: 4%;
+  right: 20%;
+  bottom: -1.6rem;
+  height: 1.2rem;
+  background: radial-gradient(closest-side, rgba(24, 66, 58, 0.26), rgba(24, 66, 58, 0));
+  filter: blur(6px);
+}
+.bienvenida-inicio__apoyo {
+  margin-top: 1.9rem;
+}
+/* El gato sin fondo propio: queda sobre la luz del fondo */
+.bienvenida-inicio .mascota::before,
+.bienvenida-inicio .mascota::after {
+  display: none !important;
+}
+@media (max-width: 600px) {
+  .bienvenida-inicio h1 {
+    text-shadow:
+      0 1px 0 #1F4560,
+      0 2px 0 #295571,
+      0 3px 1px #2D5C78,
+      0 10px 14px rgba(24, 66, 58, 0.3) !important;
+  }
+}
+
+/* El gato 2D de respaldo no ocupa lugar cuando ya está el 3D (antes
+   quedaba invisible pero alargaba la página y dejaba desplazarse hacia
+   abajo sin contenido, p. ej. en el pre-registro). */
+.gato3d--listo > .gato3d__respaldo {
+  display: none !important;
+}
+.gato-asoma--lado .gato3d__respaldo {
+  height: 100% !important;
+}
+.gato-asoma--lado .gato-guia__imagen {
+  overflow: hidden;
+}
+
+/* "Iniciar sesión" (elige tu perfil) en azul petróleo */
+.tarjeta-entrada[data-perfil="admin"] .boton-contorno {
+  background: var(--brillo-arriba), var(--relleno-azul) !important;
+  color: #FFFFFF !important;
+  box-shadow: var(--relieve), var(--sombra-gordita) !important;
+}
+
+/* Recuadros de insumos: los 5 puestos de la repisa en una cuadrícula
+   pareja dentro del recuadro (nada se sale), del mismo tamaño siempre. */
+.zoom-capa__panel .pasos-insumo .seccion-nivel__repisa {
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.35rem 0.6rem !important;
+  overflow: hidden;
+}
+.zoom-capa__panel .pasos-insumo .seccion-nivel__repisa .nivel__productos {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: end;
+  justify-items: center;
+  gap: 0.3rem;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  transform: none !important;
+}
+.zoom-capa__panel .pasos-insumo .seccion-nivel__repisa .nivel__item {
+  display: grid;
+  place-items: end center;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1;
+  margin: 0 !important;
+  position: static !important;
+  transform: none !important;
+}
+.zoom-capa__panel .pasos-insumo .seccion-nivel__repisa .producto3d,
+.zoom-capa__panel .pasos-insumo .seccion-nivel__repisa .nivel__item--vacio {
+  width: 100% !important;
+  max-width: 56px;
+  height: auto !important;
+  aspect-ratio: 1;
+  object-fit: contain;
+}
+.zoom-capa__panel .pasos-insumo .seccion-nivel__control {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 320px;
+  margin: 0 auto;
+}
+.zoom-capa__panel .pasos-insumo .seccion-insumo {
+  min-width: 0;
+  padding-left: 0.85rem !important;
+  padding-right: 0.85rem !important;
+}
+.zoom-capa__panel .pasos-insumo .hueco__etiqueta {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===================================================================
+   Registrar donación y registro de salida (despacho): la página y el
+   formulario ocupan casi toda la pantalla, en dos columnas, con campos
+   y letras más grandes.
+   =================================================================== */
+.vista.vista-formulario-admin {
+  display: flex !important;
+  flex-direction: column;
+  width: calc(100% - 2.5rem) !important;
+  max-width: 1100px !important;
+  min-height: calc(100vh - 2.5rem) !important;
+}
+.vista-formulario-admin .admin-encabezado {
+  margin-bottom: 1.25rem;
+}
+.vista-formulario-admin form.tarjeta.formulario {
+  flex: 1;
+  box-sizing: border-box;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: center;
+  gap: 1.5rem 2.25rem;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 2.25rem 2.75rem !important;
+  border-radius: 28px !important;
+  border: 3px solid rgba(255, 255, 255, 0.85) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 30%),
+    radial-gradient(ellipse at 50% 40%, #FFFDF8 0%, #FFF8ED 60%, #F3EADB 100%) !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.9), 0 14px 34px rgba(1, 30, 65, 0.16) !important;
+}
+.vista-formulario-admin .formulario__categoria,
+.vista-formulario-admin .formulario .boton--grande {
+  grid-column: 1 / -1;
+}
+.vista-formulario-admin .formulario__categoria {
+  justify-content: center;
+  padding: 1rem 1.25rem !important;
+  border-radius: 22px !important;
+  background: var(--brillo-arriba), var(--relleno-marfil) !important;
+  box-shadow: var(--relieve-claro), var(--sombra-gordita) !important;
+  font-size: 1.35rem !important;
+}
+.vista-formulario-admin .campo label {
+  font-size: 1.1rem;
+}
+.vista-formulario-admin .campo input,
+.vista-formulario-admin .campo select {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 56px;
+  font-size: 1.1rem !important;
+  border-radius: 999px !important;
+  box-shadow: inset 0 2px 4px rgba(1, 30, 65, 0.1);
+}
+.vista-formulario-admin .formulario .boton--grande {
+  justify-self: center;
+  width: min(100%, 420px) !important;
+  min-height: 58px;
+  font-size: 1.2rem !important;
+}
+@media (max-width: 760px) {
+  .vista.vista-formulario-admin {
+    width: calc(100% - 1rem) !important;
+  }
+  .vista-formulario-admin form.tarjeta.formulario {
+    grid-template-columns: 1fr;
+    padding: 1.5rem 1.25rem !important;
+    gap: 1rem;
+  }
 }

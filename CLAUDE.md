@@ -38,7 +38,8 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   amarillo #FDD794, salvia #86B5A9, marfil #FFF8ED, beige arena #E8E1D5, marrón carbón #514B46.
 - **Fondo de toda la página: azul salvia #86B5A9** como estudio fotográfico (luz que cae desde
   arriba, bordes más oscuros, piso suave con charco de luz; `--fondo-pantalla` al final de
-  `css/tema.css`); contenedores marfil/blancos muy redondeados;
+  `css/tema.css`; la línea del piso es un degradado suave, sin corte); contenedores
+  marfil/blancos muy redondeados;
   textos sobre el azul en azul oscuro (#011E41 / #1E3A4F, contraste ≥ 4.5:1).
 - Referencias: interfaces ilustradas cálidas (tarjetas redondeadas), **sin perder el estilo 3D**.
   Sin marcos alrededor de las pantallas, sin ondas al pie, sin alfombra ni luz naranja en la
@@ -46,17 +47,21 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - **Botones, pastillas y tarjetas "gorditos" y MATES** (mismo material que los productos de la
   estantería): relieve suave, sin brillo ni reflejo (variables `--brillo-arriba`, `--relieve`,
   `--relleno-rojo/azul/marfil/amarillo/salvia`, redefinidas al final de `css/tema.css`).
-- Pantalla principal: el gato sobre una tarima redonda (marfil, borde rojo, escalón azul
-  petróleo) vista desde arriba como escenario (`data-escenario`, `renderMascota({ escenario })`);
-  título en letras 3D gruesas que flotan (extrusión profunda sombreada hacia atrás, leve
-  inclinación en perspectiva y sombra en el piso); se conservan color y tipografía.
+- Pantalla principal **orgánica e integrada** (referencia: personaje 3D suave sobre fondo
+  continuo): cámara frontal, **sin tarima**; fondo salvia continuo con luz suave detrás del gato;
+  título como letras de arcilla blanda (extrusión suave, sin inclinación) con la misma sombra
+  verde azulada que el gato (`rgba(24, 66, 58, …)`).
 - Tarjetas de centros bajo el mapa: urgentes en rojo carmín, desabastecidos en amarillo.
 - Menú del admin: cada tarea con su color (insumos amarillo, donación coral, despacho azul claro)
   e íconos 3D mates hechos con three.js (`generarIconoMenu` en `js/miniaturas3d.js`).
 - Admin: "Volver a pantalla principal" fijo arriba a la derecha en todas las pantallas.
 - Menú del admin: las tres tareas se reparten todo el alto de la pantalla.
-- Panel de estado de insumos (zoom del admin): casi pantalla completa, recuadros en 3 columnas
-  que llenan el alto.
+- Panel de estado de insumos (zoom del admin): casi pantalla completa, recuadros que llenan el
+  alto; los 5 puestos de cada repisa en una cuadrícula pareja (nada se sale del recuadro).
+- Registrar donación y despacho (`vista-formulario-admin`): formulario grande en dos columnas.
+- "Iniciar sesión" (elige tu perfil) en azul petróleo.
+- Pre-registro y demás pantallas: sin desplazamiento vacío (el gato 2D de respaldo se oculta con
+  `display: none` cuando carga el 3D).
 - Gestionar insumos: recuadros marfil con relieve, franja y pastilla del color del estado.
 - **Distribución de mapa, ficha del centro y pre-registro** (clase `vista-columnas` para ficha y
   pre-registro): arriba "← Volver" (azul) + ruta en pastilla roja + "Volver a pantalla principal"
@@ -95,7 +100,9 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Un modelo por subcategoría (`MODELOS_SUBCATEGORIA`); ajustes de color y calcomanías (maíz en la
   lata, huella en la bolsa de mascotas, botella de agua azul) en `js/ajustes-modelos.js`.
   Ropa (camisa, vestido, overol) y papel higiénico fueron generados para el proyecto; la ropa se
-  engruesa y se gira a tres cuartos (`ajustarForma`) para verse como los demás productos. Los
+  reemplaza en código por prendas "infladas" de formas orgánicas (`PRENDAS` en
+  `js/ajustes-modelos.js`: camisa con cuello y botones, vestido con cinturón y moño, overol con
+  tirantes), mates y un poco de lado. Los
   cepillos de dientes se giran un cuarto de vuelta para que se vean los dos.
 - **Todos los íconos de productos** de la página usan "fotos" de los modelos 3D
   (`js/miniaturas3d.js`, `iconoProducto()` en `js/ilustraciones.js`).
@@ -108,7 +115,7 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   ajustable con el valor `0.8` en `encuadrarCiudad`).
 - Casas `casa_roja.glb` / `casa_amarilla.glb` estilizadas con la paleta (techo rojo carmín o
   amarillo, paredes marfil), acortadas de fondo para verse compactas, giradas a tres cuartos.
-  Las "fotos" de las casas (tarjetas y ficha) se toman desde arriba para que se vea el techo.
+  Las "fotos" de las casas (tarjetas y ficha) son de frente, un poco desde arriba (se ve el techo).
 - Ubicación del usuario: se pide al entrar; si está fuera de Cali el pin va al borde con la
   distancia; botón **"📌 Marcar dónde estoy"** para tocar el mapa si el navegador no la da.
 - El gato explica colores (roja urgente / amarilla desabastecido) y el centro más cercano.

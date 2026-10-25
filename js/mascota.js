@@ -113,17 +113,16 @@ function dibujarGato() {
  * @param {'quieto'|'saluda'|'senala'} o.pose
  * @param {string|null} o.mensaje  null = sin burbuja
  * @param {string} o.clase         clases extra para el contenedor
- * @param {boolean} o.escenario    el gato 3D sobre una tarima, visto desde arriba
  */
-export function renderMascota({ pose = 'quieto', mensaje = null, clase = '', escenario = false } = {}) {
+export function renderMascota({ pose = 'quieto', mensaje = null, clase = '' } = {}) {
   return `
-    <div class="mascota mascota--${pose} ${clase}${escenario ? ' mascota--escenario' : ''}" data-mascota>
+    <div class="mascota mascota--${pose} ${clase}" data-mascota>
       ${
         mensaje !== null
           ? `<p class="mascota__burbuja" aria-live="polite">${mensaje}</p>`
           : ''
       }
-      <div class="mascota__figura gato3d" data-gato3d data-pose="${pose}"${escenario ? ' data-escenario' : ''} role="img" aria-label="Gato de CaliDa">
+      <div class="mascota__figura gato3d" data-gato3d data-pose="${pose}" role="img" aria-label="Gato de CaliDa">
         <div class="gato3d__respaldo">${dibujarGato()}</div>
       </div>
     </div>
