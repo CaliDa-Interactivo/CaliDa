@@ -141,7 +141,9 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   `#/correos-enviados`, que muestra el estado de cada correo (simulado / enviado / error).
 
 ## Pendientes conocidos
-- Crear la cuenta de EmailJS del equipo y poner sus tres datos en `js/config-correo.js`.
+- EmailJS ya está conectado (cuenta del equipo, datos en `js/config-correo.js`). El plan gratis
+  envía unos 200 correos al mes. Se mandan los datos también como `to_email`, `subject`,
+  `message`, por si la plantilla usa los nombres por defecto de EmailJS.
 - Varios centros son de ejemplo (marcados en `js/data.js`).
 
 ## Cómo verificar cambios

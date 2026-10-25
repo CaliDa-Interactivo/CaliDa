@@ -20,9 +20,9 @@
 // ============================================================
 
 export const EMAILJS = {
-  publicKey: '',
-  serviceId: '',
-  templateId: '',
+  publicKey: 'C6TfMFEzqfpDjMeXO',
+  serviceId: 'service_dbwzd6e',
+  templateId: 'template_myd3yt5',
 };
 
 // Dirección pública del sitio: las imágenes del correo (gato, logo y

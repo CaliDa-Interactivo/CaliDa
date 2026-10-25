@@ -210,7 +210,29 @@ export function enviarCorreo({ destinatario, asunto, html, loteId, numeroLote })
 
   return cargarEmailJS()
     .then((emailjs) =>
-      emailjs.send(EMAILJS.serviceId, EMAILJS.templateId, { destinatario, asunto, html }, { publicKey: EMAILJS.publicKey })
+      emailjs.send(
+        EMAILJS.serviceId,
+        EMAILJS.templateId,
+        // Los mismos datos con los nombres que EmailJS usa por defecto
+        // ({{to_email}}, {{subject}}, {{message}}…), por si la plantilla
+        // no usa {{destinatario}} / {{asunto}} / {{{html}}}.
+        {
+          destinatario,
+          asunto,
+          html,
+          to_email: destinatario,
+          email: destinatario,
+          to: destinatario,
+          user_email: destinatario,
+          subject: asunto,
+          title: asunto,
+          message: html,
+          message_html: html,
+          name: 'CaliDa · Cruz Roja',
+          from_name: 'CaliDa · Cruz Roja',
+        },
+        { publicKey: EMAILJS.publicKey }
+      )
     )
     .then(() => actualizarCorreoEnviado(registro.id, { estado: 'enviado' }))
     .catch((e) => {
