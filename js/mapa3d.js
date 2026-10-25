@@ -253,9 +253,11 @@ export function montarMapa3D(opciones) {
 
   escena.add(new THREE.HemisphereLight('#FFF6E8', '#C9B79C', 1.6));
   const sol = new THREE.DirectionalLight('#FFFFFF', 2.2);
-  sol.position.set(-8, 18, 10);
+  sol.position.set(-11, 10, 7);
   sol.castShadow = true;
-  sol.shadow.mapSize.set(1024, 1024);
+  sol.shadow.mapSize.set(2048, 2048);
+  sol.shadow.radius = 6;
+  sol.shadow.bias = -0.0005;
   Object.assign(sol.shadow.camera, { left: -12, right: 12, top: 12, bottom: -12, near: 1, far: 50 });
   sol.shadow.camera.updateProjectionMatrix();
   escena.add(sol);
@@ -325,6 +327,18 @@ export function montarMapa3D(opciones) {
   // invisible solo para "Marcar dónde estoy" (detectar el toque).
   base.material.visible = false;
   escena.add(base);
+
+  // Plano que solo recibe sombras: la ciudad y las colinas proyectan una
+  // sombra suave sobre la superficie donde están, sin mostrar una base.
+  const planoSombra = new THREE.Mesh(
+    registrar(new THREE.PlaneGeometry(40, 40)),
+    registrar(new THREE.ShadowMaterial({ color: '#011E41', opacity: 0.32 }))
+  );
+  planoSombra.rotation.x = -Math.PI / 2;
+  planoSombra.position.y = -0.03;
+  planoSombra.receiveShadow = true;
+  planoSombra.raycast = () => {}; // no interfiere con los toques
+  escena.add(planoSombra);
 
 
   // Farallones: montañas al occidente.

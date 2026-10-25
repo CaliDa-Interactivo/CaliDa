@@ -41,8 +41,17 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Referencias: interfaces ilustradas cálidas (tarjetas redondeadas), **sin perder el estilo 3D**.
   Sin marcos alrededor de las pantallas, sin ondas al pie, sin alfombra ni luz naranja en la
   pantalla principal (solo profundidad suave).
-- **Botones, pastillas y tarjetas "gorditos y brillantes"** (oct 2026): relieve con brillo arriba
-  y sombra suave abajo (variables `--brillo-arriba`, `--relieve`, `--relleno-rojo/azul/marfil`).
+- **Botones, pastillas y tarjetas "gorditos" y MATES** (mismo material que los productos de la
+  estantería): relieve suave, sin brillo ni reflejo (variables `--brillo-arriba`, `--relieve`,
+  `--relleno-rojo/azul/marfil/amarillo/salvia`, redefinidas al final de `css/tema.css`).
+- Pantalla principal: el gato sobre una tarima redonda (marfil, borde rojo, escalón azul
+  petróleo) vista desde arriba como escenario (`data-escenario`, `renderMascota({ escenario })`);
+  título en letras 3D (cara azul oscuro, costados azul petróleo con `text-shadow`).
+- Tarjetas de centros bajo el mapa: urgentes en rojo carmín, desabastecidos en amarillo.
+- Menú del admin: cada tarea con su color (insumos amarillo, donación coral, despacho azul claro)
+  e íconos 3D mates hechos con three.js (`generarIconoMenu` en `js/miniaturas3d.js`).
+- Admin: "Volver a pantalla principal" fijo arriba a la derecha en todas las pantallas.
+- Gestionar insumos: recuadros marfil con relieve, franja y pastilla del color del estado.
 - **Distribución de mapa, ficha del centro y pre-registro** (clase `vista-columnas` para ficha y
   pre-registro): arriba "← Volver" (azul) + ruta en pastilla roja + "Volver a pantalla principal"
   e "Ir a la estantería" a la derecha; al medio el panel grande (mapa o `pantalla-panel`) con el
@@ -70,7 +79,7 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   "tu centro" (p. ej. "Cuéntame cuánto hay de cada cosa en tu centro…").
 
 ## Estantería 3D — `js/estanteria3d.js`
-- Mueble `estanteria.glb` (girado para quedar de frente), madera clara de un solo tono.
+- Mueble `estanteria.glb` (girado para quedar de frente), madera de un solo tono (`#DBA878`).
 - Compartimientos: Alimento y Aseo arriba, Ropa y Medicamentos al medio, Construcción abajo.
 - **Cámara fija** (no se arrastra); llena la pantalla; se ve la placa de Construcción.
 - Placas de categoría y etiquetas de producto **clavadas a la madera** (3D, no flotantes).
@@ -85,7 +94,8 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 
 ## Mapa 3D — `js/mapa3d.js`
 - Zonas del área urbana trazadas sobre el mapa oficial; colinas con pocos pinos alrededor;
-  sin árboles sobre la ciudad; sin río; sin plano de base visible.
+  sin árboles sobre la ciudad; sin río; sin plano de base visible (solo un `ShadowMaterial`
+  que recibe la sombra de la ciudad y las colinas).
 - **Mapa fijo** (sin gestos); encuadre automático centrado (la ciudad ocupa ~80 % del recuadro;
   ajustable con el valor `0.8` en `encuadrarCiudad`).
 - Casas `casa_roja.glb` / `casa_amarilla.glb` estilizadas con la paleta, giradas a tres cuartos.

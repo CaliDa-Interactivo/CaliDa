@@ -2271,3 +2271,295 @@ a.boton {
     width: 100% !important;
   }
 }
+
+/* ===================================================================
+   Material mate (como los productos de la estantería): el relieve se
+   mantiene pero sin brillo ni reflejo; solo una luz suave arriba.
+   =================================================================== */
+:root {
+  --brillo-arriba: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 55%);
+  --relieve: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -3px 5px rgba(1, 30, 65, 0.14);
+  --relieve-claro: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -3px 5px rgba(81, 75, 70, 0.1);
+  --sombra-gordita: 0 5px 12px rgba(1, 30, 65, 0.14), 0 1px 2px rgba(1, 30, 65, 0.1);
+  --relleno-rojo: linear-gradient(180deg, #D81610 0%, #CC0100 50%, #B80A0F 100%);
+  --relleno-azul: linear-gradient(180deg, #4E7A99 0%, #426D8C 50%, #38617F 100%);
+  --relleno-marfil: linear-gradient(180deg, #FFFCF6 0%, #FFF8ED 50%, #F1EADF 100%);
+  --relleno-amarillo: linear-gradient(180deg, #FEE0A8 0%, #FDD794 50%, #F4C877 100%);
+  --relleno-salvia: linear-gradient(180deg, #9CC3B8 0%, #86B5A9 50%, #78A89C 100%);
+}
+
+.boton,
+.boton-principal,
+.boton.boton--azul,
+.boton-atras,
+.vista-mapa3d .mapa__indicador,
+:is(.vista-mapa3d, .vista-columnas) .mapa__indicador {
+  text-shadow: none !important;
+}
+.boton:hover,
+.boton-principal:hover {
+  filter: brightness(1.04);
+}
+
+/* --- Pantalla principal: título en letras 3D (cara azul oscuro y
+   costados azul petróleo, como una pieza sólida) --- */
+.bienvenida-inicio h1 {
+  color: #011E41;
+  text-shadow:
+    1px 1px 0 #2F5672,
+    2px 2px 0 #2F5672,
+    3px 3px 0 #2B5069,
+    4px 4px 0 #2B5069,
+    5px 5px 0 #264860,
+    6px 6px 0 #264860,
+    8px 12px 14px rgba(1, 30, 65, 0.28);
+  -webkit-text-stroke: 0.5px #011E41;
+}
+@media (max-width: 600px) {
+  .bienvenida-inicio h1 {
+    text-shadow:
+      1px 1px 0 #2F5672,
+      2px 2px 0 #2B5069,
+      3px 3px 0 #264860,
+      5px 8px 10px rgba(1, 30, 65, 0.25);
+  }
+}
+/* La tarima del gato ya hace de piso: sin la sombra plana de CSS */
+.bienvenida-inicio .mascota--escenario::after {
+  display: none !important;
+}
+.bienvenida-inicio .mascota--escenario {
+  width: min(34vw, 420px) !important;
+}
+@media (max-width: 859px) {
+  .bienvenida-inicio .mascota--escenario {
+    width: min(80vw, 340px) !important;
+  }
+}
+
+/* --- Mapa: el mensaje del gato va centrado --- */
+:is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-guia__globo,
+:is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-guia__globo p {
+  text-align: center !important;
+}
+:is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-mapa__colores {
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.2rem 0.9rem;
+  margin-top: 0.4rem;
+}
+:is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-mapa__cercanos {
+  display: block;
+  text-align: center;
+}
+
+/* --- Mapa: tarjetas de los centros con relieve, roja si es urgente
+   y amarilla si está desabastecido --- */
+.mapa3d__lista .centro-tarjeta {
+  border: none !important;
+  border-radius: 24px !important;
+  box-shadow: var(--relieve-claro), var(--sombra-gordita) !important;
+  animation: none !important;
+}
+.mapa3d__lista .centro-tarjeta.centro-tarjeta--urgente {
+  background: var(--brillo-arriba), var(--relleno-rojo) !important;
+  box-shadow: var(--relieve), var(--sombra-gordita) !important;
+  color: #FFFFFF !important;
+}
+.mapa3d__lista .centro-tarjeta--urgente .centro-tarjeta__nombre,
+.mapa3d__lista .centro-tarjeta--urgente .centro-tarjeta__zona {
+  color: #FFFFFF !important;
+}
+.mapa3d__lista .centro-tarjeta--urgente .centro-tarjeta__badge {
+  background: #FFF8ED !important;
+  color: #A5121A !important;
+}
+.mapa3d__lista .centro-tarjeta.centro-tarjeta--desabastecido {
+  background: var(--brillo-arriba), var(--relleno-amarillo) !important;
+  color: #011E41 !important;
+}
+.mapa3d__lista .centro-tarjeta--desabastecido .centro-tarjeta__nombre,
+.mapa3d__lista .centro-tarjeta--desabastecido .centro-tarjeta__zona {
+  color: #011E41 !important;
+}
+.mapa3d__lista .centro-tarjeta--desabastecido .centro-tarjeta__badge {
+  background: #011E41 !important;
+  color: #FDD794 !important;
+}
+.mapa3d__lista .centro-tarjeta__badge {
+  box-shadow: none !important;
+}
+.mapa3d__lista .centro-tarjeta:hover,
+.mapa3d__lista .centro-tarjeta.centro-tarjeta--resaltada {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+}
+.mapa3d__lista .centro-tarjeta__casa {
+  border-radius: 18px;
+  background: rgba(255, 248, 237, 0.85);
+}
+
+/* --- Menú del administrador: cada tarea con su color y relieve mate;
+   íconos 3D sobre una base marfil --- */
+.menu-admin__opcion {
+  border: none !important;
+  border-radius: 26px !important;
+  padding: 1rem 1.25rem !important;
+  box-shadow: var(--relieve-claro), var(--sombra-gordita) !important;
+  transition: transform 150ms ease, filter 150ms ease;
+}
+.menu-admin__opcion:hover,
+.menu-admin__opcion:focus-visible {
+  transform: translateY(-2px);
+  filter: brightness(1.03);
+}
+.menu-admin__opcion.menu-admin__opcion--insumos {
+  background: var(--brillo-arriba), var(--relleno-amarillo) !important;
+}
+.menu-admin__opcion.menu-admin__opcion--donacion {
+  background: var(--brillo-arriba), linear-gradient(180deg, #FBB7A2 0%, #F99C80 50%, #F28A6B 100%) !important;
+}
+.menu-admin__opcion.menu-admin__opcion--despacho {
+  /* azul petróleo claro: se distingue del fondo salvia */
+  background: var(--brillo-arriba), linear-gradient(180deg, #CADBE7 0%, #B4CBDC 50%, #A2BDD1 100%) !important;
+}
+.menu-admin__opcion .menu-admin__titulo,
+.menu-admin__opcion .menu-admin__descripcion,
+.menu-admin__opcion .menu-admin__flecha {
+  color: #011E41 !important;
+}
+.menu-admin__opcion .menu-admin__icono {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 84px !important;
+  height: 84px !important;
+  border-radius: 22px !important;
+  background: var(--relleno-marfil) !important;
+  box-shadow: var(--relieve-claro), 0 3px 8px rgba(1, 30, 65, 0.12) !important;
+  font-size: 2.2rem;
+}
+.menu-admin__opcion .menu-admin__icono img {
+  width: 72px;
+  height: 72px;
+}
+
+/* --- Administrador: "Volver a pantalla principal" siempre en el mismo
+   lugar (arriba a la derecha, con el mismo espacio al borde) --- */
+.vista-admin > .barra-inicio {
+  position: fixed !important;
+  top: 1rem;
+  right: 1.25rem;
+  z-index: 60;
+  margin: 0 !important;
+}
+@media (min-width: 761px) {
+  /* el buscador de la estantería se corre para no quedar debajo */
+  .vista-admin .escena3d__arriba .admin-barra .buscador {
+    top: 4.1rem !important;
+    right: 1.25rem !important;
+  }
+}
+@media (max-width: 760px) {
+  .vista-admin:not(.vista-3d) {
+    padding-top: 4.25rem !important;
+  }
+  .vista-admin > .barra-inicio {
+    top: 0.6rem;
+    right: 0.75rem;
+  }
+  .vista-admin.vista-3d .escena3d__arriba {
+    padding-top: 3.4rem !important;
+  }
+}
+
+/* --- Gestionar insumos (pasos 1 y 2): recuadros con el mismo estilo
+   del resto (marfil con relieve mate, estado en pastilla de color) --- */
+.pasos-insumo .mueble .mueble__cuerpo {
+  background: rgba(255, 248, 237, 0.55) !important;
+  box-shadow: inset 0 2px 6px rgba(1, 30, 65, 0.08) !important;
+  border-radius: 28px !important;
+}
+.pasos-insumo .mueble .seccion-insumo {
+  border: none !important;
+  border-radius: 24px !important;
+  background: var(--brillo-arriba), var(--relleno-marfil) !important;
+  box-shadow: var(--relieve-claro), var(--sombra-gordita) !important;
+  padding-bottom: 0.9rem !important;
+  overflow: visible;
+}
+.pasos-insumo .mueble .seccion-insumo::after {
+  display: none !important;
+}
+/* Franja de color del estado arriba de cada recuadro */
+.pasos-insumo .mueble .seccion-insumo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 18%;
+  right: 18%;
+  height: 6px;
+  border-radius: 0 0 6px 6px;
+  background: var(--seccion-color);
+}
+.pasos-insumo .hueco__etiqueta {
+  background: var(--brillo-arriba), var(--relleno-marfil) !important;
+  border: none !important;
+  box-shadow: var(--relieve-claro), var(--sombra-gordita) !important;
+  color: #011E41 !important;
+}
+.pasos-insumo .seccion-nivel__repisa {
+  border-radius: 16px;
+  background: rgba(232, 225, 213, 0.55);
+  box-shadow: inset 0 2px 5px rgba(81, 75, 70, 0.14);
+  padding: 0.25rem 0.5rem;
+}
+.pasos-insumo .seccion-nivel__control {
+  background: var(--relleno-marfil) !important;
+  box-shadow: inset 0 2px 5px rgba(81, 75, 70, 0.14), 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.pasos-insumo .seccion-nivel__boton {
+  background: var(--brillo-arriba), var(--relleno-azul) !important;
+  box-shadow: var(--relieve), 0 3px 6px rgba(1, 30, 65, 0.18) !important;
+}
+.pasos-insumo .seccion-nivel__boton:disabled {
+  background: var(--relleno-marfil) !important;
+  color: #9A9189 !important;
+  box-shadow: var(--relieve-claro) !important;
+}
+.pasos-insumo .seccion-nivel__estado {
+  display: inline-block;
+  margin-top: 0.15rem;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  background: var(--seccion-color);
+  color: #FFFFFF;
+  font-weight: 700;
+}
+.pasos-insumo .seccion-insumo[data-estado="desabastecido"] .seccion-nivel__estado {
+  color: #011E41;
+}
+/* Paso 2: el editor de palabras como tarjeta interna hundida */
+.pasos-insumo .necesidades-editor {
+  border-radius: 20px !important;
+  background: rgba(232, 225, 213, 0.45) !important;
+  box-shadow: inset 0 2px 5px rgba(81, 75, 70, 0.12) !important;
+  border: none !important;
+}
+.pasos-insumo .necesidades-editor__campo {
+  border: none !important;
+  border-radius: 999px !important;
+  background: #FFFFFF !important;
+  box-shadow: inset 0 2px 4px rgba(1, 30, 65, 0.12) !important;
+}
+.pasos-insumo .necesidades-editor__campo:focus {
+  outline: 3px solid #426D8C !important;
+  outline-offset: 1px;
+}
+.pasos-insumo .necesidades-editor__lista li {
+  border: none !important;
+  background: var(--brillo-arriba), var(--relleno-marfil) !important;
+  box-shadow: var(--relieve-claro), 0 2px 5px rgba(1, 30, 65, 0.12) !important;
+  color: #011E41 !important;
+}

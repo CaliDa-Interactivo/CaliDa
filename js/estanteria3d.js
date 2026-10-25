@@ -492,7 +492,7 @@ export function montarEstanteria3D(o) {
     // Madera clara de un solo tono: material mate con un poco de brillo
     // propio, sin sombras sobre el mueble (así el color se ve uniforme).
     const madera = registrar(
-      new THREE.MeshStandardMaterial({ color: '#E7B888', emissive: '#E7B888', emissiveIntensity: 0.28, roughness: 0.95, metalness: 0 })
+      new THREE.MeshStandardMaterial({ color: '#DBA878', emissive: '#DBA878', emissiveIntensity: 0.28, roughness: 0.95, metalness: 0 })
     );
     mueble.traverse((n) => {
       if (n.isMesh) {
