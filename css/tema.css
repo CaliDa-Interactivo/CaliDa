@@ -2301,29 +2301,6 @@ a.boton {
   filter: brightness(1.04);
 }
 
-/* --- Pantalla principal: título en letras 3D (cara azul oscuro y
-   costados azul petróleo, como una pieza sólida) --- */
-.bienvenida-inicio h1 {
-  color: #011E41;
-  text-shadow:
-    1px 1px 0 #2F5672,
-    2px 2px 0 #2F5672,
-    3px 3px 0 #2B5069,
-    4px 4px 0 #2B5069,
-    5px 5px 0 #264860,
-    6px 6px 0 #264860,
-    8px 12px 14px rgba(1, 30, 65, 0.28);
-  -webkit-text-stroke: 0.5px #011E41;
-}
-@media (max-width: 600px) {
-  .bienvenida-inicio h1 {
-    text-shadow:
-      1px 1px 0 #2F5672,
-      2px 2px 0 #2B5069,
-      3px 3px 0 #264860,
-      5px 8px 10px rgba(1, 30, 65, 0.25);
-  }
-}
 /* --- Mapa: el mensaje del gato va centrado --- */
 :is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-guia__globo,
 :is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-guia__globo p {
@@ -2567,72 +2544,10 @@ a.boton {
 html {
   background: #7AA89B;
 }
-body,
-body:has(.bienvenida-inicio) {
+body {
   background: var(--fondo-pantalla) !important;
   background-attachment: fixed !important;
   min-height: 100vh;
-}
-
-/* ===================================================================
-   Título de la pantalla principal: letras 3D gruesas que flotan, con
-   la extrusión sombreada (más oscura hacia atrás), una leve inclinación
-   y su sombra en el piso. Se conservan el color y la tipografía.
-   =================================================================== */
-.bienvenida-inicio h1 {
-  position: relative;
-  color: #011E41;
-  -webkit-text-stroke: 0.6px #011E41;
-  transform: perspective(900px) rotateY(9deg) rotateX(6deg) rotateZ(-2deg);
-  transform-origin: left center;
-  text-shadow:
-    0 1px 0 #4A7898,
-    1px 2px 0 #46738F,
-    1px 3px 0 #426D8C,
-    2px 4px 0 #3D6784,
-    2px 5px 0 #39617C,
-    3px 6px 0 #355B74,
-    3px 7px 0 #31556D,
-    4px 8px 0 #2D4F66,
-    4px 9px 0 #29495F,
-    5px 10px 0 #254458,
-    5px 11px 0 #213E51,
-    6px 12px 2px rgba(1, 30, 65, 0.5),
-    10px 30px 26px rgba(1, 30, 65, 0.3);
-}
-.bienvenida-inicio h1::after {
-  /* sombra en el piso: el título flota */
-  content: "";
-  position: absolute;
-  left: 6%;
-  right: 12%;
-  bottom: -2.4rem;
-  height: 1.4rem;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(1, 30, 65, 0.32), rgba(1, 30, 65, 0));
-  filter: blur(4px);
-  pointer-events: none;
-}
-.bienvenida-inicio__apoyo {
-  margin-top: 2.6rem;
-}
-@media (max-width: 600px) {
-  .bienvenida-inicio h1 {
-    transform: perspective(700px) rotateY(6deg) rotateX(4deg) rotateZ(-1.5deg);
-    text-shadow:
-      0 1px 0 #4A7898,
-      1px 2px 0 #426D8C,
-      1px 3px 0 #39617C,
-      2px 4px 0 #31556D,
-      2px 5px 0 #29495F,
-      3px 6px 0 #213E51,
-      6px 16px 14px rgba(1, 30, 65, 0.3);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .bienvenida-inicio h1 {
-    transform: none;
-  }
 }
 
 /* ===================================================================
@@ -2767,59 +2682,6 @@ body:has(.vista-admin) .zoom-capa__panel:has(.pasos-insumo) {
 }
 .zoom-capa__panel .pasos-insumo .pasos-insumo__indicador {
   align-self: flex-start;
-}
-
-/* ===================================================================
-   Pantalla principal orgánica e integrada (referencia del equipo):
-   fondo continuo sin línea de piso, una luz suave detrás del gato y
-   el título como letras de arcilla blanda, con la misma sombra verde
-   azulada del gato. Vista frontal, sin tarima.
-   =================================================================== */
-body:has(.bienvenida-inicio) {
-  background:
-    radial-gradient(ellipse 30% 42% at 72% 46%, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 75%),
-    radial-gradient(ellipse 60% 18% at 50% 92%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 70%),
-    radial-gradient(ellipse 95% 85% at 55% 45%, rgba(24, 66, 58, 0) 50%, rgba(24, 66, 58, 0.22) 100%),
-    linear-gradient(180deg, #8DBBAF 0%, #86B5A9 50%, #7DAC9F 100%) !important;
-  background-attachment: fixed !important;
-}
-.bienvenida-inicio h1 {
-  transform: none !important;
-  -webkit-text-stroke: 0 !important;
-  color: #011E41;
-  text-shadow:
-    0 1px 0 #1B3B55,
-    0 2px 0 #1F4560,
-    0 3px 0 #244D69,
-    0 4px 0 #295571,
-    0 5px 1px #2D5C78,
-    0 7px 3px rgba(24, 66, 58, 0.35),
-    0 14px 18px rgba(24, 66, 58, 0.3) !important;
-}
-.bienvenida-inicio h1::after {
-  left: 4%;
-  right: 20%;
-  bottom: -1.6rem;
-  height: 1.2rem;
-  background: radial-gradient(closest-side, rgba(24, 66, 58, 0.26), rgba(24, 66, 58, 0));
-  filter: blur(6px);
-}
-.bienvenida-inicio__apoyo {
-  margin-top: 1.9rem;
-}
-/* El gato sin fondo propio: queda sobre la luz del fondo */
-.bienvenida-inicio .mascota::before,
-.bienvenida-inicio .mascota::after {
-  display: none !important;
-}
-@media (max-width: 600px) {
-  .bienvenida-inicio h1 {
-    text-shadow:
-      0 1px 0 #1F4560,
-      0 2px 0 #295571,
-      0 3px 1px #2D5C78,
-      0 10px 14px rgba(24, 66, 58, 0.3) !important;
-  }
 }
 
 /* El gato 2D de respaldo no ocupa lugar cuando ya está el 3D (antes
@@ -3013,84 +2875,6 @@ body:has(.bienvenida-inicio) {
 }
 
 /* ===================================================================
-   Pantalla principal como escenario: pared del fondo con luz que cae
-   sobre el gato, telones a los lados, piso en perspectiva con su
-   charco de luz y el borde del escenario. El gato y los textos están
-   dentro del mismo escenario.
-   =================================================================== */
-.bienvenida-inicio {
-  position: relative;
-  isolation: isolate;
-  min-height: min(68vh, 620px);
-  margin: 0.5rem 0 1.5rem;
-  padding: 2.5rem 4.5rem 0;
-  align-items: end !important;
-}
-/* Pared del fondo */
-.bienvenida-inicio::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 24% 0;
-  z-index: -2;
-  border-radius: 40px 40px 0 0;
-  background:
-    /* luz del reflector sobre el gato */
-    radial-gradient(ellipse 24% 80% at 74% -8%, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.12) 55%, rgba(255, 255, 255, 0) 80%),
-    /* sombra que dejan los telones en la pared */
-    linear-gradient(90deg, rgba(24, 66, 58, 0.28) 0, rgba(24, 66, 58, 0) 140px),
-    linear-gradient(270deg, rgba(24, 66, 58, 0.28) 0, rgba(24, 66, 58, 0) 140px),
-    /* telones (rojo de la paleta, con pliegues suaves y mates) */
-    repeating-linear-gradient(90deg, #86101A 0, #B80A0F 9px, #D8231C 18px, #B80A0F 27px, #86101A 36px) left top / 72px 100% no-repeat,
-    repeating-linear-gradient(90deg, #86101A 0, #B80A0F 9px, #D8231C 18px, #B80A0F 27px, #86101A 36px) right top / 72px 100% no-repeat,
-    /* pared */
-    linear-gradient(180deg, #A5CCC1 0%, #93C0B4 70%, #86B5A9 100%);
-  box-shadow: inset 0 26px 50px rgba(24, 66, 58, 0.22);
-}
-/* Piso en perspectiva, con charco de luz bajo el gato y borde frontal */
-.bienvenida-inicio::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 26%;
-  z-index: -1;
-  border-radius: 0 0 34px 34px;
-  background:
-    radial-gradient(ellipse 26% 46% at 74% 40%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 72%),
-    radial-gradient(ellipse 30% 50% at 26% 40%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 72%),
-    linear-gradient(180deg, #7FAEA1 0%, #8EBBAF 100%);
-  transform: perspective(700px) rotateX(28deg);
-  transform-origin: top center;
-  box-shadow:
-    0 14px 0 #5E8C80,
-    0 30px 44px rgba(24, 66, 58, 0.35);
-}
-.bienvenida-inicio > div:first-child {
-  align-self: start;
-  padding-top: 1.5rem;
-}
-.bienvenida-inicio .mascota {
-  position: relative;
-  z-index: 1;
-  align-self: end;
-  margin-bottom: 3%;
-}
-@media (max-width: 859px) {
-  .bienvenida-inicio {
-    padding: 2rem 2.25rem 0;
-    min-height: 0;
-  }
-  .bienvenida-inicio::before {
-    inset: 0 0 18% 0;
-    background-size: auto, auto, auto, 36px 100%, 36px 100%, auto;
-  }
-  .bienvenida-inicio::after {
-    height: 18%;
-  }
-}
-
-/* ===================================================================
    Mapa: fondo azul petróleo para que las zonas de colores resalten.
    =================================================================== */
 .vista-mapa3d .mapa3d {
@@ -3100,15 +2884,6 @@ body:has(.bienvenida-inicio) {
 }
 .vista-mapa3d .mapa3d__cargando {
   color: #FFF8ED;
-}
-
-/* Dentro del escenario: título y texto sobre la pared, el gato en el piso */
-.bienvenida-inicio h1 {
-  font-size: clamp(2rem, 4.1vw, 3.1rem) !important;
-}
-.bienvenida-inicio > div:first-child {
-  padding-left: 1.25rem;
-  padding-bottom: 12%;
 }
 .vista.vista-mapa3d {
   width: calc(100% - 2.5rem) !important;
@@ -3139,14 +2914,16 @@ body:has(.bienvenida-inicio) {
   background: #CC0100;
   color: #FFFFFF;
 }
-@media (max-width: 859px) {
-  /* el texto no se monta sobre los telones */
-  .bienvenida-inicio {
-    padding-left: 3.4rem !important;
-    padding-right: 3.4rem !important;
-  }
-  .bienvenida-inicio > div:first-child {
-    padding-left: 0;
-    padding-bottom: 0;
-  }
+
+/* ===================================================================
+   Pantalla de inicio como estaba al principio: el fondo salvia
+   original (con sus luces suaves) y el título sin efectos.
+   =================================================================== */
+body:has(.bienvenida-inicio) {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 30%, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 70%),
+    radial-gradient(ellipse 55% 45% at 100% 0%, rgba(253, 215, 148, 0.28) 0%, rgba(253, 215, 148, 0) 70%),
+    radial-gradient(ellipse 55% 45% at 0% 100%, rgba(246, 119, 81, 0.18) 0%, rgba(246, 119, 81, 0) 70%),
+    linear-gradient(180deg, #92BDB2 0%, #86B5A9 55%, #7AAC9F 100%) !important;
+  background-attachment: fixed !important;
 }

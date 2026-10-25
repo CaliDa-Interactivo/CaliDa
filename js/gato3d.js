@@ -238,15 +238,13 @@ async function montarUno(el) {
   lienzoSombra.width = lienzoSombra.height = 128;
   const ctxS = lienzoSombra.getContext('2d');
   const grad = ctxS.createRadialGradient(64, 64, 4, 64, 64, 62);
-  // tono verde azulado del fondo salvia: la sombra se funde con el piso
-  grad.addColorStop(0, 'rgba(24, 66, 58, 0.34)');
-  grad.addColorStop(0.55, 'rgba(24, 66, 58, 0.14)');
-  grad.addColorStop(1, 'rgba(24, 66, 58, 0)');
+  grad.addColorStop(0, 'rgba(90, 40, 20, 0.32)');
+  grad.addColorStop(1, 'rgba(90, 40, 20, 0)');
   ctxS.fillStyle = grad;
   ctxS.fillRect(0, 0, 128, 128);
   const texSombra = new THREE.CanvasTexture(lienzoSombra);
   const sombra = new THREE.Mesh(
-    new THREE.PlaneGeometry(1.0, 0.56),
+    new THREE.PlaneGeometry(0.85, 0.5),
     new THREE.MeshBasicMaterial({ map: texSombra, transparent: true, depthWrite: false })
   );
   sombra.rotation.x = -Math.PI / 2;

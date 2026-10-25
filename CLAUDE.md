@@ -47,10 +47,9 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - **Botones, pastillas y tarjetas "gorditos" y MATES** (mismo material que los productos de la
   estantería): relieve suave, sin brillo ni reflejo (variables `--brillo-arriba`, `--relieve`,
   `--relleno-rojo/azul/marfil/amarillo/salvia`, redefinidas al final de `css/tema.css`).
-- Pantalla principal como **escenario** que contiene al gato y los textos: pared con luz de
-  reflector sobre el gato, telones rojos a los lados, piso en perspectiva con charco de luz y
-  borde frontal (`.bienvenida-inicio::before/::after`). Cámara del gato frontal, sin tarima
-  bajo él; título como letras de arcilla blanda con sombra verde azulada (`rgba(24, 66, 58, …)`).
+- **Pantalla principal: como estaba al inicio del proyecto** (el equipo lo pidió tras probar
+  escenario, tarima y título 3D): fondo salvia original con luces suaves, título sin efectos,
+  gato frontal sin base. No volver a cambiarla sin que el equipo lo pida.
 - Tarjetas de centros bajo el mapa: urgentes en rojo carmín, desabastecidos en amarillo.
 - Menú del admin: cada tarea con su color (insumos amarillo, donación coral, despacho azul claro)
   e íconos 3D mates hechos con three.js (`generarIconoMenu` en `js/miniaturas3d.js`). Los
@@ -131,7 +130,8 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - `js/store.js` migra datos guardados (subcategorías nuevas, zona de Jairo Varela) sin borrarlos.
 
 ## Correos al donante — `js/email.js`
-- Estilo de la página (fondo salvia, tarjeta marfil, botón rojo en píldora), gato 3D
+- Estilo de la página (fondo salvia, tarjeta marfil, botón rojo en píldora), pensado para Gmail
+  (fondos con `bgcolor`, relieve con bordes y no con sombras, styles en una línea), gato 3D
   (`assets/correo/gato.png`, "foto" del modelo) y **mapa real del Valle del Cauca** con el trayecto
   desde Cali (`assets/correo/mapas/<municipio>.png`, uno por cada uno de los 42 municipios,
   dibujados con el contorno real de los departamentos). Las imágenes se cargan desde GitHub Pages

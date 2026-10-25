@@ -89,87 +89,62 @@ export function plantillaCorreo({ fechas, numeroLote, otrasPersonas, destino, or
     ? `Se quedó en <strong>Santiago de Cali</strong>, donde más hacía falta.`
     : `Salió de <strong>${centroNombre}</strong> en Cali y llegó a <strong>${destino.nombre}</strong> · unos ${km} en línea recta.`;
 
+  // Pensado para Gmail: fondos también con bgcolor (Gmail a veces ignora
+  // "background" en style), relieve con bordes en vez de sombras, cada
+  // style en una sola línea y la fuente con respaldo (Gmail no carga
+  // Montserrat: usa Arial).
   return `<!DOCTYPE html>
 <html lang="es">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>CaliDa</title></head>
-<body style="margin:0;padding:0;background:#86B5A9;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#86B5A9;">
-    <tr><td align="center" style="padding:28px 12px;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
-             style="max-width:560px;background:#FFF8ED;border-radius:32px;overflow:hidden;${FUENTE}color:#011E41;
-                    box-shadow:0 14px 34px rgba(1,30,65,0.18);">
-        <tr>
-          <td align="center" style="padding:22px 24px 6px;">
-            <img src="${URL_LOGO}" alt="CaliDa" width="150" style="display:block;width:150px;height:auto;border:0;">
-          </td>
-        </tr>
-        <tr>
-          <td align="center" style="padding:10px 24px 0;">
-            <table role="presentation" cellpadding="0" cellspacing="0" style="background:#E3EFEA;border-radius:28px;">
-              <tr><td align="center" style="padding:18px 34px 10px;">
-                <img src="${URL_GATO}" alt="El gato de CaliDa" width="170" style="display:block;width:170px;height:auto;border:0;">
-              </td></tr>
-            </table>
-          </td>
-        </tr>
-        <tr>
-          <td align="center" style="padding:18px 28px 0;">
-            <h1 style="margin:0;${FUENTE}font-size:34px;font-weight:800;color:#011E41;text-shadow:0 3px 0 #C9DCD5;">¡Gracias!</h1>
-          </td>
-        </tr>
-        <tr>
-          <td align="center" style="padding:12px 34px 0;font-size:17px;line-height:1.5;color:#011E41;">
-            ${textoDonacion}
-          </td>
-        </tr>
-        <tr>
-          <td align="center" style="padding:20px 28px 0;">
-            <table role="presentation" cellpadding="0" cellspacing="0"
-                   style="background:#FDD794;border-radius:22px;border-bottom:4px solid #F2C14E;">
-              <tr><td align="center" style="padding:12px 30px 10px;">
-                <span style="display:block;font-size:12px;font-weight:700;letter-spacing:2px;color:#011E41;">NÚMERO DE LOTE</span>
-                <span style="display:block;${FUENTE}font-size:34px;font-weight:800;color:#011E41;">#${numeroLote}</span>
-                <span style="display:block;margin-top:2px;font-size:14px;font-weight:700;color:#011E41;">Destino: ${destino.nombre}</span>
-              </td></tr>
-            </table>
-          </td>
-        </tr>
-        <tr>
-          <td align="center" style="padding:16px 34px 0;font-size:16px;line-height:1.5;color:#514B46;">
-            ${textoLote}
-          </td>
-        </tr>
-        <tr>
-          <td align="center" style="padding:24px 24px 0;">
-            <p style="margin:0 0 12px;${FUENTE}font-size:17px;font-weight:800;color:#011E41;">El camino de tu ayuda</p>
-            <img src="${urlMapa(destino)}" alt="Mapa del Valle del Cauca con el trayecto de Cali a ${destino.nombre}"
-                 width="500" style="display:block;width:100%;max-width:500px;height:auto;border:0;border-radius:24px;margin:0 auto;">
-            <p style="margin:12px 8px 0;font-size:14px;line-height:1.5;color:#514B46;">${textoTrayecto}</p>
-          </td>
-        </tr>
-        <tr>
-          <td align="center" style="padding:18px 24px 0;">
-            <table role="presentation" cellpadding="0" cellspacing="0">
-              <tr><td align="center" style="background:#CC0100;border-radius:999px;border-bottom:4px solid #A5121A;">
-                <a href="${urlRuta}" style="display:inline-block;padding:13px 26px;${FUENTE}font-size:15px;font-weight:700;color:#FFFFFF;text-decoration:none;">Ver el trayecto en Google Maps</a>
-              </td></tr>
-            </table>
-          </td>
-        </tr>
-        <tr>
-          <td align="center" style="padding:24px 34px 28px;font-size:15px;line-height:1.5;color:#011E41;">
-            Gracias por ayudar donde más hacía falta.
-          </td>
-        </tr>
-        <tr>
-          <td align="center" style="background:#011E41;padding:16px 24px;">
-            <span style="display:block;color:#FFFFFF;font-size:14px;font-weight:700;">CaliDa · Cruz Roja</span>
-            <span style="display:block;margin-top:4px;color:#B4CBDC;font-size:12px;">Recibes este correo porque registraste una donación en un centro de acopio.</span>
-          </td>
-        </tr>
-      </table>
-    </td></tr>
-  </table>
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>CaliDa</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="margin:0;padding:0;background-color:#86B5A9;" bgcolor="#86B5A9">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#86B5A9" style="background-color:#86B5A9;">
+<tr><td align="center" style="padding:28px 12px;">
+<table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFF8ED" style="width:100%;max-width:560px;background-color:#FFF8ED;border-radius:32px;border:3px solid #FFFFFF;border-bottom:8px solid #6E9F92;${FUENTE}color:#011E41;">
+<tr><td align="center" style="padding:24px 24px 6px;">
+<img src="${URL_LOGO}" alt="CaliDa" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;">
+</td></tr>
+<tr><td align="center" style="padding:10px 24px 0;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#E3EFEA" style="background-color:#E3EFEA;border-radius:28px;border-bottom:5px solid #C3DAD2;">
+<tr><td align="center" style="padding:18px 36px 8px;">
+<img src="${URL_GATO}" alt="El gato de CaliDa" width="170" style="display:block;width:170px;height:auto;border:0;outline:none;">
+</td></tr>
+</table>
+</td></tr>
+<tr><td align="center" style="padding:20px 28px 0;${FUENTE}font-size:34px;line-height:1.1;font-weight:800;color:#011E41;">¡Gracias!</td></tr>
+<tr><td align="center" style="padding:12px 34px 0;${FUENTE}font-size:17px;line-height:1.5;color:#011E41;">${textoDonacion}</td></tr>
+<tr><td align="center" style="padding:20px 28px 0;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#FDD794" style="background-color:#FDD794;border-radius:22px;border-bottom:5px solid #F2C14E;">
+<tr><td align="center" style="padding:12px 32px 10px;${FUENTE}color:#011E41;">
+<span style="display:block;font-size:12px;font-weight:700;letter-spacing:2px;">NÚMERO DE LOTE</span>
+<span style="display:block;font-size:34px;line-height:1.15;font-weight:800;">#${numeroLote}</span>
+<span style="display:block;margin-top:2px;font-size:14px;font-weight:700;">Destino: ${destino.nombre}</span>
+</td></tr>
+</table>
+</td></tr>
+<tr><td align="center" style="padding:16px 34px 0;${FUENTE}font-size:16px;line-height:1.5;color:#514B46;">${textoLote}</td></tr>
+<tr><td align="center" style="padding:26px 24px 0;${FUENTE}font-size:18px;font-weight:800;color:#011E41;">El camino de tu ayuda</td></tr>
+<tr><td align="center" style="padding:12px 24px 0;">
+<img src="${urlMapa(destino)}" alt="Mapa del Valle del Cauca con el trayecto de Cali a ${destino.nombre}" width="500" style="display:block;width:100%;max-width:500px;height:auto;border:0;outline:none;border-radius:24px;">
+</td></tr>
+<tr><td align="center" style="padding:12px 32px 0;${FUENTE}font-size:14px;line-height:1.5;color:#514B46;">${textoTrayecto}</td></tr>
+<tr><td align="center" style="padding:20px 24px 0;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0">
+<tr><td align="center" bgcolor="#CC0100" style="background-color:#CC0100;border-radius:999px;border-bottom:4px solid #A5121A;">
+<a href="${urlRuta}" target="_blank" style="display:inline-block;padding:14px 28px;${FUENTE}font-size:15px;font-weight:700;color:#FFFFFF;text-decoration:none;border-radius:999px;">Ver el trayecto en Google Maps</a>
+</td></tr>
+</table>
+</td></tr>
+<tr><td align="center" style="padding:26px 34px 28px;${FUENTE}font-size:15px;line-height:1.5;color:#011E41;">Gracias por ayudar donde más hacía falta.</td></tr>
+<tr><td align="center" bgcolor="#011E41" style="background-color:#011E41;padding:16px 24px;border-radius:0 0 28px 28px;${FUENTE}">
+<span style="display:block;color:#FFFFFF;font-size:14px;font-weight:700;">CaliDa · Cruz Roja</span>
+<span style="display:block;margin-top:4px;color:#B4CBDC;font-size:12px;">Recibes este correo porque registraste una donación en un centro de acopio.</span>
+</td></tr>
+</table>
+</td></tr>
+</table>
 </body>
 </html>`;
 }
