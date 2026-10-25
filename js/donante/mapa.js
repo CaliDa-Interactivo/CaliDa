@@ -12,6 +12,7 @@ import { obtenerUbicacion, ubicacionGuardada, distanciaKm, formatoKm } from '../
 import { getCentros, getCentrosPorSubcategoria } from '../store.js';
 import { renderGato } from '../gato.js';
 import { cargarMiniaturas } from '../ilustraciones.js';
+import { renderBotonInicio } from '../boton-inicio.js';
 
 // Recuerda la zona elegida por subcategoría, para que al volver
 // de la ficha (D5) el mapa siga enfocado donde estaba.
@@ -70,17 +71,33 @@ export function render({ subcategoriaId }) {
     ORDEN_ZONAS.map((z) => [z, necesitan.filter((c) => c.zona === z).length])
   );
 
+  // Las zonas con algún centro urgente se pintan en rojo.
+  const hayUrgentesEn = (z) =>
+    necesitan.some((c) => c.zona === z && estadoDeNivel(c.insumos[subcategoriaId]) === 'urgente');
+
   const botonesZona = [
-    `<button type="button" class="chip-zona" data-zona="" aria-pressed="true">
+    `<button type="button" class="chip-zona chip-zona--todas" data-zona="" aria-pressed="true">
        Toda Cali <span class="chip-zona__conteo">${total}</span>
      </button>`,
     ...ORDEN_ZONAS.map(
       (z) => `
-        <button type="button" class="chip-zona" data-zona="${z}" aria-pressed="false">
+        <button type="button" class="chip-zona${hayUrgentesEn(z) ? ' chip-zona--urgente' : ''}${
+          conteoPorZona[z] ? '' : ' chip-zona--vacia'
+        }" data-zona="${z}" aria-pressed="false">
           ${z} <span class="chip-zona__conteo">${conteoPorZona[z]}</span>
         </button>`
     ),
   ].join('');
+
+  const iconoPin = `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+      <path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21Z" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="12" cy="9.8" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/>
+    </svg>`;
+  const iconoChinche = `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+      <path d="M9 3h6l-1 6 3 3v2H7v-2l3-3-1-6ZM12 14v7" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>`;
 
   const itemsLista = necesitan
     .map((centro) => {
@@ -111,6 +128,7 @@ export function render({ subcategoriaId }) {
         <header class="mapa3d__encabezado">
           <a class="boton-atras" href="${volverAtras}">← Volver</a>
           <p class="mapa__indicador">${categoria.nombre} › ${subcategoria.nombre}</p>
+          ${renderBotonInicio()}
           <a class="boton boton--secundario boton-estanteria" href="#/donante/estanteria">
             <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
               <rect x="4" y="3" width="16" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -153,12 +171,16 @@ export function render({ subcategoriaId }) {
         ${
           total
             ? `
-              <div class="mapa3d__ubicacion">
-                <button type="button" class="boton boton--secundario" data-mi-ubicacion>📍 Usar mi ubicación</button>
-                <button type="button" class="boton boton--secundario" data-marcar-ubicacion>📌 Marcar dónde estoy</button>
-                <p class="mapa3d__ubicacion-estado" aria-live="polite"></p>
+              <div class="mapa3d__barra">
+                <div class="mapa3d__ubicacion">
+                  <button type="button" class="boton boton--azul" data-mi-ubicacion>
+                    ${iconoPin}<span data-texto-ubicacion>Usar mi ubicación</span>
+                  </button>
+                  <button type="button" class="boton" data-marcar-ubicacion>${iconoChinche}Marcar dónde estoy</button>
+                </div>
+                <nav class="mapa3d__zonas" aria-label="Filtrar por zona">${botonesZona}</nav>
               </div>
-              <nav class="mapa3d__zonas" aria-label="Filtrar por zona">${botonesZona}</nav>
+              <p class="mapa3d__ubicacion-estado" aria-live="polite"></p>
               <h2 class="mapa3d__titulo-lista">
                 ${plural(total, 'Centro que lo necesita', 'Centros que lo necesitan')}
               </h2>
@@ -298,7 +320,7 @@ export function render({ subcategoriaId }) {
         const [a, b] = conDistancia;
         void b;
         textoCercanos = a ? `El más cercano a ti: <strong>${a.c.nombre}</strong> (${formatoKm(a.km)})` : '';
-        botonUbicacion.textContent = '📍 Actualizar mi ubicación';
+        botonUbicacion.querySelector('[data-texto-ubicacion]').textContent = 'Actualizar mi ubicación';
         const dentroDelMapa = mapa?.marcarUsuario?.(ubicacion);
         estadoUbicacion.textContent =
           dentroDelMapa === 'borde'

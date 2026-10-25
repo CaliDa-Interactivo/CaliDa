@@ -1760,3 +1760,306 @@ body:has(.bienvenida-inicio) {
     justify-content: space-between !important;
   }
 }
+
+/* ===================================================================
+   Interfaz "gordita y brillante" (referencia del equipo, oct 2026):
+   botones y pastillas abultados, con brillo arriba y sombra suave
+   abajo, como de plástico blando. Solo colores de la paleta oficial.
+   =================================================================== */
+:root {
+  --brillo-arriba: linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.12) 46%, rgba(255, 255, 255, 0) 52%);
+  --relieve: inset 0 2px 1px rgba(255, 255, 255, 0.55), inset 0 -4px 6px rgba(1, 30, 65, 0.16);
+  --relieve-claro: inset 0 2px 1px rgba(255, 255, 255, 0.95), inset 0 -4px 6px rgba(66, 109, 140, 0.14);
+  --sombra-gordita: 0 6px 14px rgba(1, 30, 65, 0.16), 0 2px 3px rgba(1, 30, 65, 0.1);
+  --relleno-rojo: linear-gradient(180deg, #E0322B 0%, #CC0100 55%, #A5121A 100%);
+  --relleno-azul: linear-gradient(180deg, #5E8BAA 0%, #426D8C 55%, #305774 100%);
+  --relleno-marfil: linear-gradient(180deg, #FFFFFF 0%, #FFF8ED 55%, #E8E1D5 100%);
+}
+
+/* Rojo carmín (acción principal) */
+.boton,
+.boton-principal {
+  background: var(--brillo-arriba), var(--relleno-rojo) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  box-shadow: var(--relieve), var(--sombra-gordita) !important;
+  text-shadow: 0 1px 1px rgba(122, 10, 10, 0.35);
+}
+.boton:hover,
+.boton-principal:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+.boton:active,
+.boton-principal:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: inset 0 2px 5px rgba(1, 30, 65, 0.25), 0 2px 5px rgba(1, 30, 65, 0.14) !important;
+}
+
+/* Azul petróleo */
+.boton.boton--azul,
+.boton-atras {
+  background: var(--brillo-arriba), var(--relleno-azul) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  box-shadow: var(--relieve), var(--sombra-gordita) !important;
+  text-shadow: 0 1px 1px rgba(1, 30, 65, 0.35);
+}
+.boton-atras {
+  border-radius: 999px !important;
+  padding: 0.5em 1.2em !important;
+  font-weight: 700;
+  text-decoration: none;
+}
+.boton-atras:hover {
+  filter: brightness(1.08);
+  color: #FFFFFF !important;
+}
+
+/* Marfil (secundario) */
+.boton.boton--secundario,
+.boton-contorno,
+.boton-inicio {
+  background: var(--brillo-arriba), var(--relleno-marfil) !important;
+  color: #011E41 !important;
+  border: none !important;
+  box-shadow: var(--relieve-claro), var(--sombra-gordita) !important;
+  text-shadow: none;
+}
+.boton.boton--secundario:hover,
+.boton-contorno:hover,
+.boton-inicio:hover {
+  color: #011E41 !important;
+  filter: brightness(1.03);
+}
+
+/* Tarjetas: el mismo relieve suave */
+.centro-tarjeta,
+.tarjeta,
+.tarjeta-entrada,
+.menu-admin__opcion {
+  box-shadow: var(--relieve-claro), var(--sombra-gordita) !important;
+}
+
+/* ===================================================================
+   Pantalla del mapa (distribución de la referencia):
+   arriba Volver · ruta · inicio · estantería; al medio el mapa grande
+   con el gato en su columna (mensaje arriba, gato abajo); al pie los
+   botones de ubicación y las zonas.
+   =================================================================== */
+.vista-mapa3d .mapa3d__encabezado {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.vista-mapa3d .mapa3d__encabezado .barra-inicio {
+  margin: 0 0 0 auto;
+}
+.vista-mapa3d .mapa3d__encabezado .boton-estanteria {
+  position: static !important;
+  margin: 0 !important;
+}
+
+/* Ruta "Categoría › Producto": pastilla roja */
+.vista-mapa3d .mapa__indicador {
+  margin: 0 !important;
+  padding: 0.55em 1.3em !important;
+  border-radius: 999px !important;
+  border: none !important;
+  background: var(--brillo-arriba), var(--relleno-rojo) !important;
+  color: #FFFFFF !important;
+  font-weight: 700;
+  font-size: 1.05rem;
+  box-shadow: var(--relieve), var(--sombra-gordita) !important;
+  text-shadow: 0 1px 1px rgba(122, 10, 10, 0.35);
+}
+
+/* Recuadro del mapa: vidrio marfil con borde blanco brillante */
+.vista-mapa3d .mapa3d {
+  border-radius: 28px !important;
+  border: 3px solid rgba(255, 255, 255, 0.85) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 30%),
+    radial-gradient(ellipse at 50% 40%, #FFFDF8 0%, #FFF8ED 60%, #F3EADB 100%) !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.9), 0 14px 34px rgba(1, 30, 65, 0.16) !important;
+  overflow: hidden;
+}
+
+/* Leyenda dentro del mapa, arriba a la izquierda */
+.vista-mapa3d .mapa3d__leyenda {
+  top: 1rem !important;
+  left: 1rem !important;
+  right: auto !important;
+  padding: 0.45rem 0.9rem !important;
+  border-radius: 999px !important;
+  background: var(--brillo-arriba), var(--relleno-marfil) !important;
+  box-shadow: var(--relieve-claro), var(--sombra-gordita) !important;
+  color: #011E41;
+  font-weight: 600;
+}
+
+/* Mensaje del gato: tarjeta marfil abultada, con el título en rojo */
+.vista-mapa3d .gato-asoma--lado .gato-guia__globo {
+  padding: 1rem 1.15rem !important;
+  border-radius: 24px !important;
+  border: 2px solid rgba(255, 255, 255, 0.9) !important;
+  background: var(--brillo-arriba), linear-gradient(180deg, #FFFFFF 0%, #FFF8ED 70%, #F6EFE3 100%) !important;
+  box-shadow: var(--relieve-claro), var(--sombra-gordita) !important;
+}
+.vista-mapa3d .gato-asoma--lado .gato-guia__globo::before,
+.vista-mapa3d .gato-asoma--lado .gato-guia__globo::after,
+.vista-mapa3d .gato-asoma--lado .gato-guia__globo p::before {
+  display: none !important;
+}
+.vista-mapa3d .gato-asoma--lado .gato-mapa__principal {
+  display: block;
+  font-size: 1.25rem !important;
+  line-height: 1.2;
+  font-weight: 800;
+  color: #A5121A !important;
+}
+.vista-mapa3d .gato-asoma--lado .gato-mapa__colores {
+  font-size: 0.95rem !important;
+  color: #011E41;
+}
+
+/* Pie: ubicación a la izquierda, zonas a la derecha */
+.vista-mapa3d .mapa3d__barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-top: 1rem;
+}
+.vista-mapa3d .mapa3d__ubicacion {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0 !important;
+}
+.vista-mapa3d .mapa3d__ubicacion .boton {
+  width: auto !important;
+  padding: 0.6em 1.05em !important;
+  font-size: 0.92rem !important;
+}
+.vista-mapa3d .mapa3d__ubicacion-estado:empty {
+  display: none;
+}
+.vista-mapa3d .mapa3d__ubicacion-estado {
+  margin: 0.6rem 0 0;
+}
+
+/* Zonas: una sola pastilla segmentada */
+.vista-mapa3d .mapa3d__zonas {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--relleno-marfil);
+  box-shadow: var(--relieve-claro), var(--sombra-gordita);
+}
+.vista-mapa3d .chip-zona {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  margin: 0 !important;
+  padding: 0.35rem 0.65rem !important;
+  border: none !important;
+  border-left: 1px solid rgba(1, 30, 65, 0.1) !important;
+  font-size: 0.92rem !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #011E41 !important;
+  font-weight: 600;
+  box-shadow: none !important;
+  transform: none !important;
+}
+.vista-mapa3d .chip-zona:first-child {
+  border-left: none !important;
+}
+.vista-mapa3d .chip-zona:hover {
+  background: rgba(255, 255, 255, 0.7) !important;
+}
+.vista-mapa3d .chip-zona__conteo {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.5em;
+  height: 1.5em;
+  padding: 0 0.35em;
+  border-radius: 999px;
+  background: #426D8C !important;
+  color: #FFFFFF !important;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+.vista-mapa3d .chip-zona--vacia .chip-zona__conteo {
+  background: #E8E1D5 !important;
+  color: #514B46 !important;
+}
+/* Zonas con centros urgentes: en rojo */
+.vista-mapa3d .chip-zona--urgente {
+  background: var(--brillo-arriba), var(--relleno-rojo) !important;
+  color: #FFFFFF !important;
+}
+.vista-mapa3d .chip-zona--urgente .chip-zona__conteo {
+  background: #FFFFFF !important;
+  color: #A5121A !important;
+}
+/* Zona elegida: azul petróleo, hundida */
+.vista-mapa3d .chip-zona[aria-pressed="true"] {
+  background: var(--relleno-azul) !important;
+  color: #FFFFFF !important;
+  box-shadow: inset 0 3px 6px rgba(1, 30, 65, 0.35) !important;
+}
+.vista-mapa3d .chip-zona[aria-pressed="true"] .chip-zona__conteo {
+  background: #011E41 !important;
+  color: #FFFFFF !important;
+}
+
+@media (min-width: 761px) {
+  .vista-mapa3d .mapa-envoltura {
+    grid-template-columns: minmax(0, 1fr) 300px !important;
+    column-gap: 1.25rem !important;
+    align-items: stretch !important;
+  }
+  .vista-mapa3d .mapa3d__gato.gato-asoma--lado {
+    max-width: 300px !important;
+    position: relative !important;
+    top: auto !important;
+  }
+  .vista-mapa3d .gato-asoma--lado .gato-guia__globo {
+    max-width: 300px !important;
+  }
+  .vista-mapa3d .gato-asoma--lado .gato-guia__imagen,
+  .vista-mapa3d .mapa3d__gato.gato-asoma--lado .gato-guia__imagen {
+    width: 270px !important;
+    height: 340px !important;
+    margin: auto auto 0 !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .vista-mapa3d .mapa3d__encabezado .barra-inicio {
+    margin-left: 0;
+  }
+  .vista-mapa3d .mapa3d__zonas {
+    border-radius: 22px;
+    width: 100%;
+  }
+  .vista-mapa3d .chip-zona {
+    flex: 1 1 auto;
+    justify-content: center;
+    padding: 0.4rem 0.7rem !important;
+  }
+  .vista-mapa3d .gato-asoma--lado .gato-mapa__principal {
+    font-size: 1.05rem !important;
+  }
+}

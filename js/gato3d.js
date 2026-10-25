@@ -47,6 +47,13 @@ function cargarBase() {
   return base;
 }
 
+// Busca una parte por su nombre. El cargador de three.js cambia los
+// espacios por "_" ("Pupilas espejo" → "Pupilas_espejo"), así que se
+// prueban las dos formas.
+function parte(raiz, nombre) {
+  return raiz.getObjectByName(nombre) ?? raiz.getObjectByName(nombre.replace(/\s+/g, '_'));
+}
+
 // Agrupa partes bajo un pivote (sin moverlas) para poder rotarlas juntas.
 function agrupar(raiz, nombres, pivote) {
   const grupo = new THREE.Group();
@@ -55,7 +62,7 @@ function agrupar(raiz, nombres, pivote) {
   raiz.updateMatrixWorld(true);
   grupo.updateMatrixWorld(true);
   nombres
-    .map((n) => raiz.getObjectByName(n))
+    .map((n) => parte(raiz, n))
     .filter(Boolean)
     .forEach((obj) => grupo.attach(obj));
   return grupo;
@@ -63,7 +70,7 @@ function agrupar(raiz, nombres, pivote) {
 
 function centroDe(raiz, nombres) {
   const caja = new THREE.Box3();
-  nombres.map((n) => raiz.getObjectByName(n)).filter(Boolean).forEach((o) => caja.expandByObject(o));
+  nombres.map((n) => parte(raiz, n)).filter(Boolean).forEach((o) => caja.expandByObject(o));
   return caja.isEmpty() ? null : caja.getCenter(new THREE.Vector3());
 }
 
@@ -110,23 +117,22 @@ async function montarUno(el) {
 
   // Partes animables.
   raiz.updateMatrixWorld(true);
-  // Ojos: las dos pupilas van en un mismo grupo (miran juntas) y los dos
-  // ojos completos en otro (parpadean juntos, a la misma altura).
+  // Pupilas: las dos van en un mismo grupo que GIRA alrededor del centro
+  // de la cabeza. Así se deslizan juntas sobre la cara curva; si se
+  // trasladaran de lado, una se hundía en la cabeza y la otra se salía
+  // del ojo (se veía como si solo un ojo se moviera).
   const pupilas = ['Pupilas', 'Pupilas espejo'];
-  const centroPupilas = centroDe(raiz, pupilas);
-  const grupoPupilas = centroPupilas ? agrupar(raiz, pupilas, raiz.worldToLocal(centroPupilas.clone())) : null;
-  if (grupoPupilas) grupoPupilas.name = 'GrupoPupilas';
-  const centroOjos = centroDe(raiz, ['Ojos', ...pupilas]);
-  const grupoOjos = centroOjos
-    ? agrupar(raiz, ['Ojos', 'GrupoPupilas'], raiz.worldToLocal(centroOjos.clone()))
-    : null;
-  const miradaBase = grupoPupilas?.position.clone();
+  const centroCabeza = centroDe(raiz, ['Cabezota']) ?? centroDe(raiz, pupilas);
+  const grupoPupilas =
+    centroCabeza && centroDe(raiz, pupilas)
+      ? agrupar(raiz, pupilas, raiz.worldToLocal(centroCabeza.clone()))
+      : null;
 
   // Párpados: uno por ojo, del mismo material de la cara. Bajan desde
   // arriba y suben, los dos a la vez (parpadeo natural).
   const parpados = [];
-  const malllaOjos = raiz.getObjectByName('Ojos');
-  const cuerpo = raiz.getObjectByName('Cuerpo y orejas');
+  const malllaOjos = parte(raiz, 'Ojos');
+  const cuerpo = parte(raiz, 'Cuerpo y orejas');
   let materialCara = null;
   cuerpo?.traverse((n) => {
     if (n.isMesh && !materialCara) materialCara = n.material;
@@ -150,9 +156,10 @@ async function montarUno(el) {
       const c = caja.getCenter(new THREE.Vector3());
       const t = caja.getSize(new THREE.Vector3());
       const pivote = new THREE.Group();
-      pivote.position.set(c.x, c.y + t.y * 0.62, c.z + t.z * 0.14);
+      pivote.position.set(c.x, c.y + t.y * 0.62, c.z + t.z * 0.12);
       const tapa = new THREE.Mesh(new THREE.SphereGeometry(0.5, 28, 18), materialCara);
-      tapa.scale.set(t.x * 1.26, t.y * 1.26, t.z * 1.35);
+      tapa.renderOrder = 2; // se dibuja encima del ojo y la pupila
+      tapa.scale.set(t.x * 1.2, t.y * 1.24, t.z * 1.2);
       tapa.position.y = -t.y * 0.62;
       pivote.add(tapa);
       pivote.scale.y = 0.001;
@@ -168,7 +175,7 @@ async function montarUno(el) {
       parpadeo.doble = Math.random() < 0.2;
     }
     if (parpadeo.inicio < 0) return 0;
-    const dur = 0.24; // cerrar 0,1 s · cerrado 0,03 s · abrir 0,11 s
+    const dur = 0.32; // cerrar 0,11 s · cerrado 0,06 s · abrir 0,15 s
     let f = t - parpadeo.inicio;
     if (parpadeo.doble && f > dur) f -= dur + 0.08;
     const total = parpadeo.doble ? dur * 2 + 0.08 : dur;
@@ -177,10 +184,11 @@ async function montarUno(el) {
       parpadeo.proximo = t + 2.5 + Math.random() * 3.5;
       return 0;
     }
+    const suave = (u) => u * u * (3 - 2 * u);
     if (f < 0) return 0;
-    if (f < 0.1) return f / 0.1;
-    if (f < 0.13) return 1;
-    if (f < dur) return 1 - (f - 0.13) / 0.11;
+    if (f < 0.11) return suave(f / 0.11);
+    if (f < 0.17) return 1;
+    if (f < dur) return 1 - suave((f - 0.17) / 0.15);
     return 0;
   }
   const mirada = { x: 0, y: 0, objX: 0, objY: 0, proxima: 2 };
@@ -338,8 +346,10 @@ async function montarUno(el) {
         pv.visible = k > 0.01;
         pv.scale.y = Math.max(0.001, k);
       }
+      // con los ojos casi cerrados las pupilas no asoman por el párpado
+      if (grupoPupilas && parpados.length) grupoPupilas.visible = k < 0.85;
       // Mirada: las dos pupilas se mueven a la vez hacia el mismo lado
-      if (grupoPupilas && miradaBase && pose !== 'saluda') {
+      if (grupoPupilas && pose !== 'saluda') {
         if (t > mirada.proxima) {
           const opciones = [[0, 0], [0, 0], [-1, 0], [1, 0], [0.6, 0.5], [-0.6, -0.3]];
           [mirada.objX, mirada.objY] = opciones[Math.floor(Math.random() * opciones.length)];
@@ -347,7 +357,8 @@ async function montarUno(el) {
         }
         mirada.x += (mirada.objX - mirada.x) * 0.12;
         mirada.y += (mirada.objY - mirada.y) * 0.12;
-        grupoPupilas.position.set(miradaBase.x + mirada.x * 0.035, miradaBase.y + mirada.y * 0.02, miradaBase.z);
+        // giro alrededor del centro de la cabeza (de lado y arriba/abajo)
+        grupoPupilas.rotation.set(-mirada.y * 0.05, mirada.x * 0.09, 0);
       }
     }
     renderer.render(escena, camara);
