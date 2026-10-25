@@ -7,7 +7,7 @@ con el equipo en una conversación larga en claude.ai. **Respétalas salvo que e
 contrario.** Responde siempre en español.
 
 ## Flujo de trabajo con GitHub
-- Repositorio: `CaliDa-Interactivo/calidad_repositorio` (rama `main`), publicado con GitHub Pages.
+- Repositorio: `CaliDa-Interactivo/CaliDa` (rama `main`), publicado con GitHub Pages.
 - **Después de cada cambio que pida el equipo: commit con mensaje claro en español y push.**
 - Sitio estático: HTML + CSS + JS vanilla (módulos ES) + three.js por importmap (CDN jsDelivr,
   versión fija 0.160.0). Sin backend; datos en `localStorage` (clave `calida_store_v3`).

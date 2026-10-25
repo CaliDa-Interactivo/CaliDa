@@ -22,7 +22,7 @@ o https. Sin internet o sin WebGL, el mapa se reemplaza por la lista de centros 
 
 ## Publicar con GitHub Pages
 
-Repositorio: `CaliDa-Interactivo/calidad_repositorio`, rama `main`.
+Repositorio: `CaliDa-Interactivo/CaliDa`, rama `main`.
 
 1. En el repositorio: **Settings → Pages**.
 2. En *Source* elige **Deploy from a branch**, rama **main** y carpeta **/ (root)**. Guarda.
