@@ -72,6 +72,37 @@ const CALCOMANIAS = {
   'alimento-animal': dibujarHuella,
 };
 
+// Ropa: los modelos eran planos como recortes; se engruesan para que se
+// vean acolchados y mates, como los demás productos.
+const GROSOR_ROPA = 2.6;
+const ROPA = new Set(['ropa-hombre', 'ropa-mujer', 'ropa-ninos']);
+
+function ajustarForma(subcategoriaId, objeto) {
+  if (ROPA.has(subcategoriaId)) {
+    objeto.traverse((n) => {
+      if (!n.isMesh) return;
+      n.geometry.scale(1, 1, GROSOR_ROPA);
+      // un poco de lado (tres cuartos) para que se note el volumen
+      n.geometry.rotateY(-0.42);
+      n.geometry.computeVertexNormals();
+      (Array.isArray(n.material) ? n.material : [n.material]).forEach((m) => {
+        m.roughness = 0.9;
+        m.metalness = 0;
+      });
+    });
+  }
+  if (subcategoriaId === 'aseo-bucal') {
+    // Los dos cepillos venían uno detrás del otro (de frente se veía uno
+    // solo): se giran un cuarto de vuelta alrededor del eje del vaso para
+    // que queden uno a cada lado.
+    objeto.traverse((n) => {
+      if (!n.isMesh) return;
+      const mats = Array.isArray(n.material) ? n.material : [n.material];
+      if (mats.some((m) => m.map)) n.geometry.rotateZ(Math.PI / 2);
+    });
+  }
+}
+
 /**
  * Corrige colores y agrega la calcomanía al frente (+z) del objeto.
  * @param {string} subcategoriaId
@@ -79,6 +110,7 @@ const CALCOMANIAS = {
  * @param {typeof import('three')} THREE
  */
 export function ajustarModelo(subcategoriaId, objeto, THREE) {
+  ajustarForma(subcategoriaId, objeto);
   const colores = COLORES[subcategoriaId];
   if (colores) {
     objeto.traverse((n) => {

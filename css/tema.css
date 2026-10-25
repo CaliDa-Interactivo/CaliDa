@@ -2563,3 +2563,221 @@ a.boton {
   box-shadow: var(--relieve-claro), 0 2px 5px rgba(1, 30, 65, 0.12) !important;
   color: #011E41 !important;
 }
+
+/* ===================================================================
+   Fondo de estudio (referencia del equipo): luz que cae desde arriba,
+   bordes más oscuros y un piso suave con su charco de luz. En los
+   tonos salvia de la paleta.
+   =================================================================== */
+:root {
+  --fondo-pantalla:
+    radial-gradient(ellipse 34% 58% at 50% -4%, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.16) 42%, rgba(255, 255, 255, 0) 72%),
+    radial-gradient(ellipse 36% 7% at 50% 89%, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0) 72%),
+    linear-gradient(180deg, rgba(1, 30, 65, 0) 0%, rgba(1, 30, 65, 0) 76%, rgba(1, 30, 65, 0.1) 77%, rgba(1, 30, 65, 0.03) 100%),
+    radial-gradient(ellipse 85% 80% at 50% 42%, rgba(1, 30, 65, 0) 45%, rgba(1, 30, 65, 0.3) 100%),
+    linear-gradient(180deg, #7DAC9F 0%, #86B5A9 55%, #7AA89B 100%);
+}
+html {
+  background: #7AA89B;
+}
+body,
+body:has(.bienvenida-inicio) {
+  background: var(--fondo-pantalla) !important;
+  background-attachment: fixed !important;
+  min-height: 100vh;
+}
+
+/* ===================================================================
+   Título de la pantalla principal: letras 3D gruesas que flotan, con
+   la extrusión sombreada (más oscura hacia atrás), una leve inclinación
+   y su sombra en el piso. Se conservan el color y la tipografía.
+   =================================================================== */
+.bienvenida-inicio h1 {
+  position: relative;
+  color: #011E41;
+  -webkit-text-stroke: 0.6px #011E41;
+  transform: perspective(900px) rotateY(9deg) rotateX(6deg) rotateZ(-2deg);
+  transform-origin: left center;
+  text-shadow:
+    0 1px 0 #4A7898,
+    1px 2px 0 #46738F,
+    1px 3px 0 #426D8C,
+    2px 4px 0 #3D6784,
+    2px 5px 0 #39617C,
+    3px 6px 0 #355B74,
+    3px 7px 0 #31556D,
+    4px 8px 0 #2D4F66,
+    4px 9px 0 #29495F,
+    5px 10px 0 #254458,
+    5px 11px 0 #213E51,
+    6px 12px 2px rgba(1, 30, 65, 0.5),
+    10px 30px 26px rgba(1, 30, 65, 0.3);
+}
+.bienvenida-inicio h1::after {
+  /* sombra en el piso: el título flota */
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 12%;
+  bottom: -2.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(1, 30, 65, 0.32), rgba(1, 30, 65, 0));
+  filter: blur(4px);
+  pointer-events: none;
+}
+.bienvenida-inicio__apoyo {
+  margin-top: 2.6rem;
+}
+@media (max-width: 600px) {
+  .bienvenida-inicio h1 {
+    transform: perspective(700px) rotateY(6deg) rotateX(4deg) rotateZ(-1.5deg);
+    text-shadow:
+      0 1px 0 #4A7898,
+      1px 2px 0 #426D8C,
+      1px 3px 0 #39617C,
+      2px 4px 0 #31556D,
+      2px 5px 0 #29495F,
+      3px 6px 0 #213E51,
+      6px 16px 14px rgba(1, 30, 65, 0.3);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bienvenida-inicio h1 {
+    transform: none;
+  }
+}
+
+/* ===================================================================
+   Menú del administrador: las tres tareas se reparten todo el alto
+   disponible, de arriba hacia abajo.
+   =================================================================== */
+.vista.vista-menu-admin {
+  display: flex !important;
+  flex-direction: column;
+  max-width: 900px;
+  min-height: calc(100vh - 2.5rem) !important;
+}
+.vista-menu-admin .menu-admin {
+  flex: 1;
+  display: grid !important;
+  grid-auto-rows: 1fr;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+.vista-menu-admin .menu-admin__opcion {
+  min-height: 130px;
+  padding: 1.5rem 2rem !important;
+  gap: 1.75rem !important;
+}
+.vista-menu-admin .menu-admin__titulo {
+  font-size: clamp(1.3rem, 2.4vw, 1.75rem) !important;
+}
+.vista-menu-admin .menu-admin__descripcion {
+  font-size: 1.02rem !important;
+}
+.vista-menu-admin .menu-admin__opcion .menu-admin__icono {
+  width: clamp(96px, 14vh, 130px) !important;
+  height: clamp(96px, 14vh, 130px) !important;
+  border-radius: 28px !important;
+}
+.vista-menu-admin .menu-admin__opcion .menu-admin__icono img {
+  width: 82%;
+  height: 82%;
+}
+.vista-menu-admin .menu-admin__flecha {
+  font-size: 2rem !important;
+}
+.vista-menu-admin .menu-admin__pie {
+  padding-top: 1.25rem;
+}
+@media (max-width: 600px) {
+  .vista-menu-admin .menu-admin__opcion {
+    padding: 1.1rem 1.1rem !important;
+    gap: 1rem !important;
+  }
+  .vista-menu-admin .menu-admin__opcion .menu-admin__icono {
+    width: 76px !important;
+    height: 76px !important;
+  }
+}
+
+/* ===================================================================
+   Estado de los insumos del centro (zoom de la estantería del admin):
+   el panel ocupa casi toda la pantalla y los recuadros se reparten en
+   más columnas. Deja libre el botón "Volver a pantalla principal".
+   =================================================================== */
+body:has(.vista-admin) .zoom-capa__panel {
+  width: min(96vw, 1200px) !important;
+  height: calc(100vh - 6rem);
+  max-height: none !important;
+  margin-top: 4.5rem;
+  padding: 1.25rem 1.75rem 1.5rem !important;
+}
+.pasos-insumo .mueble .mueble__cuerpo.secciones-insumo {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+  gap: 1rem !important;
+}
+@media (max-width: 760px) {
+  body:has(.vista-admin) .zoom-capa__panel {
+    height: calc(100vh - 4.5rem);
+    margin-top: 3.75rem;
+    padding: 1rem !important;
+  }
+}
+
+/* Casitas de las tarjetas de centros: fondo marfil sólido para que el
+   techo rojo o amarillo se vea bien sobre la tarjeta de color */
+.mapa3d__lista .centro-tarjeta__casa {
+  background: var(--relleno-marfil) !important;
+  box-shadow: var(--relieve-claro), 0 2px 6px rgba(1, 30, 65, 0.15);
+}
+.mapa3d__lista .centro-tarjeta__casa .casa3d {
+  width: 120%;
+  height: 120%;
+  max-width: none;
+}
+
+/* El contenido del panel de insumos llena todo el alto: los recuadros
+   crecen y los productos de la repisa se ven más grandes. */
+body:has(.vista-admin) .zoom-capa__panel:has(.pasos-insumo) {
+  display: flex;
+  flex-direction: column;
+}
+.zoom-capa__panel .pasos-insumo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.zoom-capa__panel .pasos-insumo .mueble--cerca {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.zoom-capa__panel .pasos-insumo .mueble__cuerpo.secciones-insumo {
+  flex: 1;
+  grid-auto-rows: minmax(210px, 1fr) !important;
+  align-content: stretch;
+}
+.zoom-capa__panel .pasos-insumo .seccion-insumo {
+  justify-content: space-evenly !important;
+}
+.zoom-capa__panel .pasos-insumo .seccion-nivel__repisa {
+  height: 78px !important;
+  width: 100%;
+}
+.zoom-capa__panel .pasos-insumo .seccion-nivel__repisa .producto3d,
+.zoom-capa__panel .pasos-insumo .seccion-nivel__repisa .nivel__item--vacio {
+  width: 58px !important;
+  height: 58px !important;
+}
+.zoom-capa__panel .pasos-insumo .seccion-nivel__numero {
+  font-size: 1.6rem;
+}
+.zoom-capa__panel .pasos-insumo .admin-acciones {
+  margin-top: 1rem;
+}
+.zoom-capa__panel .pasos-insumo .pasos-insumo__indicador {
+  align-self: flex-start;
+}

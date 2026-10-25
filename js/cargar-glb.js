@@ -41,15 +41,20 @@ export async function cargarGLB(cargador, url) {
 // clara, todo mate (aspecto de arcilla, como los demás elementos).
 const ESTILO_CASA = {
   Walls: '#FFF8ED', // marfil
-  Stone: '#F3E6D3',
-  Wood: '#D9A37A', // madera clara
-  Wood_Light: '#F2D3AE',
+  Stone: '#E8E1D5', // beige arena
+  Wood: '#B07A52', // madera
+  Wood_Light: '#DBA878', // madera de la estantería
 };
-// Techos claros de la paleta: coral para urgente, amarillo mantequilla
-// para desabastecido (se distinguen sin verse oscuros).
-const TECHO = { urgente: '#F06A5B', desabastecido: '#FDD794' };
+// Techos con los colores de estado de la paleta: rojo carmín (urgente)
+// y amarillo (desabastecido), bien visibles sobre fondos claros u oscuros.
+const TECHO = { urgente: '#CC0100', desabastecido: '#F2B33D' };
 
 export function estilizarCasa(escena, estado) {
+  // El modelo es largo de fondo: se acorta para que quede compacto,
+  // como los productos de la estantería.
+  escena.children.forEach((hijo) => {
+    hijo.scale.z *= 0.62;
+  });
   escena.traverse((n) => {
     if (!n.isMesh) return;
     const mats = Array.isArray(n.material) ? n.material : [n.material];
@@ -60,9 +65,9 @@ export function estilizarCasa(escena, estado) {
       m.roughness = 0.9;
       m.metalness = 0;
       if (m.emissive) {
-        // Un poco de brillo propio: colores más vivos y amables.
+        // Muy poca luz propia: el color se ve firme, sin lavarse.
         m.emissive.set(color ?? '#000000');
-        m.emissiveIntensity = 0.22;
+        m.emissiveIntensity = 0.1;
       }
     });
   });

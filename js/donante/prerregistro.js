@@ -102,7 +102,6 @@ export function render({ centroId, subcategoriaId }) {
         <div class="mapa3d__barra">
           <div class="mapa3d__ubicacion pantalla-acciones">
             <button class="boton boton--grande" type="submit" form="form-prerregistro">Hacer pre-registro</button>
-            <p class="ficha-centro__nota">Vale ${HORAS_VIGENCIA_PRERREGISTRO} horas: te esperan en el centro.</p>
           </div>
         </div>
       </section>

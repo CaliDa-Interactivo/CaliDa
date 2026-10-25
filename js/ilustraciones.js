@@ -586,9 +586,13 @@ function cargarCasas(raiz) {
       Promise.all(
         items.map((el) => {
           const estado = el.dataset.miniCasa;
-          return generarMiniaturaDe(`casa-${estado}`, MODELO_CASA[estado], (escena) =>
-            estilizarCasa(escena, estado)
-          ).then((url) => {
+          return generarMiniaturaDe(`casa-${estado}`, MODELO_CASA[estado], (escena) => {
+            estilizarCasa(escena, estado);
+            // Vista de tres cuartos y desde arriba: se ve el techo del color
+            // del estado (de frente casi solo se veían las paredes blancas).
+            escena.rotation.set(0.42, -0.65, 0);
+            return escena;
+          }).then((url) => {
             if (url) el.innerHTML = `<img class="casa3d" src="${url}" alt="" />`;
           });
         })
