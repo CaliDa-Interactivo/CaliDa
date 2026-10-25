@@ -3139,3 +3139,14 @@ body:has(.bienvenida-inicio) {
   background: #CC0100;
   color: #FFFFFF;
 }
+@media (max-width: 859px) {
+  /* el texto no se monta sobre los telones */
+  .bienvenida-inicio {
+    padding-left: 3.4rem !important;
+    padding-right: 3.4rem !important;
+  }
+  .bienvenida-inicio > div:first-child {
+    padding-left: 0;
+    padding-bottom: 0;
+  }
+}
