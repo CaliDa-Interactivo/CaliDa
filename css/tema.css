@@ -1847,23 +1847,23 @@ body:has(.bienvenida-inicio) {
    con el gato en su columna (mensaje arriba, gato abajo); al pie los
    botones de ubicación y las zonas.
    =================================================================== */
-.vista-mapa3d .mapa3d__encabezado {
+:is(.vista-mapa3d, .vista-columnas) .mapa3d__encabezado {
   display: flex !important;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 1rem;
 }
-.vista-mapa3d .mapa3d__encabezado .barra-inicio {
+:is(.vista-mapa3d, .vista-columnas) .mapa3d__encabezado .barra-inicio {
   margin: 0 0 0 auto;
 }
-.vista-mapa3d .mapa3d__encabezado .boton-estanteria {
+:is(.vista-mapa3d, .vista-columnas) .mapa3d__encabezado .boton-estanteria {
   position: static !important;
   margin: 0 !important;
 }
 
 /* Ruta "Categoría › Producto": pastilla roja */
-.vista-mapa3d .mapa__indicador {
+:is(.vista-mapa3d, .vista-columnas) .mapa__indicador {
   margin: 0 !important;
   padding: 0.55em 1.3em !important;
   border-radius: 999px !important;
@@ -1877,7 +1877,7 @@ body:has(.bienvenida-inicio) {
 }
 
 /* Recuadro del mapa: vidrio marfil con borde blanco brillante */
-.vista-mapa3d .mapa3d {
+:is(.vista-mapa3d, .vista-columnas) .mapa3d {
   border-radius: 28px !important;
   border: 3px solid rgba(255, 255, 255, 0.85) !important;
   background:
@@ -1888,7 +1888,7 @@ body:has(.bienvenida-inicio) {
 }
 
 /* Leyenda dentro del mapa, arriba a la izquierda */
-.vista-mapa3d .mapa3d__leyenda {
+:is(.vista-mapa3d, .vista-columnas) .mapa3d__leyenda {
   top: 1rem !important;
   left: 1rem !important;
   right: auto !important;
@@ -1901,32 +1901,32 @@ body:has(.bienvenida-inicio) {
 }
 
 /* Mensaje del gato: tarjeta marfil abultada, con el título en rojo */
-.vista-mapa3d .gato-asoma--lado .gato-guia__globo {
+:is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-guia__globo {
   padding: 1rem 1.15rem !important;
   border-radius: 24px !important;
   border: 2px solid rgba(255, 255, 255, 0.9) !important;
   background: var(--brillo-arriba), linear-gradient(180deg, #FFFFFF 0%, #FFF8ED 70%, #F6EFE3 100%) !important;
   box-shadow: var(--relieve-claro), var(--sombra-gordita) !important;
 }
-.vista-mapa3d .gato-asoma--lado .gato-guia__globo::before,
-.vista-mapa3d .gato-asoma--lado .gato-guia__globo::after,
-.vista-mapa3d .gato-asoma--lado .gato-guia__globo p::before {
+:is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-guia__globo::before,
+:is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-guia__globo::after,
+:is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-guia__globo p::before {
   display: none !important;
 }
-.vista-mapa3d .gato-asoma--lado .gato-mapa__principal {
+:is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-mapa__principal {
   display: block;
   font-size: 1.25rem !important;
   line-height: 1.2;
   font-weight: 800;
   color: #A5121A !important;
 }
-.vista-mapa3d .gato-asoma--lado .gato-mapa__colores {
+:is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-mapa__colores {
   font-size: 0.95rem !important;
   color: #011E41;
 }
 
 /* Pie: ubicación a la izquierda, zonas a la derecha */
-.vista-mapa3d .mapa3d__barra {
+:is(.vista-mapa3d, .vista-columnas) .mapa3d__barra {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1934,26 +1934,26 @@ body:has(.bienvenida-inicio) {
   gap: 0.75rem 1rem;
   margin-top: 1rem;
 }
-.vista-mapa3d .mapa3d__ubicacion {
+:is(.vista-mapa3d, .vista-columnas) .mapa3d__ubicacion {
   display: flex !important;
   flex-wrap: wrap;
   gap: 0.6rem;
   margin: 0 !important;
 }
-.vista-mapa3d .mapa3d__ubicacion .boton {
+:is(.vista-mapa3d, .vista-columnas) .mapa3d__ubicacion .boton {
   width: auto !important;
   padding: 0.6em 1.05em !important;
   font-size: 0.92rem !important;
 }
-.vista-mapa3d .mapa3d__ubicacion-estado:empty {
+:is(.vista-mapa3d, .vista-columnas) .mapa3d__ubicacion-estado:empty {
   display: none;
 }
-.vista-mapa3d .mapa3d__ubicacion-estado {
+:is(.vista-mapa3d, .vista-columnas) .mapa3d__ubicacion-estado {
   margin: 0.6rem 0 0;
 }
 
 /* Zonas: una sola pastilla segmentada */
-.vista-mapa3d .mapa3d__zonas {
+:is(.vista-mapa3d, .vista-columnas) .mapa3d__zonas {
   display: flex !important;
   flex-wrap: wrap;
   gap: 0 !important;
@@ -1964,7 +1964,7 @@ body:has(.bienvenida-inicio) {
   background: var(--relleno-marfil);
   box-shadow: var(--relieve-claro), var(--sombra-gordita);
 }
-.vista-mapa3d .chip-zona {
+:is(.vista-mapa3d, .vista-columnas) .chip-zona {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
@@ -1981,13 +1981,13 @@ body:has(.bienvenida-inicio) {
   box-shadow: none !important;
   transform: none !important;
 }
-.vista-mapa3d .chip-zona:first-child {
+:is(.vista-mapa3d, .vista-columnas) .chip-zona:first-child {
   border-left: none !important;
 }
-.vista-mapa3d .chip-zona:hover {
+:is(.vista-mapa3d, .vista-columnas) .chip-zona:hover {
   background: rgba(255, 255, 255, 0.7) !important;
 }
-.vista-mapa3d .chip-zona__conteo {
+:is(.vista-mapa3d, .vista-columnas) .chip-zona__conteo {
   display: inline-grid;
   place-items: center;
   min-width: 1.5em;
@@ -2000,46 +2000,46 @@ body:has(.bienvenida-inicio) {
   font-weight: 700;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
-.vista-mapa3d .chip-zona--vacia .chip-zona__conteo {
+:is(.vista-mapa3d, .vista-columnas) .chip-zona--vacia .chip-zona__conteo {
   background: #E8E1D5 !important;
   color: #514B46 !important;
 }
 /* Zonas con centros urgentes: en rojo */
-.vista-mapa3d .chip-zona--urgente {
+:is(.vista-mapa3d, .vista-columnas) .chip-zona--urgente {
   background: var(--brillo-arriba), var(--relleno-rojo) !important;
   color: #FFFFFF !important;
 }
-.vista-mapa3d .chip-zona--urgente .chip-zona__conteo {
+:is(.vista-mapa3d, .vista-columnas) .chip-zona--urgente .chip-zona__conteo {
   background: #FFFFFF !important;
   color: #A5121A !important;
 }
 /* Zona elegida: azul petróleo, hundida */
-.vista-mapa3d .chip-zona[aria-pressed="true"] {
+:is(.vista-mapa3d, .vista-columnas) .chip-zona[aria-pressed="true"] {
   background: var(--relleno-azul) !important;
   color: #FFFFFF !important;
   box-shadow: inset 0 3px 6px rgba(1, 30, 65, 0.35) !important;
 }
-.vista-mapa3d .chip-zona[aria-pressed="true"] .chip-zona__conteo {
+:is(.vista-mapa3d, .vista-columnas) .chip-zona[aria-pressed="true"] .chip-zona__conteo {
   background: #011E41 !important;
   color: #FFFFFF !important;
 }
 
 @media (min-width: 761px) {
-  .vista-mapa3d .mapa-envoltura {
+  :is(.vista-mapa3d, .vista-columnas) .mapa-envoltura {
     grid-template-columns: minmax(0, 1fr) 300px !important;
     column-gap: 1.25rem !important;
     align-items: stretch !important;
   }
-  .vista-mapa3d .mapa3d__gato.gato-asoma--lado {
+  :is(.vista-mapa3d, .vista-columnas) .mapa3d__gato.gato-asoma--lado {
     max-width: 300px !important;
     position: relative !important;
     top: auto !important;
   }
-  .vista-mapa3d .gato-asoma--lado .gato-guia__globo {
+  :is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-guia__globo {
     max-width: 300px !important;
   }
-  .vista-mapa3d .gato-asoma--lado .gato-guia__imagen,
-  .vista-mapa3d .mapa3d__gato.gato-asoma--lado .gato-guia__imagen {
+  :is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-guia__imagen,
+  :is(.vista-mapa3d, .vista-columnas) .mapa3d__gato.gato-asoma--lado .gato-guia__imagen {
     width: 270px !important;
     height: 340px !important;
     margin: auto auto 0 !important;
@@ -2047,19 +2047,227 @@ body:has(.bienvenida-inicio) {
 }
 
 @media (max-width: 760px) {
-  .vista-mapa3d .mapa3d__encabezado .barra-inicio {
+  :is(.vista-mapa3d, .vista-columnas) .mapa3d__encabezado .barra-inicio {
     margin-left: 0;
   }
-  .vista-mapa3d .mapa3d__zonas {
+  :is(.vista-mapa3d, .vista-columnas) .mapa3d__zonas {
     border-radius: 22px;
     width: 100%;
   }
-  .vista-mapa3d .chip-zona {
+  :is(.vista-mapa3d, .vista-columnas) .chip-zona {
     flex: 1 1 auto;
     justify-content: center;
     padding: 0.4rem 0.7rem !important;
   }
-  .vista-mapa3d .gato-asoma--lado .gato-mapa__principal {
+  :is(.vista-mapa3d, .vista-columnas) .gato-asoma--lado .gato-mapa__principal {
     font-size: 1.05rem !important;
+  }
+}
+
+/* ===================================================================
+   Ficha del centro y pre-registro con la misma distribución del mapa:
+   el panel grande (vidrio marfil) reemplaza al mapa.
+   =================================================================== */
+.vista.vista-columnas {
+  width: calc(100% - 2.5rem) !important;
+  max-width: 1100px;
+  padding-bottom: 3rem !important;
+}
+.mapa-envoltura > .pantalla-panel {
+  grid-column: 1;
+  grid-row: 1;
+  width: 100%;
+  max-width: none !important;
+  margin: 0 !important;
+}
+.pantalla-panel {
+  box-sizing: border-box;
+  min-height: min(62vh, 640px);
+  padding: 1.75rem;
+  border-radius: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 30%),
+    radial-gradient(ellipse at 50% 40%, #FFFDF8 0%, #FFF8ED 60%, #F3EADB 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.9), 0 14px 34px rgba(1, 30, 65, 0.16);
+  color: #011E41;
+}
+
+/* Frase de ánimo bajo el título rojo del gato */
+.gato-asoma--lado .gato-mapa__detalle {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #011E41;
+}
+
+/* Pie de acciones: botón principal y nota corta a su lado */
+.pantalla-acciones {
+  align-items: center;
+}
+a.boton {
+  text-decoration: none;
+}
+.pantalla-acciones .boton--grande {
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0.75em 1.8em !important;
+  font-size: 1.05rem !important;
+}
+.pantalla-acciones .ficha-centro__nota,
+.pantalla-acciones .ficha-prerregistro-ok {
+  margin: 0;
+  color: #011E41;
+  font-weight: 500;
+}
+
+/* --- Ficha: datos a la izquierda, inventario a la derecha --- */
+.vista-columnas .ficha-centro {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 1.5rem 2rem;
+  align-items: center;
+  text-align: center;
+}
+.ficha-centro__datos,
+.ficha-centro__inventario {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+.vista-columnas .ficha-centro__foto {
+  width: 150px;
+  height: 150px;
+  margin: 0;
+  border-radius: 32px;
+  background: var(--brillo-arriba), var(--relleno-marfil);
+  box-shadow: var(--relieve-claro), var(--sombra-gordita);
+}
+.vista-columnas .ficha__nombre {
+  margin: 0;
+  font-size: 1.7rem;
+  color: #011E41;
+}
+.ficha-centro__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ficha-centro__chips li {
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background: var(--brillo-arriba), var(--relleno-marfil);
+  box-shadow: var(--relieve-claro), var(--sombra-gordita);
+  font-size: 0.92rem;
+  color: #011E41;
+}
+.ficha-centro__chips strong {
+  margin-right: 0.3rem;
+  color: #426D8C;
+}
+/* Estado: pastilla abultada roja (urgente) o amarilla (desabastecido) */
+.vista-columnas .estado-grande {
+  margin: 0;
+  padding: 0.5em 1.4em;
+  border-radius: 999px;
+  font-size: 1.3rem;
+  box-shadow: var(--relieve), var(--sombra-gordita);
+}
+.vista-columnas .estado-grande--urgente {
+  background: var(--brillo-arriba), var(--relleno-rojo);
+  color: #FFFFFF;
+}
+.vista-columnas .estado-grande--desabastecido {
+  background: var(--brillo-arriba), linear-gradient(180deg, #FFE7B5 0%, #FDD794 55%, #F2C14E 100%);
+  color: #011E41;
+}
+.vista-columnas .necesidades {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: var(--relieve-claro);
+  text-align: left;
+}
+
+/* Confirmación del pre-registro: contenido centrado en el panel */
+.vista-columnas .prerregistro-listo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  text-align: center;
+}
+.vista-columnas .prerregistro-listo h1 {
+  margin: 0;
+}
+
+/* --- Pre-registro: el formulario ocupa el panel --- */
+.vista-columnas .prerregistro {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.vista-columnas .prerregistro h1 {
+  margin: 0;
+  color: #011E41;
+}
+.vista-columnas .prerregistro__resumen {
+  border-radius: 22px;
+  background: var(--brillo-arriba), var(--relleno-marfil);
+  box-shadow: var(--relieve-claro), var(--sombra-gordita);
+}
+.vista-columnas .prerregistro .formulario {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+  width: 100%;
+  max-width: none !important;
+  margin: 0 !important;
+}
+.vista-columnas .prerregistro .campo input {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+.vista-columnas .prerregistro__ubicacion {
+  grid-column: 1 / -1;
+}
+.vista-columnas .prerregistro__ubicacion .boton {
+  width: auto;
+}
+.vista-columnas .prerregistro input {
+  border-radius: 999px;
+  box-shadow: inset 0 2px 4px rgba(1, 30, 65, 0.1);
+}
+
+@media (max-width: 600px) {
+  .vista.vista-columnas {
+    width: calc(100% - 1rem) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .pantalla-panel {
+    min-height: 0;
+    padding: 1.25rem 1rem;
+  }
+  .vista-columnas .ficha-centro,
+  .vista-columnas .prerregistro .formulario {
+    grid-template-columns: 1fr;
+  }
+  .vista-columnas .ficha-centro__foto {
+    width: 110px;
+    height: 110px;
+  }
+  .pantalla-acciones .boton--grande {
+    width: 100% !important;
   }
 }

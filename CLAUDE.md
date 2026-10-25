@@ -38,9 +38,16 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   amarillo #FDD794, salvia #86B5A9, marfil #FFF8ED, beige arena #E8E1D5, marrón carbón #514B46.
 - **Fondo de toda la página: azul salvia #86B5A9**; contenedores marfil/blancos muy redondeados;
   textos sobre el azul en azul oscuro (#011E41 / #1E3A4F, contraste ≥ 4.5:1).
-- Referencias: interfaces ilustradas cálidas (tarjetas redondeadas, botones planos suaves),
-  **sin perder el estilo 3D**. Sin marcos alrededor de las pantallas, sin ondas al pie, sin
-  alfombra ni luz naranja en la pantalla principal (solo profundidad suave).
+- Referencias: interfaces ilustradas cálidas (tarjetas redondeadas), **sin perder el estilo 3D**.
+  Sin marcos alrededor de las pantallas, sin ondas al pie, sin alfombra ni luz naranja en la
+  pantalla principal (solo profundidad suave).
+- **Botones, pastillas y tarjetas "gorditos y brillantes"** (oct 2026): relieve con brillo arriba
+  y sombra suave abajo (variables `--brillo-arriba`, `--relieve`, `--relleno-rojo/azul/marfil`).
+- **Distribución de mapa, ficha del centro y pre-registro** (clase `vista-columnas` para ficha y
+  pre-registro): arriba "← Volver" (azul) + ruta en pastilla roja + "Volver a pantalla principal"
+  e "Ir a la estantería" a la derecha; al medio el panel grande (mapa o `pantalla-panel`) con el
+  gato en su columna derecha (mensaje con título rojo arriba, gato abajo); al pie los botones de
+  acción (en el mapa, además, las zonas en una pastilla segmentada; zonas con urgencias en rojo).
 - Tipografía Montserrat. Los ajustes de estilo más recientes están al final de `css/tema.css`.
 
 ## Gato (mascota) — `js/gato3d.js`, modelo `assets/modelos/gato.glb`
@@ -54,8 +61,10 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   - Confirmaciones (`feliz`).
   - **Parpadeo con párpados reales**: ambos ojos se cierran y abren al mismo tiempo, natural.
   - Pupilas: miran juntas hacia un lado de vez en cuando.
-- Mapa: el gato va **en su propia columna al lado del mapa** (computador) con mensaje compacto
-  arriba; nunca tapa el mapa. Pre-registro: se asoma de medio cuerpo desde la esquina.
+- Mapa, ficha y pre-registro: el gato va **en su propia columna al lado del panel** (computador)
+  con su mensaje arriba; nunca tapa el contenido. En celular va en una fila encima del panel.
+- three.js cambia los espacios de los nombres de las partes por "_" ("Pupilas_espejo"): buscar
+  partes con `parte()` en `gato3d.js`, no con `getObjectByName` directo.
 - Si no hay WebGL, se usa el gato 2D (PNG/SVG) como respaldo.
 - **Tono de los mensajes:** primera persona, frases cortas y cálidas; al admin le dice
   "tu centro" (p. ej. "Cuéntame cuánto hay de cada cosa en tu centro…").

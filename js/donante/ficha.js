@@ -7,7 +7,15 @@
 // ============================================================
 
 import { getCentro, getNecesidades } from '../store.js';
-import { obtenerSubcategoria, estadoDeNivel, ETIQUETA_ESTADO, NIVEL_MAX } from '../data.js';
+import {
+  obtenerSubcategoria,
+  obtenerCategoriaPorSubcategoria,
+  estadoDeNivel,
+  ETIQUETA_ESTADO,
+  NIVEL_MAX,
+} from '../data.js';
+import { renderGato } from '../gato.js';
+import { renderBotonInicio } from '../boton-inicio.js';
 import { renderRepisaNivel, cargarMiniaturas } from '../ilustraciones.js';
 import { urlEmoji, EMOJI_CENTRO } from '../iconos.js';
 import { prerregistroVigente, horaVencimiento } from './prerregistro-sesion.js';
@@ -62,43 +70,81 @@ export function render({ centroId, subcategoriaId }) {
   }
 
   const nivel = centro.insumos[subcategoriaId];
+  const estado = estadoDeNivel(nivel);
+  const categoria = obtenerCategoriaPorSubcategoria(subcategoriaId);
   const pre = prerregistroVigente(centroId, subcategoriaId);
+  const nombreSub = subcategoria.nombre.toLowerCase();
 
   const acciones = pre
     ? `
-      <div class="ficha-prerregistro-ok" role="status">
-        <p><strong>✓ Ya hiciste tu pre-registro.</strong> Lleva tu donación antes del ${horaVencimiento(pre)}</p>
-      </div>
       <button class="boton boton--grande" type="button"
               data-navegar="#/donante/llegar/${centro.id}/${subcategoria.id}">
         Continuar
-      </button>`
+      </button>
+      <p class="ficha-prerregistro-ok" role="status">
+        <strong>✓ Ya hiciste tu pre-registro.</strong> Lleva tu donación antes del ${horaVencimiento(pre)}
+      </p>`
     : `
       <button class="boton boton--grande" type="button"
               data-navegar="#/donante/prerregistro/${centro.id}/${subcategoria.id}">
         Pre-registrar mi donación
       </button>
+      <a class="boton boton--azul" href="${volverAtras}">Ver otros centros</a>
       <p class="ficha-centro__nota">Toma un minuto y avisa al centro que vas en camino.</p>`;
+
+  // Lo que dice el gato: título corto (en rojo) y una frase de ánimo.
+  const mensaje = pre
+    ? `<span class="gato-mapa__principal">¡Ya te esperan!</span>
+       <span class="gato-mapa__detalle">Cuando quieras, te muestro cómo llegar.</span>`
+    : estado === 'urgente'
+      ? `<span class="gato-mapa__principal">¡Este centro se quedó sin ${nombreSub}!</span>
+         <span class="gato-mapa__detalle">Tu donación llega justo a tiempo.</span>`
+      : `<span class="gato-mapa__principal">A este centro le queda poco de ${nombreSub}.</span>
+         <span class="gato-mapa__detalle">Con tu ayuda no se queda sin nada.</span>`;
 
   return {
     html: `
-    <section class="vista vista-ficha">
-      <a class="boton-atras" href="${volverAtras}">← Volver</a>
-      <div class="tarjeta ficha-centro">
-        <div class="ficha-centro__foto ficha-centro__foto--casa ficha-centro__foto--${estadoDeNivel(nivel)}"
-             ${['urgente', 'desabastecido'].includes(estadoDeNivel(nivel)) ? `data-mini-casa="${estadoDeNivel(nivel)}"` : ''}>
-          <img src="${urlEmoji(EMOJI_CENTRO)}" alt="" width="64" height="64" />
+    <section class="vista vista-ficha vista-columnas">
+      <header class="mapa3d__encabezado">
+        <a class="boton-atras" href="${volverAtras}">← Volver</a>
+        <p class="mapa__indicador">${categoria ? `${categoria.nombre} › ` : ''}${subcategoria.nombre}</p>
+        ${renderBotonInicio()}
+        <a class="boton boton--secundario boton-estanteria" href="#/donante/estanteria">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+            <rect x="4" y="3" width="16" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M4 9h16M4 15h16M12 3v6" fill="none" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          Ir a la estantería
+        </a>
+      </header>
+
+      <div class="mapa-envoltura">
+        <div class="mapa3d__gato gato-asoma gato-asoma--lado${estado === 'urgente' && !pre ? ' mapa3d__gato--urgente' : ''}">
+          ${renderGato(mensaje, { tamano: 'lado' })}
         </div>
-        <h1 class="ficha__nombre">${centro.nombre}</h1>
-        <p class="ficha-centro__dato"><strong>Zona:</strong> ${centro.zona}</p>
-        <p class="ficha-centro__dato"><strong>Horario:</strong> ${centro.horario}</p>
-        <p class="ficha-centro__dato"><strong>Teléfono:</strong> ${centro.telefono}</p>
+        <div class="pantalla-panel ficha-centro">
+          <div class="ficha-centro__datos">
+            <div class="ficha-centro__foto ficha-centro__foto--casa ficha-centro__foto--${estado}"
+                 ${['urgente', 'desabastecido'].includes(estado) ? `data-mini-casa="${estado}"` : ''}>
+              <img src="${urlEmoji(EMOJI_CENTRO)}" alt="" width="64" height="64" />
+            </div>
+            <h1 class="ficha__nombre">${centro.nombre}</h1>
+            <ul class="ficha-centro__chips">
+              <li><strong>Zona</strong> ${centro.zona}</li>
+              <li><strong>Horario</strong> ${centro.horario}</li>
+              <li><strong>Teléfono</strong> ${centro.telefono}</li>
+            </ul>
+          </div>
+          <div class="ficha-centro__inventario">
+            ${renderEstadoGrande(nivel)}
+            ${renderNivel(subcategoria, nivel)}
+            ${renderNecesidades(getNecesidades(centro.id, subcategoria.id), subcategoria)}
+          </div>
+        </div>
+      </div>
 
-        ${renderEstadoGrande(nivel)}
-        ${renderNivel(subcategoria, nivel)}
-        ${renderNecesidades(getNecesidades(centro.id, subcategoria.id), subcategoria)}
-
-        ${acciones}
+      <div class="mapa3d__barra">
+        <div class="mapa3d__ubicacion pantalla-acciones">${acciones}</div>
       </div>
     </section>
   `,

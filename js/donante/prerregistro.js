@@ -38,16 +38,27 @@ export function render({ centroId, subcategoriaId }) {
   const hoy = hoyISO();
   return {
     html: `
-      <section class="vista vista-prerregistro">
-        <a class="boton-atras" href="${ficha}">← Volver</a>
-        <h1>Pre-registra tu donación</h1>
+      <section class="vista vista-prerregistro vista-columnas">
+        <header class="mapa3d__encabezado">
+          <a class="boton-atras" href="${ficha}">← Volver</a>
+          <p class="mapa__indicador">${subcategoria.nombre} › ${centro.nombre}</p>
+          ${renderBotonInicio()}
+        </header>
 
-        <!-- El gato se asoma por el borde y explica por qué importa la donación -->
-        <div class="prerregistro__gato gato-asoma">
-          ${renderGato(IMPORTANCIA_SUBCATEGORIA[subcategoriaId] ?? '¡Cada donación cuenta! Gracias por ayudar.', { tamano: 'asoma' })}
-        </div>
+        <div class="mapa-envoltura">
+          <!-- El gato, en su columna, explica por qué importa la donación -->
+          <div class="mapa3d__gato gato-asoma gato-asoma--lado">
+            ${renderGato(
+              `<span class="gato-mapa__principal">¡Gracias por ayudar!</span>
+               <span class="gato-mapa__detalle">${
+                 IMPORTANCIA_SUBCATEGORIA[subcategoriaId] ?? 'Cada donación cuenta.'
+               }</span>`,
+              { tamano: 'lado' }
+            )}
+          </div>
 
-        <div class="tarjeta prerregistro">
+        <div class="pantalla-panel prerregistro">
+          <h1>Pre-registra tu donación</h1>
           <div class="prerregistro__resumen">
             ${iconoProducto(subcategoriaId, 64)}
             <div>
@@ -56,7 +67,7 @@ export function render({ centroId, subcategoriaId }) {
             </div>
           </div>
 
-          <form class="formulario" novalidate>
+          <form class="formulario" id="form-prerregistro" novalidate>
             <div class="campo">
               <label for="pre-cc">Cédula</label>
               <input id="pre-cc" name="cedula" inputmode="numeric" autocomplete="off" maxlength="10"
@@ -74,14 +85,25 @@ export function render({ centroId, subcategoriaId }) {
             <div class="campo prerregistro__ubicacion">
               <span class="prerregistro__ubicacion-titulo">Tu ubicación <span class="campo__opcional">(opcional)</span></span>
               <p class="campo__ayuda">Con ella te mostraremos en el correo el trayecto de tu donación hasta su destino.</p>
-              <button type="button" class="boton boton--secundario" data-compartir-ubicacion>
-                📍 Compartir mi ubicación
+              <button type="button" class="boton boton--azul" data-compartir-ubicacion>
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+                  <path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21Z" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <circle cx="12" cy="9.8" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <span data-texto-ubicacion>Compartir mi ubicación</span>
               </button>
               <p class="prerregistro__ubicacion-estado" aria-live="polite"></p>
             </div>
-
-            <button class="boton boton--grande" type="submit">Hacer pre-registro</button>
           </form>
+        </div>
+        </div>
+
+        <div class="mapa3d__barra">
+          <div class="mapa3d__ubicacion pantalla-acciones">
+            <button class="boton boton--grande" type="submit" form="form-prerregistro">Hacer pre-registro</button>
+            <p class="ficha-centro__nota">Vale ${HORAS_VIGENCIA_PRERREGISTRO} horas: te esperan en el centro.</p>
+          </div>
         </div>
       </section>
     `,
@@ -95,7 +117,7 @@ export function render({ centroId, subcategoriaId }) {
 
       const mostrarUbicacionLista = () => {
         estadoUbicacion.textContent = '✓ Ubicación compartida.';
-        botonUbicacion.textContent = '📍 Actualizar mi ubicación';
+        botonUbicacion.querySelector('[data-texto-ubicacion]').textContent = 'Actualizar mi ubicación';
       };
       if (ubicacion) mostrarUbicacionLista();
 
@@ -140,23 +162,38 @@ export function render({ centroId, subcategoriaId }) {
 
         // Aviso: la donación debe hacerse válida en las próximas 24 horas.
         contenedor.querySelector('.vista-prerregistro').innerHTML = `
-          ${renderBotonInicio()}
-          <div class="tarjeta prerregistro-listo" role="status">
-            <div class="prerregistro-listo__check" aria-hidden="true">✓</div>
-            <h1 tabindex="-1">¡Pre-registro listo!</h1>
-            <div class="prerregistro-listo__sub">
-              <span class="prerregistro-listo__figura">${iconoProducto(subcategoriaId, 140)}</span>
-              <p class="prerregistro-listo__sub-nombre">${subcategoria.nombre}</p>
-              <p class="prerregistro-listo__sub-centro">para ${centro.nombre}</p>
+          <header class="mapa3d__encabezado">
+            <p class="mapa__indicador">${subcategoria.nombre} › ${centro.nombre}</p>
+            ${renderBotonInicio()}
+          </header>
+          <div class="mapa-envoltura">
+            <div class="mapa3d__gato gato-asoma gato-asoma--lado">
+              ${renderGato(
+                `<span class="gato-mapa__principal">¡Gracias!</span>
+                 <span class="gato-mapa__detalle">Ahora te muestro cómo llegar.</span>`,
+                { tamano: 'lado', pose: 'feliz' }
+              )}
             </div>
-            <p class="prerregistro-listo__aviso">
-              Tu donación debe hacerse válida en las próximas <strong>${HORAS_VIGENCIA_PRERREGISTRO} horas</strong>:
-              llévala al centro antes del <strong>${horaVencimiento(pre)}</strong>
-            </p>
-            <p>En el centro te pedirán tu cédula para confirmarla.</p>
-            ${renderGato('¡Gracias! Ahora te muestro cómo llegar.', { tamano: 'grande', pose: 'feliz' })}
-            <button class="boton boton--grande" type="button"
-                    data-navegar="#/donante/llegar/${centroId}/${subcategoriaId}">Continuar</button>
+            <div class="pantalla-panel prerregistro-listo" role="status">
+              <div class="prerregistro-listo__check" aria-hidden="true">✓</div>
+              <h1 tabindex="-1">¡Pre-registro listo!</h1>
+              <div class="prerregistro-listo__sub">
+                <span class="prerregistro-listo__figura">${iconoProducto(subcategoriaId, 140)}</span>
+                <p class="prerregistro-listo__sub-nombre">${subcategoria.nombre}</p>
+                <p class="prerregistro-listo__sub-centro">para ${centro.nombre}</p>
+              </div>
+              <p class="prerregistro-listo__aviso">
+                Tu donación debe hacerse válida en las próximas <strong>${HORAS_VIGENCIA_PRERREGISTRO} horas</strong>:
+                llévala al centro antes del <strong>${horaVencimiento(pre)}</strong>
+              </p>
+              <p>En el centro te pedirán tu cédula para confirmarla.</p>
+            </div>
+          </div>
+          <div class="mapa3d__barra">
+            <div class="mapa3d__ubicacion pantalla-acciones">
+              <button class="boton boton--grande" type="button"
+                      data-navegar="#/donante/llegar/${centroId}/${subcategoriaId}">Continuar</button>
+            </div>
           </div>
         `;
         contenedor.querySelector('h1').focus();

@@ -130,7 +130,7 @@ suaves, sin temblores:
 - **Confirmaciones** (`feliz`).
 - Parpadea con párpados reales (los dos ojos a la vez) y a veces mira hacia un lado.
 
-En el pre-registro se asoma de medio cuerpo desde la esquina. Habla en primera persona, con
+En el mapa, la ficha del centro y el pre-registro va en su columna al lado del panel. Habla en primera persona, con
 frases cortas y cálidas; al administrador le dice "tu centro". Sus mensajes por subcategoría
 están en `IMPORTANCIA_SUBCATEGORIA` (`js/data.js`). Si no hay WebGL, se usa el gato 2D.
 
