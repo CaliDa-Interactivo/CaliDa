@@ -20,13 +20,14 @@ import { cargarGLB, MODELO_CASA, estilizarCasa } from './cargar-glb.js';
 // --- Paleta del mapa (derivada de la paleta CaliDa) -----------------
 
 const COLORES = {
-  // Mismos colores del mapa oficial de zonas de Cali.
+  // Un color bien distinto por zona (sobre el fondo azul del mapa), sin
+  // usar el rojo ni el amarillo de las casas.
   zonas: {
-    Norte: '#FBAFA7',
-    Occidente: '#C2DAF6',
-    Centro: '#C0A7F8',
-    Oriente: '#95CEAD',
-    Sur: '#FCD8B4',
+    Norte: '#F4896B', // coral
+    Occidente: '#F5DDB0', // arena
+    Centro: '#A68BE0', // lila
+    Oriente: '#5FC2A0', // verde menta
+    Sur: '#F2A7C3', // rosa
   },
   zonaAtenuada: '#ECE6DC',
   base: '#F3E9D8',

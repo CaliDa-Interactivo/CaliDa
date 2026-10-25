@@ -94,10 +94,6 @@ export function render({ subcategoriaId }) {
             stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
       <circle cx="12" cy="9.8" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/>
     </svg>`;
-  const iconoChinche = `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-      <path d="M9 3h6l-1 6 3 3v2H7v-2l3-3-1-6ZM12 14v7" fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-    </svg>`;
 
   const itemsLista = necesitan
     .map((centro) => {
@@ -176,7 +172,6 @@ export function render({ subcategoriaId }) {
                   <button type="button" class="boton boton--azul" data-mi-ubicacion>
                     ${iconoPin}<span data-texto-ubicacion>Usar mi ubicación</span>
                   </button>
-                  <button type="button" class="boton" data-marcar-ubicacion>${iconoChinche}Marcar dónde estoy</button>
                 </div>
                 <nav class="mapa3d__zonas" aria-label="Filtrar por zona">${botonesZona}</nav>
               </div>
@@ -329,33 +324,13 @@ export function render({ subcategoriaId }) {
         pintarGato();
       }
 
-      // Si el navegador no da la ubicación, la persona toca el mapa.
-      const botonMarcar = contenedor.querySelector('[data-marcar-ubicacion]');
-      botonMarcar?.addEventListener('click', () => {
-        if (!mapa?.esperarToqueUbicacion) {
-          estadoUbicacion.textContent = 'El mapa aún está cargando. Inténtalo en un momento.';
-          return;
-        }
-        estadoUbicacion.textContent = 'Toca el mapa en el lugar donde estás.';
-        contenedor.querySelector('.mapa3d').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        mapa.esperarToqueUbicacion((u) => {
-          try {
-            sessionStorage.setItem('calida_ubicacion', JSON.stringify(u));
-          } catch {
-            /* sin almacenamiento */
-          }
-          aplicarUbicacion(u);
-          if (!estadoUbicacion.textContent) estadoUbicacion.textContent = '✓ Listo: marcaste tu ubicación en el mapa.';
-        });
-      });
-
       botonUbicacion?.addEventListener('click', async () => {
         estadoUbicacion.textContent = 'Buscando tu ubicación…';
         botonUbicacion.disabled = true;
         try {
           aplicarUbicacion(await obtenerUbicacion());
         } catch (e) {
-          estadoUbicacion.textContent = `${e.message} Puedes tocar "Marcar dónde estoy" y señalarlo en el mapa.`;
+          estadoUbicacion.textContent = e.message;
         } finally {
           botonUbicacion.disabled = false;
         }
@@ -371,7 +346,7 @@ export function render({ subcategoriaId }) {
             .then((u) => !destruido && aplicarUbicacion(u))
             .catch((e) => {
               if (!destruido)
-                estadoUbicacion.textContent = `${e.message} También puedes tocar "Marcar dónde estoy".`;
+                estadoUbicacion.textContent = e.message;
             });
       }
 

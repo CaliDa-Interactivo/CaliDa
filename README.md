@@ -112,8 +112,7 @@ Todas las confirmaciones muestran al gato contento y vuelven solas al menú prin
   recuadro (valor `0.8` en `encuadrarCiudad`).
 - Casas `casa_roja.glb` y `casa_amarilla.glb` estilizadas con la paleta y giradas a tres cuartos.
 - Ubicación del usuario (`js/ubicacion.js`): si está fuera de Cali, el pin va al borde con la
-  distancia. Si el navegador no la da, el botón **"📌 Marcar dónde estoy"** permite tocar el mapa.
-  Si se niega el permiso, todo funciona igual.
+  distancia. Si se niega el permiso, todo funciona igual.
 - En computador, el gato va en su propia columna al lado del mapa con un mensaje compacto
   arriba; nunca tapa el mapa. Explica los colores y cuál es el centro más cercano.
 
@@ -202,11 +201,10 @@ assets/
 
 ## Pendientes conocidos
 
-- **Correo real:** el envío está simulado. En `js/email.js` están los pasos para conectarlo a
-  EmailJS sin servidor y dónde poner la URL pública de la imagen del gato (`assets/gato.png`).
-- **Mapa del correo:** es un SVG y Gmail/Outlook no lo muestran. Para el envío real hay que
-  cambiarlo por una imagen de mapa estático (ver comentario en `js/email.js`). El enlace a
-  Google Maps sí funciona en cualquier correo.
+- **Correo real:** el envío usa EmailJS. Falta crear la cuenta del equipo y poner sus tres datos
+  (Public Key, Service ID y Template ID) en `js/config-correo.js`; los pasos están ahí mismo.
+  Mientras tanto los correos se guardan en la bandeja de prueba `#/correos-enviados`. El correo
+  usa el gato 3D y un mapa real del Valle del Cauca (`assets/correo/`), cargados desde GitHub Pages.
 - **Centros:** varios son de ejemplo (marcados en `js/data.js`). Si las coordenadas de un centro
   no caen dentro de su zona en el mapa, su casa toma un puesto fijo de la zona; "Cómo llegar"
   usa siempre las coordenadas reales.

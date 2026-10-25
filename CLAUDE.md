@@ -47,13 +47,15 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - **Botones, pastillas y tarjetas "gorditos" y MATES** (mismo material que los productos de la
   estantería): relieve suave, sin brillo ni reflejo (variables `--brillo-arriba`, `--relieve`,
   `--relleno-rojo/azul/marfil/amarillo/salvia`, redefinidas al final de `css/tema.css`).
-- Pantalla principal **orgánica e integrada** (referencia: personaje 3D suave sobre fondo
-  continuo): cámara frontal, **sin tarima**; fondo salvia continuo con luz suave detrás del gato;
-  título como letras de arcilla blanda (extrusión suave, sin inclinación) con la misma sombra
-  verde azulada que el gato (`rgba(24, 66, 58, …)`).
+- Pantalla principal como **escenario** que contiene al gato y los textos: pared con luz de
+  reflector sobre el gato, telones rojos a los lados, piso en perspectiva con charco de luz y
+  borde frontal (`.bienvenida-inicio::before/::after`). Cámara del gato frontal, sin tarima
+  bajo él; título como letras de arcilla blanda con sombra verde azulada (`rgba(24, 66, 58, …)`).
 - Tarjetas de centros bajo el mapa: urgentes en rojo carmín, desabastecidos en amarillo.
 - Menú del admin: cada tarea con su color (insumos amarillo, donación coral, despacho azul claro)
-  e íconos 3D mates hechos con three.js (`generarIconoMenu` en `js/miniaturas3d.js`).
+  e íconos 3D mates hechos con three.js (`generarIconoMenu` en `js/miniaturas3d.js`). Los
+  paneles y formularios de cada función usan ese mismo color (`vista-funcion-insumos/
+  donacion/despacho`).
 - Admin: "Volver a pantalla principal" fijo arriba a la derecha en todas las pantallas.
 - Menú del admin: las tres tareas se reparten todo el alto de la pantalla.
 - Panel de estado de insumos (zoom del admin): casi pantalla completa, recuadros que llenan el
@@ -116,8 +118,10 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Casas `casa_roja.glb` / `casa_amarilla.glb` estilizadas con la paleta (techo rojo carmín o
   amarillo, paredes marfil), acortadas de fondo para verse compactas, giradas a tres cuartos.
   Las "fotos" de las casas (tarjetas y ficha) son de frente, un poco desde arriba (se ve el techo).
+- Fondo del mapa azul petróleo (contraste); zonas con colores bien distintos y sin rojo ni
+  amarillo (Norte coral, Occidente arena, Centro lila, Oriente menta, Sur rosa).
 - Ubicación del usuario: se pide al entrar; si está fuera de Cali el pin va al borde con la
-  distancia; botón **"📌 Marcar dónde estoy"** para tocar el mapa si el navegador no la da.
+  distancia. (Se quitó "Marcar dónde estoy".)
 - El gato explica colores (roja urgente / amarilla desabastecido) y el centro más cercano.
 
 ## Otros datos
@@ -126,9 +130,18 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Necesidades por centro: `NECESIDADES_SEMILLA` (`js/data.js`); se ven en la ficha del centro.
 - `js/store.js` migra datos guardados (subcategorías nuevas, zona de Jairo Varela) sin borrarlos.
 
+## Correos al donante — `js/email.js`
+- Estilo de la página (fondo salvia, tarjeta marfil, botón rojo en píldora), gato 3D
+  (`assets/correo/gato.png`, "foto" del modelo) y **mapa real del Valle del Cauca** con el trayecto
+  desde Cali (`assets/correo/mapas/<municipio>.png`, uno por cada uno de los 42 municipios,
+  dibujados con el contorno real de los departamentos). Las imágenes se cargan desde GitHub Pages
+  (`URL_PUBLICA` en `js/config-correo.js`).
+- Envío real con EmailJS: llenar `publicKey`, `serviceId` y `templateId` en `js/config-correo.js`
+  (pasos ahí mismo; plantilla con `{{{html}}}`). Sin eso, solo se guardan en la bandeja
+  `#/correos-enviados`, que muestra el estado de cada correo (simulado / enviado / error).
+
 ## Pendientes conocidos
-- Correo real: conectar EmailJS en `js/email.js` (instrucciones comentadas). El mapa del correo es
-  SVG (Gmail/Outlook no lo muestran): en producción usar imagen estática.
+- Crear la cuenta de EmailJS del equipo y poner sus tres datos en `js/config-correo.js`.
 - Varios centros son de ejemplo (marcados en `js/data.js`).
 
 ## Cómo verificar cambios

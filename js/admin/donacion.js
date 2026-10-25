@@ -60,7 +60,7 @@ export const renderEstanteria = conSesion(({ categoriaId = null } = {}, centro) 
     </div>`;
   return {
     html: `
-      <section class="vista vista-admin vista-estanteria vista-3d">
+      <section class="vista vista-admin vista-estanteria vista-3d vista-funcion-donacion">
         ${renderEscena3D({ encabezado, etiqueta: 'Estantería 3D: elige qué trajo la persona' })}
         <div class="estanteria2d" hidden>
           <div class="mueble">
@@ -111,7 +111,7 @@ export const renderFormulario = conSesion(({ subcategoriaId }, centro) => {
 
   return {
     html: `
-      <section class="vista vista-admin vista-formulario-admin">
+      <section class="vista vista-admin vista-formulario-admin vista-funcion-donacion">
         ${renderEncabezado({ atras: `#/admin/donacion/${categoria.id}`, titulo: 'Registrar donación', centro })}
         <form class="tarjeta formulario" novalidate>
           <p class="formulario__categoria">

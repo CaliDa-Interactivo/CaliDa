@@ -246,7 +246,7 @@ export const renderEstanteria = conSesion(({ categoriaId = null } = {}, centro) 
     </div>`;
   return {
     html: `
-      <section class="vista vista-admin vista-estanteria vista-3d">
+      <section class="vista vista-admin vista-estanteria vista-3d vista-funcion-insumos">
         ${renderEscena3D({ encabezado, etiqueta: 'Estantería 3D del centro: cada compartimiento es una categoría' })}
         <div class="estanteria2d" hidden>
           <div class="mueble">

@@ -1,12 +1,19 @@
 // ============================================================
 // correos.js — bandeja de prueba (#/correos-enviados).
-// Muestra los correos que el sistema "envió" al registrar cada
-// despacho, tal como los vería el donante. Sirve para la
-// demostración mientras el envío real no está conectado.
+// Muestra los correos que el sistema envió al registrar cada
+// despacho, tal como los ve el donante, y si salieron de verdad.
 // ============================================================
 
 import { getCorreosEnviados, vaciarCorreosEnviados } from './store.js';
-import { fechaLarga } from './email.js';
+import { fechaLarga, emailjsConfigurado } from './email.js';
+
+// Estado del envío real (EmailJS). "simulado": EmailJS sin configurar.
+const ESTADOS = {
+  simulado: 'Solo en la bandeja',
+  enviando: 'Enviando…',
+  enviado: '✓ Enviado',
+  error: 'No se pudo enviar',
+};
 
 function horaEnvio(iso) {
   const d = new Date(iso);
@@ -30,6 +37,7 @@ export function render() {
             <span class="bandeja__hora">${hora.corta}</span>
             <span class="bandeja__asunto">${c.asunto}</span>
             <span class="bandeja__para">Para: ${c.destinatario}</span>
+            ${c.estado ? `<span class="bandeja__estado bandeja__estado--${c.estado}">${ESTADOS[c.estado] ?? c.estado}</span>` : ''}
           </button>
         </li>`;
     })
@@ -42,7 +50,7 @@ export function render() {
           <a class="boton-atras" href="#/admin/menu">← Volver</a>
           <div class="admin-encabezado__texto">
             <h1>Bandeja de correos</h1>
-            <p class="bandeja__nota">Vista de prueba: así le llega el correo automático a cada donante.</p>
+            <p class="bandeja__nota">Así le llega el correo automático a cada donante${emailjsConfigurado() ? '.' : ' (envío real sin configurar: ver js/config-correo.js).'}</p>
           </div>
         </header>
 

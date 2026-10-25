@@ -286,6 +286,16 @@ export function guardarCorreoEnviado(correo) {
   return registro;
 }
 
+// Cambia el estado de un correo (p. ej. 'enviado' o 'error' tras EmailJS).
+export function actualizarCorreoEnviado(id, cambios) {
+  const store = leerStore();
+  const correo = store.correosEnviados.find((c) => c.id === id);
+  if (!correo) return null;
+  Object.assign(correo, cambios);
+  guardarStore(store);
+  return correo;
+}
+
 export function getCorreosEnviados() {
   return leerStore().correosEnviados;
 }
