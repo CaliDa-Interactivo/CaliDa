@@ -11,13 +11,14 @@ export const IMAGEN_GATO_SALUDA = 'assets/gato-saluda.png';
 // Poses del 3D: quieto · saluda · senala · alerta · feliz.
 // tamano 'asoma': se asoma de medio cuerpo por el borde (pre-registro).
 // tamano 'lado': cuerpo entero al lado del mapa.
-export function renderGato(mensaje, { tamano = 'normal', pose = 'quieto' } = {}) {
+// manoQuieta: el gato no mueve la mano (respira y parpadea igual).
+export function renderGato(mensaje, { tamano = 'normal', pose = 'quieto', manoQuieta = false } = {}) {
   const encuadre = tamano === 'asoma' ? 'medio' : 'completo';
   const src = pose === 'saluda' ? IMAGEN_GATO_SALUDA : IMAGEN_GATO;
   const pose3d = pose === 'normal' ? 'quieto' : pose;
   return `
     <div class="gato-guia gato-guia--${tamano}">
-      <div class="gato-guia__imagen gato3d" data-gato3d data-pose="${pose3d}" data-encuadre="${encuadre}" role="img" aria-label="Gato guía de CaliDa">
+      <div class="gato-guia__imagen gato3d" data-gato3d data-pose="${pose3d}" data-encuadre="${encuadre}"${manoQuieta ? ' data-mano="quieta"' : ''} role="img" aria-label="Gato guía de CaliDa">
         <img class="gato3d__respaldo" src="${src}" alt="" width="64" height="80" />
       </div>
       <div class="gato-guia__globo">

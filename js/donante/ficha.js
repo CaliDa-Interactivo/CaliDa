@@ -120,7 +120,7 @@ export function render({ centroId, subcategoriaId }) {
 
       <div class="mapa-envoltura">
         <div class="mapa3d__gato gato-asoma gato-asoma--lado${estado === 'urgente' && !pre ? ' mapa3d__gato--urgente' : ''}">
-          ${renderGato(mensaje, { tamano: 'lado' })}
+          ${renderGato(mensaje, { tamano: 'lado', manoQuieta: true })}
         </div>
         <div class="pantalla-panel ficha-centro">
           <div class="ficha-centro__datos">

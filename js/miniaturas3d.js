@@ -48,8 +48,12 @@ export function generarMiniatura(subcategoriaId) {
   );
 }
 
-/** Igual, para cualquier modelo (p. ej. las casas de la ficha). */
-export function generarMiniaturaDe(clave, url, preparar = null) {
+/**
+ * Igual, para cualquier modelo (p. ej. las casas de la ficha).
+ * Con { plano: true } la foto es de frente y sin perspectiva (cámara
+ * ortográfica), como un dibujo 2D que cabe entero en su casilla.
+ */
+export function generarMiniaturaDe(clave, url, preparar = null, { plano = false } = {}) {
   const subcategoriaId = clave;
   if (MINIATURAS.has(subcategoriaId)) return Promise.resolve(MINIATURAS.get(subcategoriaId));
   if (pendientes.has(subcategoriaId)) return pendientes.get(subcategoriaId);
@@ -58,7 +62,7 @@ export function generarMiniaturaDe(clave, url, preparar = null) {
     motor ??= crearMotor();
     const gltf = await cargarGLB(motor.cargador, url);
     const modelo = preparar ? preparar(gltf.scene) : gltf.scene;
-    return fotografiar(subcategoriaId, modelo);
+    return fotografiar(subcategoriaId, modelo, { plano });
   })().catch((e) => {
     console.warn('Sin miniatura 3D para', subcategoriaId, e);
     return null;
@@ -191,19 +195,29 @@ export function generarIconoMenu(clave) {
 }
 
 // Centra el modelo, lo encuadra, lo dibuja una vez y guarda la imagen.
-function fotografiar(subcategoriaId, modelo) {
-  const { renderer, escena, camara } = motor;
+function fotografiar(subcategoriaId, modelo, { plano = false } = {}) {
+  const { renderer, escena } = motor;
+  let { camara } = motor;
 
   // Centrar y encuadrar el modelo.
   modelo.updateMatrixWorld(true);
   const caja = new THREE.Box3().setFromObject(modelo);
   const centro = caja.getCenter(new THREE.Vector3());
-  const radio = caja.getSize(new THREE.Vector3()).length() / 2;
+  const tam = caja.getSize(new THREE.Vector3());
+  const radio = tam.length() / 2;
   modelo.position.sub(centro);
   escena.add(modelo);
-  const d = radio / Math.sin(THREE.MathUtils.degToRad(camara.fov / 2)) * 0.92;
-  camara.position.set(0, radio * 0.35, d);
-  camara.lookAt(0, 0, 0);
+  if (plano) {
+    // De frente y sin perspectiva, con un margen para que no toque los bordes.
+    const lado = Math.max(tam.x, tam.y) * 0.56;
+    camara = new THREE.OrthographicCamera(-lado, lado, lado, -lado, 0.01, radio * 8 + 10);
+    camara.position.set(0, 0, radio * 3 + 2);
+    camara.lookAt(0, 0, 0);
+  } else {
+    const d = radio / Math.sin(THREE.MathUtils.degToRad(camara.fov / 2)) * 0.92;
+    camara.position.set(0, radio * 0.35, d);
+    camara.lookAt(0, 0, 0);
+  }
   camara.updateProjectionMatrix();
 
   renderer.render(escena, camara);

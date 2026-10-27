@@ -291,7 +291,7 @@ async function montarUno(el) {
   function animarCuadro() {
     const t = reloj.getElapsedTime() + desfase;
     let pose = el.dataset.pose || 'quieto';
-    if (el.closest('.mapa3d__gato--urgente')) pose = 'alerta';
+    if (el.closest('.mapa3d__gato--urgente') && el.dataset.mano !== 'quieta') pose = 'alerta';
 
     // Reinicio
     pivoteGato.position.set(0, 0, 0);
@@ -324,7 +324,8 @@ async function montarUno(el) {
       }
 
       // Brazo: saluda en la pantalla principal; en reposo, casi quieto.
-      if (brazo) {
+      // data-mano="quieta": el brazo no se anima (p. ej. ficha del centro).
+      if (brazo && el.dataset.mano !== 'quieta') {
         const anguloObjetivo =
           pose === 'saluda'
             ? -0.85 + Math.sin(t * 4.2) * 0.22

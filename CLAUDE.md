@@ -61,7 +61,8 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   alto; los 5 puestos de cada repisa en una cuadrícula pareja (nada se sale del recuadro).
 - Registrar donación y despacho (`vista-formulario-admin`): formulario grande en dos columnas.
 - "Iniciar sesión" (elige tu perfil) en azul petróleo; su ilustración muestra cajas con
-  donaciones (`renderPaisaje({ centro: 'cajas' })`) en vez de casas.
+  donaciones dentro de un centro de acopio (pared, repisas, piso: `renderPaisaje({ centro:
+  'cajas' })`), no en el bosque.
 - Pre-registro y demás pantallas: sin desplazamiento vacío (el gato 2D de respaldo se oculta con
   `display: none` cuando carga el 3D).
 - Gestionar insumos: recuadros marfil con relieve, franja y pastilla del color del estado.
@@ -83,6 +84,8 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   - Confirmaciones (`feliz`).
   - **Parpadeo con párpados reales**: ambos ojos se cierran y abren al mismo tiempo, natural.
   - Pupilas: miran juntas hacia un lado de vez en cuando.
+- En la ficha del centro el gato **no mueve la mano** (`renderGato(…, { manoQuieta: true })` →
+  `data-mano="quieta"`).
 - Mapa, ficha y pre-registro: el gato va **en su propia columna al lado del panel** (computador)
   con su mensaje arriba; nunca tapa el contenido. En celular va en una fila encima del panel.
 - three.js cambia los espacios de los nombres de las partes por "_" ("Pupilas_espejo"): buscar
@@ -106,7 +109,8 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Un modelo por subcategoría (`MODELOS_SUBCATEGORIA`); ajustes de color y calcomanías (maíz en la
   lata, huella en la bolsa de mascotas, botella de agua azul) en `js/ajustes-modelos.js`.
   Camisa, vestido y overol son los modelos finales del equipo (oct 2026, `camisa.glb`,
-  `vestido.glb`, `overol.glb`); "Limpieza del hogar" usa `jabon.glb` (antes una escoba). Los
+  `vestido.glb`, `overol.glb`), mates, a la misma altura en la repisa y el vestido rosado tierno
+  (`COLORES` en `js/ajustes-modelos.js`); "Limpieza del hogar" usa `jabon.glb` (antes una escoba). Los
   cepillos de dientes se giran un cuarto de vuelta para que se vean los dos.
 - **Todos los íconos de productos** de la página usan "fotos" de los modelos 3D
   (`js/miniaturas3d.js`, `iconoProducto()` en `js/ilustraciones.js`).
@@ -119,7 +123,8 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   ajustable con el valor `0.8` en `encuadrarCiudad`).
 - Casas `casa_roja.glb` / `casa_amarilla.glb` estilizadas con la paleta (techo rojo carmín o
   amarillo, paredes marfil), acortadas de fondo para verse compactas, giradas a tres cuartos.
-  Las "fotos" de las casas (tarjetas y ficha) son de frente, apenas desde arriba.
+  Las "fotos" de las casas (tarjetas y ficha) son de frente y sin perspectiva (cámara
+  ortográfica, `{ plano: true }` en `generarMiniaturaDe`), como un dibujo 2D dentro de su casilla.
 - Fondo del mapa azul petróleo (contraste); zonas con colores bien distintos y sin rojo ni
   amarillo (Norte coral, Occidente arena, Centro lila, Oriente menta, Sur rosa).
 - Ubicación del usuario: se pide al entrar; si está fuera de Cali el pin va al borde con la
@@ -127,6 +132,7 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - El gato explica colores (roja urgente / amarilla desabastecido) y el centro más cercano.
 - En el mapa **solo se pueden tocar las casas**; las zonas se eligen con los botones de abajo.
 - Subtítulo de la lista: "Selecciona un centro de acopio que necesita <producto>".
+- "← Volver" del mapa lleva a la estantería completa (no a la categoría acercada).
 
 ## Otros datos
 - Subcategorías: incluye "Comida para animales" (Alimento) y "Analgésicos" (sin "y fiebre").

@@ -513,10 +513,11 @@ export function montarEstanteria3D(o) {
       const ancho = (c.x1 - c.x0) / subs.length;
       subs.forEach((sub, i) => {
         const x = c.x0 + ancho * (i + 0.5);
-        // La ropa (plana y ancha) se ve más grande para igualar a los demás.
+        // La ropa: las tres prendas a la misma altura (la camisa es ancha y
+        // el vestido alto; con la misma altura se ven de igual proporción).
         const esRopa = cat === 'ropa';
-        const altoMax = (c.y1 - c.y0) * (esRopa ? 0.86 : 0.78);
-        const anchoMax = ancho * (esRopa ? 0.96 : 0.82);
+        const altoMax = esRopa ? Math.min((c.y1 - c.y0) * 0.8, ancho * 1.08) : (c.y1 - c.y0) * 0.78;
+        const anchoMax = ancho * (esRopa ? 1.08 : 0.82);
         const ruta = MODELOS_SUBCATEGORIA[sub.id];
 
         const boton = document.createElement(productosComoBotones ? 'button' : 'span');

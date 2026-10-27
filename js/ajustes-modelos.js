@@ -6,6 +6,19 @@
 
 // Colores por material (nombre del material en el .glb).
 const COLORES = {
+  // Vestido rosado tierno, con detalles en un rosa un poco más intenso.
+  'ropa-mujer': {
+    fabric: { color: '#F6B9CC', metalness: 0, roughness: 0.85 },
+    'Material.002': { color: '#EE93B3', metalness: 0, roughness: 0.85 },
+    'Material.001': { color: '#86B5A9', metalness: 0, roughness: 0.85 },
+    metal: { color: '#FFF8ED', metalness: 0, roughness: 0.85 },
+  },
+  // Overol: azul más suave (de la paleta) y botones mates.
+  'ropa-ninos': {
+    Tela_Azul: { color: '#5E86BF', metalness: 0, roughness: 0.85 },
+    'azul mas ocuro ': { color: '#4A6FA5', metalness: 0, roughness: 0.85 },
+    Metal: { color: '#E8E1D5', metalness: 0, roughness: 0.85 },
+  },
   'alimento-agua': {
     'Bottle plastic': { color: '#8FD0F2', metalness: 0, roughness: 0.2, opacity: 0.88 },
     'Bottle cap': { color: '#1E6FD9', metalness: 0, roughness: 0.45 },
@@ -72,7 +85,24 @@ const CALCOMANIAS = {
   'alimento-animal': dibujarHuella,
 };
 
+// La ropa con el mismo material mate de los demás productos (sin brillo
+// ni reflejos metálicos).
+const ROPA = new Set(['ropa-hombre', 'ropa-mujer', 'ropa-ninos']);
+
 function ajustarForma(subcategoriaId, objeto) {
+  if (ROPA.has(subcategoriaId)) {
+    objeto.traverse((n) => {
+      if (!n.isMesh) return;
+      (Array.isArray(n.material) ? n.material : [n.material]).forEach((m) => {
+        m.metalness = 0;
+        m.roughness = 0.85;
+        m.metalnessMap = null;
+        m.roughnessMap = null;
+        if ('specularIntensity' in m) m.specularIntensity = 0.2;
+        m.needsUpdate = true;
+      });
+    });
+  }
   if (subcategoriaId === 'aseo-bucal') {
     // Los dos cepillos venían uno detrás del otro (de frente se veía uno
     // solo): se giran un cuarto de vuelta alrededor del eje del vaso para

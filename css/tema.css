@@ -2635,9 +2635,15 @@ body:has(.vista-admin) .zoom-capa__panel {
   box-shadow: var(--relieve-claro), 0 2px 6px rgba(1, 30, 65, 0.15);
 }
 .mapa3d__lista .centro-tarjeta__casa .casa3d {
-  width: 120%;
-  height: 120%;
-  max-width: none;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+.mapa3d__lista .centro-tarjeta__casa {
+  overflow: hidden;
+  padding: 6px;
+  box-sizing: border-box;
 }
 
 /* El contenido del panel de insumos llena todo el alto: los recuadros
