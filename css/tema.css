@@ -2945,3 +2945,152 @@ body:has(.bienvenida-inicio) {
 .tarjeta-ilustracion--admin {
   filter: none !important;
 }
+
+/* ===================================================================
+   PALETAS POR ROL (oct 2026). main.js pone <html data-rol="…">:
+   donante (cálida), admin (azules) e inicio (pantalla principal).
+   Contraste: el crema #FCDEA8 va como texto sobre los botones
+   oscuros; sobre colores claros el texto es oscuro; los "pequeños
+   textos" se oscurecen un poco para leerse sobre el crema.
+   =================================================================== */
+
+/* --- Donador ------------------------------------------------------ */
+html[data-rol="donante"] {
+  --relleno-rojo: linear-gradient(180deg, #BD2A06 0%, #AF2000 50%, #9A1C00 100%);
+  --relleno-azul: linear-gradient(180deg, #EA8642 0%, #E47832 50%, #D46C28 100%);
+  --relleno-amarillo: linear-gradient(180deg, #FEC06A 0%, #FEB454 50%, #F5A63F 100%);
+  --relleno-marfil: linear-gradient(180deg, #FEEBC4 0%, #FCDEA8 55%, #F4CF92 100%);
+  --relieve-claro: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -3px 5px rgba(122, 58, 10, 0.14);
+  --rol-texto: #4A2306;
+  --rol-texto-chico: #9A4A0E;
+  --rol-panel: #FCDEA8;
+  --fondo-pantalla:
+    radial-gradient(ellipse 34% 58% at 50% -4%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 72%),
+    radial-gradient(ellipse 85% 80% at 50% 42%, rgba(122, 58, 10, 0) 45%, rgba(122, 58, 10, 0.22) 100%),
+    linear-gradient(180deg, #FDCB6C 0%, #FDC254 55%, #F6B444 100%);
+  background: #FDC254;
+}
+/* Volver (naranja) y botones azules del donante: texto café oscuro */
+html[data-rol="donante"] :is(.boton-atras, .boton.boton--azul, .chip-zona[aria-pressed="true"]) {
+  color: #3B1A05 !important;
+}
+/* Secundarios: amarillo con texto café */
+html[data-rol="donante"] :is(.boton.boton--secundario, .boton-inicio, .boton-contorno) {
+  background: var(--brillo-arriba), var(--relleno-amarillo) !important;
+  color: #4A2306 !important;
+}
+/* Paneles, mensajes del gato y tarjetas: crema */
+html[data-rol="donante"] :is(.pantalla-panel, .gato-asoma--lado .gato-guia__globo, .gato-guia__globo, .ficha-centro__foto) {
+  background: var(--brillo-arriba), var(--relleno-marfil) !important;
+}
+html[data-rol="donante"] :is(.vista h1, .mapa3d__titulo-lista, .ficha__nombre, .escena3d h1, .gato-mapa__detalle, .gato-mapa__colores) {
+  color: var(--rol-texto) !important;
+}
+html[data-rol="donante"] :is(.mapa3d__ubicacion-estado, .ficha-centro__nota, .campo__ayuda, .escena3d__ayuda, .prerregistro__donde, .ficha-centro__chips strong) {
+  color: var(--rol-texto-chico) !important;
+}
+html[data-rol="donante"] .vista-mapa3d .gato-asoma--lado .gato-mapa__principal {
+  color: #AF2000 !important;
+}
+/* Conteo de las zonas y mapa con fondo cálido oscuro (las zonas resaltan) */
+html[data-rol="donante"] .vista-mapa3d .chip-zona__conteo {
+  background: #9A4A0E !important;
+  color: #FCDEA8 !important;
+}
+html[data-rol="donante"] .vista-mapa3d .mapa3d {
+  background: radial-gradient(ellipse 70% 60% at 50% 42%, #9A4A1C 0%, #7A3412 55%, #5A240A 100%) !important;
+}
+html[data-rol="donante"] .mapa3d__lista .centro-tarjeta.centro-tarjeta--desabastecido {
+  background: var(--brillo-arriba), var(--relleno-amarillo) !important;
+}
+html[data-rol="donante"] :is(.mapa3d__lista .centro-tarjeta--desabastecido .centro-tarjeta__nombre, .mapa3d__lista .centro-tarjeta--desabastecido .centro-tarjeta__zona) {
+  color: #4A2306 !important;
+}
+html[data-rol="donante"] .escena3d {
+  background: radial-gradient(ellipse at 50% 45%, #FDD27C 0%, #FDC254 50%, #F2AE3C 100%) !important;
+}
+html[data-rol="donante"] .escena3d__arriba {
+  background: linear-gradient(180deg, rgba(253, 194, 84, 0.97) 0%, rgba(253, 194, 84, 0.85) 65%, rgba(253, 194, 84, 0) 100%) !important;
+}
+
+/* --- Administrador ----------------------------------------------- */
+html[data-rol="admin"] {
+  --relleno-rojo: linear-gradient(180deg, #0E4C94 0%, #093E7E 50%, #07336A 100%);
+  --relleno-azul: linear-gradient(180deg, #2E7AC4 0%, #236CB5 50%, #1D5C9C 100%);
+  --relleno-marfil: linear-gradient(180deg, #FEEBC4 0%, #FCDEA8 55%, #F4CF92 100%);
+  --relleno-amarillo: linear-gradient(180deg, #BCDDF2 0%, #A9D4EE 50%, #96C8E8 100%);
+  --relleno-coral: linear-gradient(180deg, #92C9EA 0%, #7FBEE4 50%, #6CB2DE 100%);
+  --relleno-azul-claro: linear-gradient(180deg, #5BAADB 0%, #459FD4 50%, #3A90C4 100%);
+  --rol-texto: #04223F;
+  --rol-texto-chico: #1D5C9C;
+  --fondo-pantalla:
+    radial-gradient(ellipse 34% 58% at 50% -4%, rgba(255, 255, 255, 0.36) 0%, rgba(255, 255, 255, 0) 72%),
+    radial-gradient(ellipse 85% 80% at 50% 42%, rgba(4, 34, 63, 0) 45%, rgba(4, 34, 63, 0.22) 100%),
+    linear-gradient(180deg, #66B8E0 0%, #58B0DC 55%, #4BA2CF 100%);
+  background: #58B0DC;
+}
+/* Secundarios: azul medio con texto azul muy oscuro */
+html[data-rol="admin"] :is(.boton.boton--secundario, .boton-inicio, .boton-contorno) {
+  background: var(--brillo-arriba), linear-gradient(180deg, #5BAADB 0%, #459FD4 50%, #3A90C4 100%) !important;
+  color: #04223F !important;
+}
+html[data-rol="admin"] :is(.vista h1, .admin-encabezado h1, .admin-encabezado__centro, .escena3d h1) {
+  color: var(--rol-texto) !important;
+}
+html[data-rol="admin"] :is(.campo__ayuda, .admin-instruccion, .escena3d__ayuda, .bandeja__nota) {
+  color: var(--rol-texto-chico) !important;
+}
+/* Menú: tres azules (claro, medio, más intenso) con texto azul oscuro */
+html[data-rol="admin"] .menu-admin__opcion.menu-admin__opcion--insumos {
+  background: var(--brillo-arriba), var(--relleno-amarillo) !important;
+}
+html[data-rol="admin"] .menu-admin__opcion.menu-admin__opcion--donacion {
+  background: var(--brillo-arriba), var(--relleno-coral) !important;
+}
+html[data-rol="admin"] .menu-admin__opcion.menu-admin__opcion--despacho {
+  background: var(--brillo-arriba), var(--relleno-azul-claro) !important;
+}
+html[data-rol="admin"] .menu-admin__opcion :is(.menu-admin__titulo, .menu-admin__descripcion, .menu-admin__flecha) {
+  color: #04223F !important;
+}
+html[data-rol="admin"] .menu-admin__pie .boton-texto {
+  color: #04223F !important;
+}
+/* Paneles de cada función con el azul de su botón del menú */
+html[data-rol="admin"] .vista-funcion-insumos .zoom-capa__panel {
+  background: var(--brillo-arriba), var(--relleno-amarillo) !important;
+}
+html[data-rol="admin"] :is(.vista-funcion-donacion .zoom-capa__panel, .vista-funcion-donacion form.tarjeta.formulario) {
+  background: var(--brillo-arriba), var(--relleno-coral) !important;
+}
+html[data-rol="admin"] .vista-funcion-despacho form.tarjeta.formulario {
+  background: var(--brillo-arriba), var(--relleno-azul-claro) !important;
+}
+html[data-rol="admin"] .escena3d {
+  background: radial-gradient(ellipse at 50% 45%, #8CCAEA 0%, #58B0DC 50%, #4398C6 100%) !important;
+}
+html[data-rol="admin"] .escena3d__arriba {
+  background: linear-gradient(180deg, rgba(88, 176, 220, 0.97) 0%, rgba(88, 176, 220, 0.85) 65%, rgba(88, 176, 220, 0) 100%) !important;
+}
+
+/* --- Texto de los botones principales (ambos roles): crema --------- */
+html[data-rol="donante"] :is(.boton:not(.boton--secundario):not(.boton--azul), .boton-principal),
+html[data-rol="admin"] :is(.boton:not(.boton--secundario):not(.boton--azul), .boton-principal) {
+  color: #FCDEA8 !important;
+}
+html[data-rol="admin"] :is(.boton-atras, .boton.boton--azul) {
+  color: #FCDEA8 !important;
+}
+
+/* --- Pantalla principal (bienvenida y elige tu perfil) ------------- */
+html[data-rol="inicio"] {
+  background: #7FB8CC;
+}
+html[data-rol="inicio"] body,
+html[data-rol="inicio"] body:has(.bienvenida-inicio) {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 30%, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 70%),
+    radial-gradient(ellipse 85% 80% at 50% 42%, rgba(1, 30, 65, 0) 45%, rgba(1, 30, 65, 0.18) 100%),
+    linear-gradient(180deg, #8DC1D3 0%, #7FB8CC 55%, #72ACC0 100%) !important;
+  background-attachment: fixed !important;
+}

@@ -110,6 +110,14 @@ function navegar() {
     limpiezaActual = null;
   }
 
+  // Rol de la pantalla: cada rol tiene su paleta (css/tema.css, al final).
+  // donante: cálida (naranjas) · admin: azules · inicio: pantalla principal.
+  document.documentElement.dataset.rol = /^#\/(admin|correos-enviados)/.test(hash)
+    ? 'admin'
+    : /^#\/donante\//.test(hash)
+      ? 'donante'
+      : 'inicio';
+
   const nivel = nivelDe(hash);
   contenedor.dataset.direccion =
     nivelAnterior === null || nivel >= nivelAnterior ? 'avanzar' : 'retroceder';

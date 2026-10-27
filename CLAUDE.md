@@ -33,6 +33,15 @@ placa) → correos automáticos (bandeja de prueba `#/correos-enviados`).
 El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabastecido.
 
 ## Estilo visual (acordado)
+- **Paletas por rol (oct 2026, mandan sobre lo de abajo):** `main.js` pone `<html data-rol>`
+  (`donante` / `admin` / `inicio`) y el final de `css/tema.css` cambia las variables de color.
+  - **Donador:** botones principales #AF2000, Volver #E47832, pequeños textos #E68D36 (sobre
+    crema se usa #9A4A0E), fondo #FDC254, secundarios #FEB454, textos/paneles #FCDEA8.
+  - **Admin:** textos/paneles #FCDEA8, fondo #58B0DC, secundarios #459FD4, pequeños textos
+    #236CB5 (sobre crema #1D5C9C), botones principales #093E7E. Menú y paneles de cada función
+    en azules (insumos #A9D4EE, donación #7FBEE4, despacho #459FD4) con texto #04223F.
+  - **Comunes:** estantería #A8623A (madera), gato #6B3A14 (café), pantalla principal #7FB8CC.
+  - Contraste: crema sobre los botones oscuros; texto oscuro sobre Volver, secundarios y fondos.
 - Paleta oficial (`claude_paleta`): rojo carmín #CC0100 (botón principal), rojo profundo #A5121A,
   azul Cruz Roja #011E41 (títulos/textos), azul petróleo #426D8C, coral #F67751 (gato),
   amarillo #FDD794, salvia #86B5A9, marfil #FFF8ED, beige arena #E8E1D5, marrón carbón #514B46.

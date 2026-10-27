@@ -24,11 +24,23 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { cargarGLB, MODELO_GATO } from './cargar-glb.js';
 
 const activos = new Set();
+const COLOR_GATO = '#6B3A14'; // café (paleta oct 2026)
 let base = null; // Promise<THREE.Group> del modelo original
 
 function cargarBase() {
   base ??= cargarGLB(new GLTFLoader(), MODELO_GATO).then((gltf) => {
     const modelo = gltf.scene;
+    // Color del gato de la paleta (café). Se cambian las partes coral
+    // (cabeza, cuerpo, cola, brazo); orejas, patitas, ojos y bigotes igual.
+    const coral = new THREE.Color('#F67751');
+    modelo.traverse((n) => {
+      if (!n.isMesh) return;
+      (Array.isArray(n.material) ? n.material : [n.material]).forEach((m) => {
+        if (m.color && Math.abs(m.color.r - coral.r) + Math.abs(m.color.g - coral.g) + Math.abs(m.color.b - coral.b) < 0.35) {
+          m.color.set(COLOR_GATO);
+        }
+      });
+    });
     // El modelo mira hacia +x: se gira para que mire a la cámara (+z).
     modelo.rotation.y = -Math.PI / 2;
     const raiz = new THREE.Group();
@@ -92,9 +104,9 @@ async function montarUno(el) {
   const escena = new THREE.Scene();
   // Poca luz de relleno y una luz principal de lado: el gato se ve un poco
   // más oscuro y se notan sus sombras (volumen).
-  escena.add(new THREE.AmbientLight('#FFF4EA', 0.35));
-  escena.add(new THREE.HemisphereLight('#FFF8EE', '#B98A6E', 0.75));
-  const sol = new THREE.DirectionalLight('#FFF1E0', 2.1);
+  escena.add(new THREE.AmbientLight('#FFF4EA', 0.6));
+  escena.add(new THREE.HemisphereLight('#FFF8EE', '#B98A6E', 1.0));
+  const sol = new THREE.DirectionalLight('#FFF1E0', 2.4);
   sol.position.set(2.6, 3.2, 3);
   escena.add(sol);
   const borde = new THREE.DirectionalLight('#FFD9B8', 0.8); // luz de contorno cálida

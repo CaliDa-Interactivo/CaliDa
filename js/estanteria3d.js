@@ -130,8 +130,45 @@ function texturaPlaca(texto, { extra = '', estado = null, proporcion = 5 } = {},
   let tam = alto * 0.5;
   const textoCompleto = extra ? `${texto}  ${extra}` : texto;
   const margen = alto * 1.0 + (estado ? alto * 0.5 : 0);
+  const disponible = ancho - margen * 1.4;
   ctx.font = `800 ${tam}px ${familia}`;
-  while (ctx.measureText(textoCompleto).width > ancho - margen * 1.4 && tam > alto * 0.24) {
+  while (ctx.measureText(textoCompleto).width > disponible && tam > alto * 0.3) {
+    tam -= 2;
+    ctx.font = `800 ${tam}px ${familia}`;
+  }
+  // Si aun así no cabe (placas angostas y nombres largos, p. ej. "Comida
+  // para animales"), se parte en dos líneas que siempre quedan adentro.
+  if (ctx.measureText(textoCompleto).width > disponible && !extra && texto.includes(' ')) {
+    const palabras = texto.split(' ');
+    let mejor = null;
+    for (let i = 1; i < palabras.length; i++) {
+      const lineas = [palabras.slice(0, i).join(' '), palabras.slice(i).join(' ')];
+      const ancho1 = Math.max(...lineas.map((l) => ctx.measureText(l).width));
+      if (!mejor || ancho1 < mejor.ancho) mejor = { lineas, ancho: ancho1 };
+    }
+    // En dos líneas solo se reserva el espacio de los clavitos (y del punto).
+    const disponibleDoble = ancho - alto * 1.1 - (estado ? alto * 0.45 : 0);
+    tam = Math.min(alto * 0.36, tam * (disponibleDoble / mejor.ancho));
+    ctx.font = `800 ${tam}px ${familia}`;
+    ctx.fillStyle = '#011E41';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const anchoLineas = Math.max(...mejor.lineas.map((l) => ctx.measureText(l).width));
+    const centroX = ancho / 2 + (estado ? tam * 0.45 : 0);
+    mejor.lineas.forEach((l, i) => ctx.fillText(l, centroX, alto / 2 + (i - 0.5) * tam * 1.08));
+    if (estado) {
+      ctx.fillStyle = COLOR_ESTADO[estado] ?? '#B8AD9C';
+      ctx.beginPath();
+      ctx.arc(centroX - anchoLineas / 2 - tam * 0.5, alto / 2, tam * 0.28, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    const texturaDoble = registrar(new THREE.CanvasTexture(lienzo));
+    if ('colorSpace' in texturaDoble) texturaDoble.colorSpace = THREE.SRGBColorSpace;
+    texturaDoble.anisotropy = 4;
+    return texturaDoble;
+  }
+  // Último recurso: achicar hasta que quepa en una línea.
+  while (ctx.measureText(textoCompleto).width > disponible && tam > 8) {
     tam -= 2;
     ctx.font = `800 ${tam}px ${familia}`;
   }
@@ -493,7 +530,8 @@ export function montarEstanteria3D(o) {
     // (emissive) y la luz solo agrega un sombreado suave, así el mueble se
     // ve parejo en todas sus caras, sin manchas de luz ni zonas oscuras.
     const madera = registrar(
-      new THREE.MeshLambertMaterial({ color: '#5E4128', emissive: '#B98450', emissiveIntensity: 1 })
+      // Color de la paleta: #A8623A (madera más oscura y rojiza).
+      new THREE.MeshLambertMaterial({ color: '#7A4826', emissive: '#7E4524', emissiveIntensity: 1 })
     );
     mueble.traverse((n) => {
       if (n.isMesh) {
