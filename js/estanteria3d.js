@@ -91,7 +91,7 @@ function encajar(objeto, ancho, alto, fondo) {
 // madera, dos clavitos y el texto. Se dibuja en un canvas (textura).
 const COLOR_ESTADO = { urgente: '#CC0100', desabastecido: '#F2C14E', medio: '#86B5A9', abastecido: '#B8AD9C' };
 
-function texturaPlaca(texto, { extra = '', estado = null, proporcion = 5 } = {}, registrar) {
+function texturaPlaca(texto, { extra = '', estado = null, proporcion = 5, fraccion = null } = {}, registrar) {
   const ancho = 1024;
   const alto = Math.round(ancho / proporcion);
   const lienzo = document.createElement('canvas');
@@ -125,74 +125,74 @@ function texturaPlaca(texto, { extra = '', estado = null, proporcion = 5 } = {},
     ctx.arc(x, alto / 2, alto * 0.07, 0, Math.PI * 2);
     ctx.fill();
   });
-  // Texto (con punto de estado opcional)
-  const familia = '"Montserrat", "Segoe UI", Arial, sans-serif';
-  let tam = alto * 0.5;
-  const textoCompleto = extra ? `${texto}  ${extra}` : texto;
-  const margen = alto * 1.0 + (estado ? alto * 0.5 : 0);
-  const disponible = ancho - margen * 1.4;
-  ctx.font = `800 ${tam}px ${familia}`;
-  while (ctx.measureText(textoCompleto).width > disponible && tam > alto * 0.3) {
-    tam -= 2;
-    ctx.font = `800 ${tam}px ${familia}`;
-  }
-  // Si aun así no cabe (placas angostas y nombres largos, p. ej. "Comida
-  // para animales"), se parte en dos líneas que siempre quedan adentro.
-  if (ctx.measureText(textoCompleto).width > disponible && !extra && texto.includes(' ')) {
-    const palabras = texto.split(' ');
-    let mejor = null;
-    for (let i = 1; i < palabras.length; i++) {
-      const lineas = [palabras.slice(0, i).join(' '), palabras.slice(i).join(' ')];
-      const ancho1 = Math.max(...lineas.map((l) => ctx.measureText(l).width));
-      if (!mejor || ancho1 < mejor.ancho) mejor = { lineas, ancho: ancho1 };
-    }
-    // En dos líneas solo se reserva el espacio de los clavitos (y del punto).
-    const disponibleDoble = ancho - alto * 1.1 - (estado ? alto * 0.45 : 0);
-    tam = Math.min(alto * 0.36, tam * (disponibleDoble / mejor.ancho));
-    ctx.font = `800 ${tam}px ${familia}`;
-    ctx.fillStyle = '#011E41';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    const anchoLineas = Math.max(...mejor.lineas.map((l) => ctx.measureText(l).width));
-    const centroX = ancho / 2 + (estado ? tam * 0.45 : 0);
-    mejor.lineas.forEach((l, i) => ctx.fillText(l, centroX, alto / 2 + (i - 0.5) * tam * 1.08));
-    if (estado) {
-      ctx.fillStyle = COLOR_ESTADO[estado] ?? '#B8AD9C';
-      ctx.beginPath();
-      ctx.arc(centroX - anchoLineas / 2 - tam * 0.5, alto / 2, tam * 0.28, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    const texturaDoble = registrar(new THREE.CanvasTexture(lienzo));
-    if ('colorSpace' in texturaDoble) texturaDoble.colorSpace = THREE.SRGBColorSpace;
-    texturaDoble.anisotropy = 4;
-    return texturaDoble;
-  }
-  // Último recurso: achicar hasta que quepa en una línea.
-  while (ctx.measureText(textoCompleto).width > disponible && tam > 8) {
-    tam -= 2;
-    ctx.font = `800 ${tam}px ${familia}`;
-  }
-  const anchoTexto = ctx.measureText(textoCompleto).width + (estado ? tam * 0.9 : 0);
-  let x = (ancho - anchoTexto) / 2;
+  // Texto (con punto de estado opcional), en una o dos líneas.
+  const tam = (fraccion ?? fraccionMaxima(texto, { extra, estado, proporcion })) * alto;
+  const { lineas } = disenoTexto(ctx, texto, { extra, estado }, ancho, alto, tam);
+  ctx.font = `800 ${tam}px ${FAMILIA_PLACA}`;
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'left';
+  const anchoLineas = Math.max(...lineas.map((l) => ctx.measureText(l).width));
+  const anchoBloque = anchoLineas + (estado ? tam * 0.9 : 0);
+  const x0 = (ancho - anchoBloque) / 2;
   if (estado) {
     ctx.fillStyle = COLOR_ESTADO[estado] ?? '#B8AD9C';
     ctx.beginPath();
-    ctx.arc(x + tam * 0.3, alto / 2, tam * 0.28, 0, Math.PI * 2);
+    ctx.arc(x0 + tam * 0.3, alto / 2, tam * 0.28, 0, Math.PI * 2);
     ctx.fill();
-    x += tam * 0.9;
   }
-  ctx.fillStyle = '#011E41';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(texto, x, alto / 2 + tam * 0.04);
-  if (extra) {
-    const wTexto = ctx.measureText(`${texto}  `).width;
-    ctx.fillStyle = '#426D8C';
-    ctx.fillText(extra, x + wTexto, alto / 2 + tam * 0.04);
-  }
+  const xTexto = x0 + (estado ? tam * 0.9 : 0);
+  lineas.forEach((linea, i) => {
+    const y = alto / 2 + tam * 0.04 + (i - (lineas.length - 1) / 2) * tam * 1.08;
+    if (extra && linea.endsWith(extra)) {
+      // "Nombre  3/5": el número va en azul petróleo.
+      const nombre = linea.slice(0, -extra.length);
+      ctx.fillStyle = '#011E41';
+      ctx.fillText(nombre, xTexto, y);
+      ctx.fillStyle = '#426D8C';
+      ctx.fillText(extra, xTexto + ctx.measureText(nombre).width, y);
+    } else {
+      ctx.fillStyle = '#011E41';
+      ctx.textAlign = 'left';
+      ctx.fillText(linea, xTexto + (anchoLineas - ctx.measureText(linea).width) / 2, y);
+    }
+  });
   const textura = registrar(new THREE.CanvasTexture(lienzo));
   if ('colorSpace' in textura) textura.colorSpace = THREE.SRGBColorSpace;
   textura.anisotropy = 4;
   return textura;
+}
+
+const FAMILIA_PLACA = '"Montserrat", "Segoe UI", Arial, sans-serif';
+
+// Reparte el texto en una línea o, si no cabe, en dos (partiendo entre
+// palabras por donde quede más parejo). Dice si cabe con ese tamaño.
+function disenoTexto(ctx, texto, { extra = '', estado = null }, ancho, alto, tam) {
+  ctx.font = `800 ${tam}px ${FAMILIA_PLACA}`;
+  const disponible = ancho - alto * 1.1 - (estado ? tam * 0.9 : 0);
+  const completo = extra ? `${texto}  ${extra}` : texto;
+  if (ctx.measureText(completo).width <= disponible) return { lineas: [completo], cabe: true };
+  const palabras = completo.split(' ').filter(Boolean);
+  let mejor = null;
+  for (let i = 1; i < palabras.length; i++) {
+    const lineas = [palabras.slice(0, i).join(' '), palabras.slice(i).join(' ')];
+    const anchoMax = Math.max(...lineas.map((l) => ctx.measureText(l).width));
+    if (!mejor || anchoMax < mejor.anchoMax) mejor = { lineas, anchoMax };
+  }
+  if (!mejor) return { lineas: [completo], cabe: false };
+  const cabeAlto = tam * 2.16 <= alto * 0.8;
+  return { lineas: mejor.lineas, cabe: mejor.anchoMax <= disponible && cabeAlto };
+}
+
+let ctxMedir = null;
+// Mayor tamaño de letra (fracción del alto de la placa) con el que el
+// texto cabe entero, en una o dos líneas.
+function fraccionMaxima(texto, { extra = '', estado = null, proporcion = 5 } = {}) {
+  ctxMedir ??= document.createElement('canvas').getContext('2d');
+  const ancho = 1024;
+  const alto = Math.round(ancho / proporcion);
+  let f = 0.5;
+  while (f > 0.1 && !disenoTexto(ctxMedir, texto, { extra, estado }, ancho, alto, f * alto).cabe) f -= 0.01;
+  return f;
 }
 
 function crearPlaca(texto, ancho, alto, opciones, registrar) {
@@ -543,6 +543,46 @@ export function montarEstanteria3D(o) {
     mueble.rotation.y = Math.PI; // la cara abierta mira hacia la cámara
     escena.add(mueble);
 
+    // Sombra suave en el suelo, alrededor de la base del mueble (le da
+    // peso y dimensión, como si estuviera apoyado en el piso).
+    mueble.updateMatrixWorld(true);
+    const base = new THREE.Box3().setFromObject(mueble);
+    const lienzoSombra = document.createElement('canvas');
+    lienzoSombra.width = lienzoSombra.height = 256;
+    const ctxS = lienzoSombra.getContext('2d');
+    const degradado = ctxS.createRadialGradient(128, 128, 10, 128, 128, 128);
+    degradado.addColorStop(0, 'rgba(60, 30, 10, 0.55)');
+    degradado.addColorStop(0.55, 'rgba(60, 30, 10, 0.28)');
+    degradado.addColorStop(1, 'rgba(60, 30, 10, 0)');
+    ctxS.fillStyle = degradado;
+    ctxS.fillRect(0, 0, 256, 256);
+    const sombraMueble = new THREE.Mesh(
+      registrar(new THREE.PlaneGeometry((base.max.x - base.min.x) * 1.35, (base.max.z - base.min.z) * 2.6)),
+      registrar(
+        new THREE.MeshBasicMaterial({ map: registrar(new THREE.CanvasTexture(lienzoSombra)), transparent: true, depthWrite: false })
+      )
+    );
+    sombraMueble.rotation.x = -Math.PI / 2;
+    sombraMueble.position.set((base.min.x + base.max.x) / 2, base.min.y + 0.005, (base.min.z + base.max.z) / 2 + 0.15);
+    escena.add(sombraMueble);
+
+    // Letreros de las subcategorías: todos con el mismo tamaño de letra
+    // (el mayor con el que cabe el nombre más largo en su placa).
+    const ALTO_LETRERO = 0.21;
+    const anchoLetrero = (cat, zona) =>
+      Math.min(1.25, ((COMPARTIMIENTOS[cat].x1 - COMPARTIMIENTOS[cat].x0) / zona.categoria.subcategorias.length) * 0.9);
+    let fraccionLetreros = 0.5;
+    for (const [cat, zona] of zonas) {
+      for (const sub of zona.categoria.subcategorias) {
+        const f = fraccionMaxima(sub.nombre, {
+          extra: extraEtiqueta ? extraEtiqueta(sub.id) : '',
+          estado: estadoDe?.(sub.id) ?? null,
+          proporcion: anchoLetrero(cat, zona) / ALTO_LETRERO,
+        });
+        fraccionLetreros = Math.min(fraccionLetreros, f);
+      }
+    }
+
     // Productos: uno por subcategoría, repartidos en su compartimiento.
     const tareas = [];
     for (const [cat, zona] of zonas) {
@@ -572,9 +612,9 @@ export function montarEstanteria3D(o) {
         // Etiqueta 3D del producto, en el frente de la tabla debajo de él.
         const etiqueta3d = crearPlaca(
           sub.nombre,
-          Math.min(1.25, ancho * 0.9),
-          0.21,
-          { extra: extraEtiqueta ? extraEtiqueta(sub.id) : '', estado: estado ?? null },
+          anchoLetrero(cat, zona),
+          ALTO_LETRERO,
+          { extra: extraEtiqueta ? extraEtiqueta(sub.id) : '', estado: estado ?? null, fraccion: fraccionLetreros },
           registrar
         );
         etiqueta3d.position.set(x, c.y0 - 0.125, FRENTE_Z + 0.04);

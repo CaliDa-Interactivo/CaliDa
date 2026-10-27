@@ -24,7 +24,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { cargarGLB, MODELO_GATO } from './cargar-glb.js';
 
 const activos = new Set();
-const COLOR_GATO = '#6B3A14'; // café (paleta oct 2026)
+const COLOR_GATO = '#A8623A'; // mismo color de la estantería (paleta oct 2026)
 let base = null; // Promise<THREE.Group> del modelo original
 
 function cargarBase() {

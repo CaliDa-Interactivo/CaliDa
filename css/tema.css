@@ -2948,138 +2948,122 @@ body:has(.bienvenida-inicio) {
 
 /* ===================================================================
    PALETAS POR ROL (oct 2026). main.js pone <html data-rol="…">:
-   donante (cálida), admin (azules) e inicio (pantalla principal).
-   Contraste: el crema #FCDEA8 va como texto sobre los botones
-   oscuros; sobre colores claros el texto es oscuro; los "pequeños
-   textos" se oscurecen un poco para leerse sobre el crema.
+   donante (cálidos), admin (azules) e inicio (pantalla principal).
+   Versión suave: tonos de la paleta del equipo un poco menos
+   saturados para que todo se vea armonioso y sencillo. Botones:
+   principal de color con texto crema; Volver y secundarios claros
+   con texto oscuro del rol (siempre legibles sobre el fondo).
    =================================================================== */
 
 /* --- Donador ------------------------------------------------------ */
 html[data-rol="donante"] {
-  --relleno-rojo: linear-gradient(180deg, #BD2A06 0%, #AF2000 50%, #9A1C00 100%);
-  --relleno-azul: linear-gradient(180deg, #EA8642 0%, #E47832 50%, #D46C28 100%);
-  --relleno-amarillo: linear-gradient(180deg, #FEC06A 0%, #FEB454 50%, #F5A63F 100%);
-  --relleno-marfil: linear-gradient(180deg, #FEEBC4 0%, #FCDEA8 55%, #F4CF92 100%);
-  --relieve-claro: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -3px 5px rgba(122, 58, 10, 0.14);
-  --rol-texto: #4A2306;
-  --rol-texto-chico: #9A4A0E;
-  --rol-panel: #FCDEA8;
+  --relleno-rojo: linear-gradient(180deg, #C24E33 0%, #B8432A 55%, #A83B24 100%);
+  --relleno-azul: linear-gradient(180deg, #FFF8EB 0%, #FFF3DE 55%, #F6E4C6 100%);
+  --relleno-amarillo: linear-gradient(180deg, #F8D089 0%, #F4C66E 55%, #EDB95C 100%);
+  --relleno-marfil: linear-gradient(180deg, #FFFBF3 0%, #FFF6E6 55%, #F8EBD3 100%);
+  --relieve-claro: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -3px 5px rgba(138, 59, 18, 0.12);
+  --rol-oscuro: #8A3B12;
+  --rol-texto: #5A2A0C;
   --fondo-pantalla:
-    radial-gradient(ellipse 34% 58% at 50% -4%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 72%),
-    radial-gradient(ellipse 85% 80% at 50% 42%, rgba(122, 58, 10, 0) 45%, rgba(122, 58, 10, 0.22) 100%),
-    linear-gradient(180deg, #FDCB6C 0%, #FDC254 55%, #F6B444 100%);
-  background: #FDC254;
+    radial-gradient(ellipse 34% 58% at 50% -4%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 72%),
+    radial-gradient(ellipse 85% 80% at 50% 42%, rgba(138, 59, 18, 0) 50%, rgba(138, 59, 18, 0.14) 100%),
+    linear-gradient(180deg, #F9D896 0%, #F7CD80 55%, #F3C06C 100%);
+  background: #F7CD80;
 }
-/* Volver (naranja) y botones azules del donante: texto café oscuro */
-html[data-rol="donante"] :is(.boton-atras, .boton.boton--azul, .chip-zona[aria-pressed="true"]) {
-  color: #3B1A05 !important;
+/* --- Administrador ----------------------------------------------- */
+html[data-rol="admin"] {
+  --relleno-rojo: linear-gradient(180deg, #2A62A0 0%, #1F5490 55%, #1A4A80 100%);
+  --relleno-azul: linear-gradient(180deg, #FFFBF3 0%, #FFF3DE 55%, #F3E6CC 100%);
+  --relleno-marfil: linear-gradient(180deg, #FFFCF6 0%, #FFF8EC 55%, #F5ECDA 100%);
+  --relleno-amarillo: linear-gradient(180deg, #EAF4FB 0%, #E3F0F9 55%, #D6E8F5 100%);
+  --relleno-coral: linear-gradient(180deg, #D9EAF6 0%, #CFE5F4 55%, #C2DCEF 100%);
+  --relleno-azul-claro: linear-gradient(180deg, #C6E0F2 0%, #B9D9EF 55%, #A9CFE9 100%);
+  --relieve-claro: inset 0 1px 0 rgba(255, 255, 255, 0.75), inset 0 -3px 5px rgba(18, 64, 110, 0.12);
+  --rol-oscuro: #12406E;
+  --rol-texto: #0D3459;
+  --fondo-pantalla:
+    radial-gradient(ellipse 34% 58% at 50% -4%, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0) 72%),
+    radial-gradient(ellipse 85% 80% at 50% 42%, rgba(13, 52, 89, 0) 50%, rgba(13, 52, 89, 0.16) 100%),
+    linear-gradient(180deg, #8CC2E2 0%, #7DB8DC 55%, #6FAED6 100%);
+  background: #7DB8DC;
 }
-/* Secundarios: amarillo con texto café */
-html[data-rol="donante"] :is(.boton.boton--secundario, .boton-inicio, .boton-contorno) {
-  background: var(--brillo-arriba), var(--relleno-amarillo) !important;
-  color: #4A2306 !important;
+
+/* Botón principal: color del rol con texto crema */
+html:is([data-rol="donante"], [data-rol="admin"]) :is(.boton:not(.boton--secundario):not(.boton--azul), .boton-principal) {
+  color: #FFF6E6 !important;
 }
-/* Paneles, mensajes del gato y tarjetas: crema */
-html[data-rol="donante"] :is(.pantalla-panel, .gato-asoma--lado .gato-guia__globo, .gato-guia__globo, .ficha-centro__foto) {
+/* Volver, botones "azules" (acciones de apoyo) y secundarios: claros con
+   texto oscuro del rol y un borde suave para que se separen del fondo */
+html:is([data-rol="donante"], [data-rol="admin"]) :is(.boton-atras, .boton.boton--azul, .boton.boton--secundario, .boton-inicio, .boton-contorno) {
+  background: var(--brillo-arriba), var(--relleno-azul) !important;
+  color: var(--rol-oscuro) !important;
+  border: 2px solid rgba(255, 255, 255, 0.85) !important;
+  text-shadow: none !important;
+}
+html:is([data-rol="donante"], [data-rol="admin"]) .chip-zona[aria-pressed="true"] {
+  background: var(--relleno-rojo) !important;
+  color: #FFF6E6 !important;
+}
+/* Paneles y mensajes: crema claro */
+html:is([data-rol="donante"], [data-rol="admin"]) :is(.pantalla-panel, .gato-guia__globo, .ficha-centro__foto) {
   background: var(--brillo-arriba), var(--relleno-marfil) !important;
 }
-html[data-rol="donante"] :is(.vista h1, .mapa3d__titulo-lista, .ficha__nombre, .escena3d h1, .gato-mapa__detalle, .gato-mapa__colores) {
+/* Títulos y textos sobre el fondo, en el oscuro del rol */
+html:is([data-rol="donante"], [data-rol="admin"]) :is(.vista h1, .vista h2, .escena3d h1, .admin-encabezado h1, .mapa3d__titulo-lista, .ficha__nombre, .gato-mapa__detalle, .gato-mapa__colores, .menu-admin__pie .boton-texto) {
   color: var(--rol-texto) !important;
 }
-html[data-rol="donante"] :is(.mapa3d__ubicacion-estado, .ficha-centro__nota, .campo__ayuda, .escena3d__ayuda, .prerregistro__donde, .ficha-centro__chips strong) {
-  color: var(--rol-texto-chico) !important;
-}
 html[data-rol="donante"] .vista-mapa3d .gato-asoma--lado .gato-mapa__principal {
-  color: #AF2000 !important;
+  color: #B8432A !important;
 }
-/* Conteo de las zonas y mapa con fondo cálido oscuro (las zonas resaltan) */
-html[data-rol="donante"] .vista-mapa3d .chip-zona__conteo {
-  background: #9A4A0E !important;
-  color: #FCDEA8 !important;
+html[data-rol="admin"] .gato-asoma--lado .gato-mapa__principal {
+  color: #1F5490 !important;
 }
+
+/* Mapa del donante: fondo café suave (las zonas resaltan), conteos y
+   tarjetas de centros en tonos cálidos */
 html[data-rol="donante"] .vista-mapa3d .mapa3d {
-  background: radial-gradient(ellipse 70% 60% at 50% 42%, #9A4A1C 0%, #7A3412 55%, #5A240A 100%) !important;
+  background: radial-gradient(ellipse 70% 60% at 50% 42%, #9C6A48 0%, #85563A 55%, #6E4129 100%) !important;
+}
+html[data-rol="donante"] .vista-mapa3d .chip-zona__conteo {
+  background: #8A3B12 !important;
+  color: #FFF6E6 !important;
 }
 html[data-rol="donante"] .mapa3d__lista .centro-tarjeta.centro-tarjeta--desabastecido {
   background: var(--brillo-arriba), var(--relleno-amarillo) !important;
 }
 html[data-rol="donante"] :is(.mapa3d__lista .centro-tarjeta--desabastecido .centro-tarjeta__nombre, .mapa3d__lista .centro-tarjeta--desabastecido .centro-tarjeta__zona) {
-  color: #4A2306 !important;
-}
-html[data-rol="donante"] .escena3d {
-  background: radial-gradient(ellipse at 50% 45%, #FDD27C 0%, #FDC254 50%, #F2AE3C 100%) !important;
-}
-html[data-rol="donante"] .escena3d__arriba {
-  background: linear-gradient(180deg, rgba(253, 194, 84, 0.97) 0%, rgba(253, 194, 84, 0.85) 65%, rgba(253, 194, 84, 0) 100%) !important;
+  color: #5A2A0C !important;
 }
 
-/* --- Administrador ----------------------------------------------- */
-html[data-rol="admin"] {
-  --relleno-rojo: linear-gradient(180deg, #0E4C94 0%, #093E7E 50%, #07336A 100%);
-  --relleno-azul: linear-gradient(180deg, #2E7AC4 0%, #236CB5 50%, #1D5C9C 100%);
-  --relleno-marfil: linear-gradient(180deg, #FEEBC4 0%, #FCDEA8 55%, #F4CF92 100%);
-  --relleno-amarillo: linear-gradient(180deg, #BCDDF2 0%, #A9D4EE 50%, #96C8E8 100%);
-  --relleno-coral: linear-gradient(180deg, #92C9EA 0%, #7FBEE4 50%, #6CB2DE 100%);
-  --relleno-azul-claro: linear-gradient(180deg, #5BAADB 0%, #459FD4 50%, #3A90C4 100%);
-  --rol-texto: #04223F;
-  --rol-texto-chico: #1D5C9C;
-  --fondo-pantalla:
-    radial-gradient(ellipse 34% 58% at 50% -4%, rgba(255, 255, 255, 0.36) 0%, rgba(255, 255, 255, 0) 72%),
-    radial-gradient(ellipse 85% 80% at 50% 42%, rgba(4, 34, 63, 0) 45%, rgba(4, 34, 63, 0.22) 100%),
-    linear-gradient(180deg, #66B8E0 0%, #58B0DC 55%, #4BA2CF 100%);
-  background: #58B0DC;
+/* Escenas 3D (estantería) con el fondo del rol */
+html[data-rol="donante"] .escena3d {
+  background: radial-gradient(ellipse at 50% 45%, #FBE0A8 0%, #F7CD80 50%, #F0BC66 100%) !important;
 }
-/* Secundarios: azul medio con texto azul muy oscuro */
-html[data-rol="admin"] :is(.boton.boton--secundario, .boton-inicio, .boton-contorno) {
-  background: var(--brillo-arriba), linear-gradient(180deg, #5BAADB 0%, #459FD4 50%, #3A90C4 100%) !important;
-  color: #04223F !important;
+html[data-rol="donante"] .escena3d__arriba {
+  background: linear-gradient(180deg, rgba(247, 205, 128, 0.97) 0%, rgba(247, 205, 128, 0.85) 65%, rgba(247, 205, 128, 0) 100%) !important;
 }
-html[data-rol="admin"] :is(.vista h1, .admin-encabezado h1, .admin-encabezado__centro, .escena3d h1) {
-  color: var(--rol-texto) !important;
+html[data-rol="admin"] .escena3d {
+  background: radial-gradient(ellipse at 50% 45%, #A9D3EC 0%, #7DB8DC 50%, #66A6CF 100%) !important;
 }
-html[data-rol="admin"] :is(.campo__ayuda, .admin-instruccion, .escena3d__ayuda, .bandeja__nota) {
-  color: var(--rol-texto-chico) !important;
+html[data-rol="admin"] .escena3d__arriba {
+  background: linear-gradient(180deg, rgba(125, 184, 220, 0.97) 0%, rgba(125, 184, 220, 0.85) 65%, rgba(125, 184, 220, 0) 100%) !important;
 }
-/* Menú: tres azules (claro, medio, más intenso) con texto azul oscuro */
-html[data-rol="admin"] .menu-admin__opcion.menu-admin__opcion--insumos {
-  background: var(--brillo-arriba), var(--relleno-amarillo) !important;
-}
-html[data-rol="admin"] .menu-admin__opcion.menu-admin__opcion--donacion {
-  background: var(--brillo-arriba), var(--relleno-coral) !important;
-}
-html[data-rol="admin"] .menu-admin__opcion.menu-admin__opcion--despacho {
-  background: var(--brillo-arriba), var(--relleno-azul-claro) !important;
-}
-html[data-rol="admin"] .menu-admin__opcion :is(.menu-admin__titulo, .menu-admin__descripcion, .menu-admin__flecha) {
-  color: #04223F !important;
-}
-html[data-rol="admin"] .menu-admin__pie .boton-texto {
-  color: #04223F !important;
-}
-/* Paneles de cada función con el azul de su botón del menú */
+
+/* Menú del admin y paneles de cada función: tres azules suaves */
+html[data-rol="admin"] .menu-admin__opcion.menu-admin__opcion--insumos,
 html[data-rol="admin"] .vista-funcion-insumos .zoom-capa__panel {
   background: var(--brillo-arriba), var(--relleno-amarillo) !important;
 }
+html[data-rol="admin"] .menu-admin__opcion.menu-admin__opcion--donacion,
 html[data-rol="admin"] :is(.vista-funcion-donacion .zoom-capa__panel, .vista-funcion-donacion form.tarjeta.formulario) {
   background: var(--brillo-arriba), var(--relleno-coral) !important;
 }
+html[data-rol="admin"] .menu-admin__opcion.menu-admin__opcion--despacho,
 html[data-rol="admin"] .vista-funcion-despacho form.tarjeta.formulario {
   background: var(--brillo-arriba), var(--relleno-azul-claro) !important;
 }
-html[data-rol="admin"] .escena3d {
-  background: radial-gradient(ellipse at 50% 45%, #8CCAEA 0%, #58B0DC 50%, #4398C6 100%) !important;
-}
-html[data-rol="admin"] .escena3d__arriba {
-  background: linear-gradient(180deg, rgba(88, 176, 220, 0.97) 0%, rgba(88, 176, 220, 0.85) 65%, rgba(88, 176, 220, 0) 100%) !important;
-}
-
-/* --- Texto de los botones principales (ambos roles): crema --------- */
-html[data-rol="donante"] :is(.boton:not(.boton--secundario):not(.boton--azul), .boton-principal),
-html[data-rol="admin"] :is(.boton:not(.boton--secundario):not(.boton--azul), .boton-principal) {
-  color: #FCDEA8 !important;
-}
-html[data-rol="admin"] :is(.boton-atras, .boton.boton--azul) {
-  color: #FCDEA8 !important;
+html[data-rol="admin"] .menu-admin__opcion :is(.menu-admin__titulo, .menu-admin__descripcion, .menu-admin__flecha) {
+  color: #0D3459 !important;
 }
 
 /* --- Pantalla principal (bienvenida y elige tu perfil) ------------- */
@@ -3090,7 +3074,92 @@ html[data-rol="inicio"] body,
 html[data-rol="inicio"] body:has(.bienvenida-inicio) {
   background:
     radial-gradient(ellipse 70% 50% at 50% 30%, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 70%),
-    radial-gradient(ellipse 85% 80% at 50% 42%, rgba(1, 30, 65, 0) 45%, rgba(1, 30, 65, 0.18) 100%),
+    radial-gradient(ellipse 85% 80% at 50% 42%, rgba(1, 30, 65, 0) 45%, rgba(1, 30, 65, 0.16) 100%),
     linear-gradient(180deg, #8DC1D3 0%, #7FB8CC 55%, #72ACC0 100%) !important;
   background-attachment: fixed !important;
+}
+
+/* ===================================================================
+   TIPOGRAFÍA (oct 2026): títulos 40px, subtítulos 28px, párrafos
+   14px y pequeños textos 12px (en celular los títulos bajan un poco).
+   =================================================================== */
+.vista h1,
+.escena3d h1,
+.admin-encabezado h1,
+.bienvenida-inicio h1,
+.vista-columnas .prerregistro h1,
+.vista-columnas .ficha__nombre {
+  font-size: 40px !important;
+  line-height: 1.15 !important;
+}
+.vista h2,
+.zoom-capa__panel h2,
+.mapa3d__titulo-lista,
+.tarjeta-entrada h2,
+.necesidades__titulo {
+  font-size: 28px !important;
+  line-height: 1.2 !important;
+}
+.vista p:not(.mapa__indicador):not(.estado-grande):not(.prerregistro__que):not(.formulario__categoria),
+.gato-guia__globo p,
+.bienvenida-inicio__apoyo,
+.menu-admin__descripcion,
+.tarjeta-entrada p {
+  font-size: 14px !important;
+}
+@media (max-width: 600px) {
+  .vista h1,
+  .escena3d h1,
+  .admin-encabezado h1,
+  .bienvenida-inicio h1,
+  .vista-columnas .prerregistro h1,
+  .vista-columnas .ficha__nombre {
+    font-size: 30px !important;
+  }
+  .vista h2,
+  .zoom-capa__panel h2,
+  .mapa3d__titulo-lista,
+  .tarjeta-entrada h2,
+  .necesidades__titulo {
+    font-size: 22px !important;
+  }
+}
+
+/* Pequeños textos: 12px y en blanco. Para que el blanco se lea sobre
+   los fondos claros, cada uno va sobre una pastilla suave del tono
+   oscuro del rol. */
+:is(.mapa3d__ubicacion-estado, .escena3d__ayuda, .admin-instruccion, .admin-encabezado__centro, .campo__ayuda, .ficha-centro__nota, .bandeja__nota, .prerregistro__ubicacion-estado, .zoom__instruccion, .necesidades-editor__ayuda, .pasos-insumo__indicador) {
+  font-size: 12px !important;
+  color: #FFFFFF !important;
+}
+html:is([data-rol="donante"], [data-rol="admin"]) :is(.mapa3d__ubicacion-estado:not(:empty), .escena3d__ayuda, .admin-instruccion, .admin-encabezado__centro, .campo__ayuda, .ficha-centro__nota, .bandeja__nota, .prerregistro__ubicacion-estado:not(:empty), .zoom__instruccion, .necesidades-editor__ayuda, .pasos-insumo__indicador) {
+  display: inline-block;
+  width: auto;
+  max-width: 100%;
+  padding: 0.25rem 0.7rem !important;
+  border-radius: 999px !important;
+  background: color-mix(in srgb, var(--rol-oscuro) 82%, transparent) !important;
+  box-shadow: none !important;
+  line-height: 1.35;
+}
+.admin-encabezado__centro::before {
+  filter: brightness(10);
+}
+
+/* Estantería: sombra suave alrededor del mueble sobre el fondo (además
+   de la sombra en el piso), para que se vea con más dimensión. */
+.estanteria3d__canvas {
+  filter: drop-shadow(0 18px 22px rgba(90, 40, 10, 0.32)) drop-shadow(0 4px 6px rgba(90, 40, 10, 0.2));
+}
+
+/* Botones − / + de cantidad: color principal del rol, texto crema */
+html:is([data-rol="donante"], [data-rol="admin"]) .pasos-insumo .seccion-nivel__boton:not(:disabled) {
+  background: var(--brillo-arriba), var(--relleno-rojo) !important;
+  color: #FFF6E6 !important;
+}
+/* Las pastillas de pequeños textos solo ocupan lo que mide su texto */
+:is(.mapa3d__ubicacion-estado, .escena3d__ayuda, .admin-instruccion, .admin-encabezado__centro, .campo__ayuda, .ficha-centro__nota, .bandeja__nota, .prerregistro__ubicacion-estado, .zoom__instruccion, .necesidades-editor__ayuda, .pasos-insumo__indicador) {
+  width: fit-content !important;
+  align-self: flex-start;
+  justify-self: start;
 }
