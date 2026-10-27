@@ -144,7 +144,9 @@ function navegar() {
   // La confirmación del administrador no lo lleva porque vuelve sola al menú.
   const conBotonInicio =
     (nivel >= 3 || /^#\/donante\/prerregistro\//.test(hash)) && !/^#\/admin\/confirmacion$/.test(hash);
-  if (conBotonInicio) agregarBotonInicio(contenedor.querySelector('.vista'));
+  // En las funciones del admin (no en el menú) el botón vuelve al menú.
+  const enFuncionAdmin = /^#\/(admin\/(insumos|donacion|despacho)|correos-enviados)/.test(hash);
+  if (conBotonInicio) agregarBotonInicio(contenedor.querySelector('.vista'), { alMenu: enFuncionAdmin });
 
   // El gato 3D (y se liberan los de la pantalla anterior).
   limpiarGatos();

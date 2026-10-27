@@ -3816,3 +3816,127 @@ html[data-rol="donante"] .mapa3d__lista .centro-tarjeta.centro-tarjeta--desabast
     animation: none !important;
   }
 }
+
+/* ===================================================================
+   AJUSTES (oct 2026, 3): portada, intro con dos mensajes, textos sin
+   recuadro, colores de "desabastecido" y textos del admin.
+   =================================================================== */
+
+/* Portada: "CaliDa" con los colores del logo y la Cruz Roja como
+   colaboración (sobre blanco, con su espacio libre) */
+.vista.portada .portada__titulo {
+  display: block;
+  margin-bottom: 14px !important;
+}
+.portada__cali {
+  color: #F67751;
+}
+.portada__da {
+  color: #CC0100;
+}
+.vista.portada .portada__colabora {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 22px !important;
+  font-family: var(--fuente-condensada) !important;
+  font-size: 13px !important;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #1E3A4F !important;
+}
+.portada__logo-cr {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(1, 30, 65, 0.12);
+}
+.portada__logo-cr img {
+  display: block;
+  height: 30px;
+  width: auto;
+}
+
+/* Intro: globo más grande con dos mensajes, uno después del otro */
+.intro__escena {
+  width: min(94vw, 980px) !important;
+}
+.intro .intro__globo {
+  display: grid;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 30px 44px !important;
+  border-radius: 36px !important;
+  font-size: clamp(24px, 3.6vw, 44px) !important;
+}
+.intro__mensaje {
+  grid-area: 1 / 1;
+  opacity: 0;
+}
+.intro--andando .intro__mensaje--1 {
+  animation: intro-mensaje-1 3.9s ease 3.6s both;
+}
+.intro--andando .intro__mensaje--2 {
+  animation: intro-mensaje-2 4s ease 7.6s both;
+}
+@keyframes intro-mensaje-1 {
+  0% { opacity: 0; transform: translateY(6px); }
+  10%, 88% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes intro-mensaje-2 {
+  0% { opacity: 0; transform: translateY(6px); }
+  12%, 100% { opacity: 1; transform: none; }
+}
+
+/* Textos pequeños sin recuadro (incluye "Toca un compartimiento…" en la
+   estantería del donante y del admin) */
+.escena3d__ayuda,
+html:is([data-rol="donante"], [data-rol="admin"]) .escena3d__ayuda {
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+}
+/* Admin: los textos que van sobre el fondo azul, en blanco */
+html[data-rol="admin"] :is(.admin-encabezado__centro, .escena3d__ayuda, .admin-instruccion, .bandeja__nota, .leyenda-estados, .leyenda-estados li) {
+  color: #FFFFFF !important;
+}
+html[data-rol="admin"] .leyenda-estados li {
+  background: none !important;
+  box-shadow: none !important;
+}
+html[data-rol="admin"] .admin-encabezado__centro::before {
+  filter: none;
+}
+/* Admin: guías bajo los campos y dentro de los paneles, solo texto azul
+   oscuro (se leen sobre el panel claro) */
+html[data-rol="admin"] :is(.campo__ayuda, .necesidades-editor__ayuda, .pasos-insumo__indicador, .zoom__instruccion) {
+  background: none !important;
+  padding: 0 !important;
+  color: #0D3459 !important;
+}
+
+/* "Desabastecido" con colores de la paleta (no azul) */
+.centro-tarjeta__badge.centro-tarjeta__badge--desabastecido,
+.mapa3d__lista .centro-tarjeta--desabastecido .centro-tarjeta__badge {
+  background: #8A3B12 !important;
+  color: #FFF6E6 !important;
+}
+.vista-columnas .estado-grande--desabastecido {
+  color: #5A2A0C !important;
+}
+
+/* Sin recuadro en ningún texto pequeño (gana sobre la regla anterior
+   que les ponía pastilla) */
+html[data-rol] body :is(.mapa3d__ubicacion-estado, .escena3d__ayuda, .admin-instruccion, .admin-encabezado__centro, .campo__ayuda, .ficha-centro__nota, .bandeja__nota, .prerregistro__ubicacion-estado, .zoom__instruccion, .necesidades-editor__ayuda, .pasos-insumo__indicador):not(#sin-recuadro) {
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}

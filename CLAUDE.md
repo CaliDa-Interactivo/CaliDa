@@ -46,13 +46,14 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
     pantalla principal #7FB8CC. Mapa del donante: plano, colinas y pinos verdes; zonas en
     tonos cobrizos y cafés.
   - Tarjetas de centros: infladas sin brillo arriba; desabastecidos en amarillo más oscuro
-    (#E6A341); distancia (km) en negrilla.
+    (#E6A341); distancia (km) en negrilla; etiqueta "Desabastecido" café (#8A3B12), también
+    en la ficha del centro.
   - Paleta de referencia del equipo (más saturada): donador #AF2000, #E47832, #E68D36, #FDC254,
     #FEB454, #FCDEA8; admin #FCDEA8, #58B0DC, #459FD4, #236CB5, #093E7E.
 - **Tipografía: Roboto** (títulos 900/700) y **Roboto Condensed** en mensajes pequeños; títulos
   40px, subtítulos 28px, párrafos 14px, pequeños textos 12px (en celular títulos 30px y
-  subtítulos 22px). **Pequeños textos sin recuadro** (solo texto, en el tono oscuro del rol:
-  café en donador, azul en admin). Los letreros 3D también usan Roboto.
+  subtítulos 22px). **Pequeños textos sin recuadro** (solo texto: café en donador; en admin,
+  blanco sobre el fondo azul y azul oscuro dentro de los paneles). Los letreros 3D también usan Roboto.
 - Espacios parejos: misma distancia arriba (24px / 16px celular) y al pie (32px / 24px) en todas
   las pantallas (`--margen-arriba`, `--margen-abajo`); en celular el encabezado del mapa, ficha y
   pre-registro va en una fila con botones de solo ícono, y el "inicio" del admin no flota.
@@ -77,18 +78,21 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   `--relleno-rojo/azul/marfil/amarillo/salvia`, redefinidas al final de `css/tema.css`).
 - **Pantalla principal (oct 2026, la pidió el equipo así):** `js/inicio.js` + `js/inicio3d.js`.
   1) **Intro**: la cámara baja del cielo (sol, nubes, paralaje) hasta el gato en una colina, que
-  dice el mensaje principal en un globo; luego pasa a la portada. Una vez por sesión
-  (`calida_intro_vista`), botón "Saltar", "Ver el mensaje" la repite; sin intro si el sistema
-  pide reducir el movimiento. 2) **Portada** como la referencia (Polyfarm): logos arriba; a la
-  izquierda la frase en pequeño, "CaliDa" grande, el mensaje y los botones; a la derecha una isla
-  flotante 3D con mesas de madera, cajas de cartón con donaciones (modelos de la estantería) y el
-  gato 3D encima; de fondo un sol grande, manchas y puntos que flotan.
+  dice **dos mensajes** en un globo grande: el principal ("En una emergencia…") y luego "Yo te
+  muestro qué necesita cada centro…". Una vez por sesión (`calida_intro_vista`), botón "Saltar";
+  sin intro si el sistema pide reducir el movimiento. 2) **Portada** como la referencia: sin
+  encabezado de logos; a la izquierda "CaliDa" grande con los colores del logo (Cali #F67751,
+  Da #CC0100), "En colaboración con" + logo de la Cruz Roja sobre blanco, el mensaje y
+  "Siguiente"; a la derecha la isla 3D con mesas, cajas con donaciones y el gato; de fondo un
+  sol, manchas y puntos que flotan.
 - Tarjetas de centros bajo el mapa: urgentes en rojo carmín, desabastecidos en amarillo.
 - Menú del admin: cada tarea con su color (insumos amarillo, donación coral, despacho azul claro)
   e íconos 3D mates hechos con three.js (`generarIconoMenu` en `js/miniaturas3d.js`). Los
   paneles y formularios de cada función usan ese mismo color (`vista-funcion-insumos/
   donacion/despacho`).
-- Admin: "Volver a pantalla principal" fijo arriba a la derecha (sin taparse con el buscador);
+- Admin: en el menú, "Volver a pantalla principal"; en sus funciones (insumos, donación,
+  despacho, bandeja) **"Volver al menú"** (`renderBotonInicio({ alMenu })`). Va fijo arriba a la
+  derecha (sin taparse con el buscador). Textos sobre el fondo azul del admin en blanco;
   leyenda de estados centrada encima de la estantería; ejemplos de "lo que falta" según la
   subcategoría (`EJEMPLOS_NECESIDADES` en `js/data.js`).
 - Menú del admin: las tres tareas se reparten todo el alto de la pantalla.

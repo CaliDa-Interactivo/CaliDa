@@ -4,7 +4,7 @@
 //   #/entrar  Pantalla 2 · Elige tu perfil
 // ============================================================
 
-import { renderEncabezado } from './encabezado.js';
+import { renderEncabezado, LOGO_CRUZ_ROJA } from './encabezado.js';
 import { renderMascota, decir } from './mascota.js';
 import { renderPaisaje } from './paisaje.js';
 import { isLoggedIn } from './store.js';
@@ -13,18 +13,20 @@ import { isLoggedIn } from './store.js';
 export const RUTA_DONANTE = '#/donante/estanteria';
 
 // --- Pantalla 1 · Bienvenida --------------------------------------------
-// 1) Intro: la cámara baja desde el cielo hasta el gato, que dice el
-//    mensaje principal en un globo. Se ve una vez por sesión (o con
-//    "Ver el mensaje"), se puede saltar y no aparece si el sistema pide
-//    reducir el movimiento.
-// 2) Portada (distribución de la referencia del equipo): logos arriba,
-//    texto a la izquierda y, a la derecha, una isla flotante en 3D con
-//    mesas y cajas llenas de donaciones y el gato 3D; de fondo, un sol y
+// 1) Intro: la cámara baja desde el cielo hasta el gato, que dice dos
+//    mensajes en un globo grande (el principal y luego una invitación).
+//    Se ve una vez por sesión, se puede saltar y no aparece si el sistema
+//    pide reducir el movimiento.
+// 2) Portada (distribución de la referencia del equipo): a la izquierda
+//    "CaliDa" con los colores del logo, la colaboración con la Cruz Roja,
+//    el mensaje y "Siguiente"; a la derecha una isla flotante en 3D con
+//    mesas, cajas llenas de donaciones y el gato; de fondo, un sol y
 //    formas suaves que flotan.
 
 const MENSAJE_PRINCIPAL = 'En una emergencia, ayudar también es saber dónde hace falta.';
 const CLAVE_INTRO = 'calida_intro_vista';
-const DURACION_INTRO = 7600; // ms (bajada de cámara + mensaje)
+const MENSAJE_SEGUNDO = 'Yo te muestro qué necesita cada centro de acopio y cómo llevarle tu ayuda.';
+const DURACION_INTRO = 11400; // ms (bajada de cámara + dos mensajes)
 
 export function renderBienvenida() {
   return {
@@ -39,12 +41,15 @@ export function renderBienvenida() {
         <span class="portada__punto portada__punto--3"></span>
       </div>
 
-      ${renderEncabezado()}
-
       <div class="portada__contenido">
         <div class="portada__texto">
-          <p class="portada__etiqueta">${MENSAJE_PRINCIPAL}</p>
-          <h1 class="portada__titulo">CaliDa</h1>
+          <h1 class="portada__titulo">
+            <span class="portada__cali">Cali</span><span class="portada__da">Da</span><span class="visually-hidden">: ${MENSAJE_PRINCIPAL}</span>
+          </h1>
+          <p class="portada__colabora">
+            En colaboración con
+            <span class="portada__logo-cr"><img src="${LOGO_CRUZ_ROJA}" alt="Cruz Roja" width="401" height="104" /></span>
+          </p>
           <p class="portada__apoyo">
             Descubre qué necesita cada centro de acopio de la Cruz Roja en Cali
             y lleva tu donación a donde de verdad sirve.
@@ -56,12 +61,6 @@ export function renderBienvenida() {
                 <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </a>
-            <button type="button" class="portada__repetir" data-repetir-intro>
-              <span class="portada__repetir-icono" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="16" height="16" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
-              </span>
-              Ver el mensaje
-            </button>
           </div>
         </div>
 
@@ -82,7 +81,10 @@ export function renderBienvenida() {
         <div class="intro__mundo">
           <div class="intro__suelo" aria-hidden="true"></div>
           <div class="intro__escena">
-            <p class="intro__globo" aria-hidden="true">${MENSAJE_PRINCIPAL}</p>
+            <p class="intro__globo" aria-hidden="true">
+              <span class="intro__mensaje intro__mensaje--1">${MENSAJE_PRINCIPAL}</span>
+              <span class="intro__mensaje intro__mensaje--2">${MENSAJE_SEGUNDO}</span>
+            </p>
             <div class="intro__gato gato3d" data-gato3d data-pose="saluda" data-encuadre="completo" aria-hidden="true"></div>
           </div>
         </div>
@@ -133,7 +135,6 @@ export function renderBienvenida() {
       else portada.classList.add('portada--entrando');
 
       contenedor.querySelector('[data-saltar-intro]').addEventListener('click', terminarIntro);
-      contenedor.querySelector('[data-repetir-intro]').addEventListener('click', mostrarIntro);
 
       // Isla 3D (si three.js no carga, la portada queda con el sol y el gato)
       let liberarIsla = null;
