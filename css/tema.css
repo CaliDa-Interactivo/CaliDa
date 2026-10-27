@@ -4021,3 +4021,75 @@ html[data-rol="admin"] .leyenda-estados li {
 .intro__escena {
   bottom: 14vh !important;
 }
+
+/* ===================================================================
+   AJUSTES (oct 2026, 5)
+   =================================================================== */
+/* Intro: letra del globo grande y proporcional al globo */
+body .intro .intro__globo:not(#globo) {
+  font-size: clamp(30px, 5vw, 64px) !important;
+  line-height: 1.1 !important;
+  padding: 38px 60px !important;
+}
+
+/* Confirmación del pre-registro: sin recuadro azul claro (queda con el
+   color del panel) y letras en café */
+html[data-rol="donante"] .prerregistro-listo__sub {
+  background: none !important;
+  padding: 0 !important;
+}
+html[data-rol="donante"] :is(.prerregistro-listo h1, .prerregistro-listo__sub-nombre, .prerregistro-listo__sub-centro, .prerregistro-listo p) {
+  color: #5A2A0C !important;
+}
+html[data-rol="donante"] .prerregistro-listo__check {
+  background: #B8432A !important;
+  color: #FFF6E6 !important;
+}
+html[data-rol="donante"] .prerregistro-listo__aviso {
+  background: #F4C66E !important;
+  color: #4A2306 !important;
+}
+/* Pre-registro: "Tu ubicación" sin recuadro (refuerzo) */
+html body .prerregistro__ubicacion:not(#ubicacion) {
+  background: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Admin: cada estado de la leyenda y el nombre del centro con su
+   recuadro (refuerzo con más especificidad) */
+html[data-rol="admin"] body .leyenda-estados li:not(#estado) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(18, 64, 110, 0.88) !important;
+  color: #FFFFFF !important;
+}
+html[data-rol="admin"] body .admin-encabezado__centro:not(#centro) {
+  display: inline-flex !important;
+  align-items: center;
+  width: fit-content !important;
+  padding: 5px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(18, 64, 110, 0.88) !important;
+  color: #FFFFFF !important;
+}
+
+/* Registrar donación y despacho: títulos más grandes */
+.vista-formulario-admin .admin-encabezado h1 {
+  font-size: 52px !important;
+  line-height: 1.05 !important;
+}
+@media (max-width: 600px) {
+  .vista-formulario-admin .admin-encabezado h1 {
+    font-size: 34px !important;
+  }
+}
+/* Nombre del producto en la confirmación: grande (no es un párrafo) */
+body .vista .prerregistro-listo__sub-nombre:not(#producto) {
+  font-size: 32px !important;
+  font-weight: 800;
+  line-height: 1.1 !important;
+}

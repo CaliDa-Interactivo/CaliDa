@@ -205,3 +205,13 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   `#/donante/mapa/alimento-agua`, `#/donante/ficha/centro-jairo-varela/alimento-agua`,
   pre-registro, y como admin `#/admin/insumos` (dos pasos) y `#/admin/donacion`.
 - Comprobar que no haya errores en la consola y que nada tape el mapa.
+
+## Ajustes de oct 2026 (5)
+- Intro: texto del globo grande y proporcional (`clamp(30px,5vw,64px)`).
+- Pre-registro: "Tu ubicación" y la confirmación sin recuadro azul claro; textos en marrón #5A2A0C,
+  nombre del producto grande (32px).
+- Admin: cada estado de la leyenda (arriba de la estantería) y el nombre del centro llevan su
+  propia pastilla azul con texto blanco.
+- Registrar donación y despacho: títulos de 52px (34px en celular).
+- `index.html` carga CSS y `main.js` con `?v=AAAAMMDD`: **subir la versión en cada cambio de
+  estilos** para que GitHub Pages no muestre la versión vieja.
