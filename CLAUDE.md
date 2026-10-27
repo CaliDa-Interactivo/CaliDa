@@ -80,7 +80,7 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   1) **Intro**: la cámara baja del cielo (sol, nubes, paralaje) hasta el gato en una colina, que
   dice **dos mensajes** en un globo grande: el principal ("En una emergencia…") y luego "Yo te
   muestro qué necesita cada centro…". **Se ve cada vez que se llega a la pantalla principal**,
-  botón "Saltar"; sin intro si el sistema pide reducir el movimiento. Globo grande (hasta 54px;
+  botón "Saltar"; sin intro si el sistema pide reducir el movimiento. Globo proporcional al gato (hasta 32px;
   ojo: la regla general de párrafos a 14px excluye `.intro__globo` y `.portada__colabora`). 2) **Portada** como la referencia: sin
   encabezado de logos; a la izquierda "CaliDa" grande con los colores del logo (Cali #F67751,
   Da #CC0100), "En colaboración con" (16px, negrilla) + logo de la Cruz Roja sobre blanco, el mensaje y
@@ -207,11 +207,13 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Comprobar que no haya errores en la consola y que nada tape el mapa.
 
 ## Ajustes de oct 2026 (5)
-- Intro: texto del globo grande y proporcional (`clamp(30px,5vw,64px)`).
+- Intro: texto del globo proporcional al cuerpo del gato (`clamp(18px,3.6vh,32px)`, ancho del
+  globo ~2,6 veces el del gato; bloque AJUSTES 6 en `css/tema.css`).
 - Pre-registro: "Tu ubicación" y la confirmación sin recuadro azul claro; textos en marrón #5A2A0C,
   nombre del producto grande (32px).
-- Admin: cada estado de la leyenda (arriba de la estantería) y el nombre del centro llevan su
-  propia pastilla azul con texto blanco.
+- Admin: el nombre del centro va en pastilla azul oscuro con texto blanco; cada estado de la
+  leyenda (arriba de la estantería) en su propia pastilla crema con texto azul y el punto de
+  su color, para diferenciarlos.
 - Registrar donación y despacho: títulos de 52px (34px en celular).
 - `index.html` carga CSS y `main.js` con `?v=AAAAMMDD`: **subir la versión en cada cambio de
   estilos** para que GitHub Pages no muestre la versión vieja.

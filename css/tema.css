@@ -4093,3 +4093,22 @@ body .vista .prerregistro-listo__sub-nombre:not(#producto) {
   font-weight: 800;
   line-height: 1.1 !important;
 }
+
+/* ===================================================================
+   AJUSTES (oct 2026, 6): globo de la intro proporcional al gato y
+   estados del admin en un color distinto al del nombre del centro.
+   =================================================================== */
+body .intro .intro__escena:not(#escena) {
+  width: min(90vw, calc(min(34vh, 60vw) * 2.6)) !important;
+}
+body .intro .intro__globo:not(#globo):not(#globo-gato) {
+  font-size: clamp(18px, 3.6vh, 32px) !important;
+  line-height: 1.2 !important;
+  padding: 20px 32px !important;
+  border-radius: 28px !important;
+}
+html[data-rol="admin"] body .leyenda-estados li:not(#estado):not(#estado-claro) {
+  background: #FFF8EC !important;
+  color: #12406E !important;
+  box-shadow: 0 3px 8px rgba(9, 62, 126, 0.18) !important;
+}
