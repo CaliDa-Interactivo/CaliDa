@@ -229,7 +229,9 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   prerregistro.js), porque el navegador guarda los módulos JS aunque cambie `main.js?v=`.
   Al cambiar uno de esos archivos, subir la versión en todos (buscar el `?v=` actual).
 - Intro: cada mensaje va centrado en el globo (horizontal y vertical).
-- Mapa (computador): el recuadro ya no tiene alto fijo; crece con la columna del gato (mínimo
-  `min(62vh, 640px)`), así su borde inferior llega a los pies del gato aunque el mensaje sea
-  largo o la ventana sea baja. Probar también con pantallas al 125 % (1536 × 730).
-- Botón de zona elegido ("Toda Cali"…): color plano, sin sombra ni brillo arriba.
+- Mapa (computador): **alto fijo** `max(360px, min(62vh, 640px))` (no debe crecer). El gato se
+  acomoda a su columna: globo arriba (`order: -1`) y el gato ocupa lo que queda (máx. 340px),
+  con los pies en la línea del borde inferior del mapa (`translateY(7%)`). Probar también con
+  pantallas al 125 % (1536 × 730) y con el mensaje largo del gato.
+- Botón de zona elegido ("Toda Cali"…): mismo estilo que los botones rojos de las zonas con
+  urgencias (sin sombra hundida arriba), con el conteo en café.

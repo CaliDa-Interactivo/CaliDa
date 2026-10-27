@@ -10,18 +10,18 @@
 // ============================================================
 
 import { inicializarStore } from './store.js';
-import { agregarBotonInicio } from './boton-inicio.js?v=20261027f';
+import { agregarBotonInicio } from './boton-inicio.js?v=20261027g';
 import { montarGatos, limpiarGatos } from './gatos.js';
 import { cargarMiniaturas } from './ilustraciones.js';
-import * as inicio from './inicio.js?v=20261027f';
+import * as inicio from './inicio.js?v=20261027g';
 import * as estanteriaDonante from './donante/estanteria.js';
-import * as mapaDonante from './donante/mapa.js?v=20261027f';
-import * as fichaDonante from './donante/ficha.js?v=20261027f';
-import * as prerregistroDonante from './donante/prerregistro.js?v=20261027f';
+import * as mapaDonante from './donante/mapa.js?v=20261027g';
+import * as fichaDonante from './donante/ficha.js?v=20261027g';
+import * as prerregistroDonante from './donante/prerregistro.js?v=20261027g';
 import * as llegarDonante from './donante/llegar.js';
 import * as loginAdmin from './admin/login.js';
 import * as bienvenidaAdmin from './admin/bienvenida.js';
-import * as menuAdmin from './admin/menu.js?v=20261027f';
+import * as menuAdmin from './admin/menu.js?v=20261027g';
 import * as insumosAdmin from './admin/insumos.js';
 import * as donacionAdmin from './admin/donacion.js';
 import * as despachoAdmin from './admin/despacho.js';

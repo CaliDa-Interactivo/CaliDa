@@ -4118,7 +4118,7 @@ html[data-rol="admin"] body .leyenda-estados li:not(#estado):not(#estado-claro) 
    superior. Así el recuadro del mapa va del globo a los pies del gato. */
 @media (min-width: 761px) {
   .mapa-envoltura .mapa3d__gato.gato-asoma--lado .gato-guia__imagen:not(#gato-mapa) {
-    transform: translateY(9%) !important;
+    transform: translateY(7%) !important;
   }
 }
 
@@ -4132,24 +4132,51 @@ html[data-rol="admin"] body .leyenda-estados li:not(#estado):not(#estado-claro) 
   text-align: center;
 }
 
-/* Mapa (computador): el recuadro crece con la columna del gato, así su
-   borde inferior llega a los pies del gato aunque el mensaje sea largo
-   o la ventana poco alta (antes tenía un alto fijo de 62vh). */
+/* Mapa (computador): alto FIJO (no crece). El gato se acomoda a la
+   columna: el globo arriba y el gato ocupa el espacio que queda, con los
+   pies en la línea del borde inferior del mapa. */
 @media (min-width: 761px) {
   :is(.vista-mapa3d, .vista-columnas) .mapa-envoltura > .mapa3d:not(#mapa) {
+    height: max(360px, min(62vh, 640px)) !important;
+    min-height: 0 !important;
+  }
+  .vista-mapa3d .mapa-envoltura {
+    grid-template-rows: max(360px, min(62vh, 640px)) !important;
+  }
+  .vista-mapa3d .mapa3d__gato.gato-asoma--lado,
+  .vista-mapa3d .mapa3d__gato.gato-asoma--lado .gato-guia {
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+  .vista-mapa3d .mapa3d__gato.gato-asoma--lado .gato-guia {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .vista-mapa3d .mapa3d__gato.gato-asoma--lado .gato-guia__globo {
+    flex: 0 0 auto !important;
+    order: -1 !important;
+    margin: 0 !important;
+  }
+  .vista-mapa3d .mapa3d__gato.gato-asoma--lado .gato-guia__imagen:not(#gato-mapa) {
+    flex: 1 1 0 !important;
     height: auto !important;
-    min-height: max(360px, min(62vh, 640px)) !important;
-    align-self: stretch !important;
+    max-height: 340px !important;
+    min-height: 0 !important;
+    margin: 0.5rem auto 0 !important;
+    order: 0 !important;
   }
 }
 
-/* Botón de zona elegido ("Toda Cali", etc.): color plano, sin la sombra
-   de arriba */
+/* Botón de zona elegido ("Toda Cali", etc.): mismo estilo que los botones
+   rojos de las zonas con urgencias (sin sombra hundida arriba) */
 html:is([data-rol="donante"], [data-rol="admin"]) :is(.vista-mapa3d, .vista-columnas) .chip-zona[aria-pressed="true"]:not(#zona) {
-  background: var(--rol-boton, #B8432A) !important;
+  background: var(--brillo-arriba), var(--relleno-rojo) !important;
+  color: #FFFFFF !important;
   box-shadow: none !important;
   text-shadow: none !important;
 }
-html[data-rol="admin"] :is(.vista-mapa3d, .vista-columnas) .chip-zona[aria-pressed="true"]:not(#zona) {
-  background: #1F5490 !important;
+html:is([data-rol="donante"], [data-rol="admin"]) .vista-mapa3d .chip-zona[aria-pressed="true"]:not(#zona) .chip-zona__conteo {
+  background: #8A3B12 !important;
+  color: #FFF6E6 !important;
 }

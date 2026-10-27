@@ -12,7 +12,7 @@ import { ilustracion, productoPrincipal, cargarMiniaturas, iconoProducto } from 
 import { renderGato } from '../gato.js';
 import { obtenerUbicacion, ubicacionGuardada } from '../ubicacion.js';
 import { recordarPrerregistro, horaVencimiento } from './prerregistro-sesion.js';
-import { renderBotonInicio } from '../boton-inicio.js?v=20261027f';
+import { renderBotonInicio } from '../boton-inicio.js?v=20261027g';
 import { montarGatos } from '../gatos.js';
 
 function hoyISO() {
