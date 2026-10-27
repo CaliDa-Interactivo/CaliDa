@@ -129,8 +129,9 @@ export const renderFormulario = conSesion(({ subcategoriaId }, centro) => {
           <div class="campo">
             <label for="don-cc">Cédula (CC)</label>
             <input id="don-cc" name="cedula" inputmode="numeric" autocomplete="off"
-                   placeholder="Solo números" maxlength="10" required
-                   aria-describedby="don-cc-error" />
+                   placeholder="Solo números" minlength="8" maxlength="10" required
+                   aria-describedby="don-cc-ayuda don-cc-error" />
+            <p class="campo__ayuda" id="don-cc-ayuda">Entre 8 y 10 números, sin puntos ni espacios.</p>
             <p class="campo__error" id="don-cc-error" hidden></p>
             <p class="prerregistro-encontrado" aria-live="polite" hidden></p>
           </div>
@@ -158,7 +159,7 @@ export const renderFormulario = conSesion(({ subcategoriaId }, centro) => {
       function buscarPrerregistro() {
         prerregistro = null;
         avisoPre.hidden = true;
-        if (cedula.value.length < 6) return;
+        if (cedula.value.length < 8) return;
         const vigentes = getPrerregistrosVigentes(getCentroAdminActual().id, cedula.value);
         prerregistro =
           vigentes.find((p) => p.subcategoriaId === subcategoria.id) ??
@@ -194,8 +195,8 @@ export const renderFormulario = conSesion(({ subcategoriaId }, centro) => {
               : '',
           cedula: !cedula.value
             ? 'Escribe la cédula.'
-            : cedula.value.length < 6
-              ? 'La cédula debe tener entre 6 y 10 números.'
+            : cedula.value.length < 8 || cedula.value.length > 10
+              ? 'La cédula debe tener entre 8 y 10 números.'
               : '',
           correo: !correo.value.trim()
             ? 'Escribe el correo.'

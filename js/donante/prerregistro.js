@@ -70,8 +70,9 @@ export function render({ centroId, subcategoriaId }) {
           <form class="formulario" id="form-prerregistro" novalidate>
             <div class="campo">
               <label for="pre-cc">Cédula</label>
-              <input id="pre-cc" name="cedula" inputmode="numeric" autocomplete="off" maxlength="10"
-                     placeholder="Solo números" required aria-describedby="pre-cc-error" />
+              <input id="pre-cc" name="cedula" inputmode="numeric" autocomplete="off" minlength="8" maxlength="10"
+                     placeholder="Solo números" required aria-describedby="pre-cc-ayuda pre-cc-error" />
+              <p class="campo__ayuda" id="pre-cc-ayuda">Entre 8 y 10 números, sin puntos ni espacios.</p>
               <p class="campo__error" id="pre-cc-error" hidden></p>
             </div>
 
@@ -141,8 +142,8 @@ export function render({ centroId, subcategoriaId }) {
 
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-        if (cedula.value.length < 6) {
-          error.textContent = cedula.value ? 'La cédula debe tener entre 6 y 10 números.' : 'Escribe tu cédula.';
+        if (cedula.value.length < 8 || cedula.value.length > 10) {
+          error.textContent = cedula.value ? 'La cédula debe tener entre 8 y 10 números.' : 'Escribe tu cédula.';
           error.hidden = false;
           cedula.setAttribute('aria-invalid', 'true');
           cedula.focus();

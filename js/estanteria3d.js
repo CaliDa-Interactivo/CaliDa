@@ -128,7 +128,7 @@ function texturaPlaca(texto, { extra = '', estado = null, proporcion = 5, fracci
   // Texto (con punto de estado opcional), en una o dos líneas.
   const tam = (fraccion ?? fraccionMaxima(texto, { extra, estado, proporcion })) * alto;
   const { lineas } = disenoTexto(ctx, texto, { extra, estado }, ancho, alto, tam);
-  ctx.font = `800 ${tam}px ${FAMILIA_PLACA}`;
+  ctx.font = `700 ${tam}px ${FAMILIA_PLACA}`;
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'left';
   const anchoLineas = Math.max(...lineas.map((l) => ctx.measureText(l).width));
@@ -162,12 +162,12 @@ function texturaPlaca(texto, { extra = '', estado = null, proporcion = 5, fracci
   return textura;
 }
 
-const FAMILIA_PLACA = '"Montserrat", "Segoe UI", Arial, sans-serif';
+const FAMILIA_PLACA = '"Roboto", "Segoe UI", Arial, sans-serif';
 
 // Reparte el texto en una línea o, si no cabe, en dos (partiendo entre
 // palabras por donde quede más parejo). Dice si cabe con ese tamaño.
 function disenoTexto(ctx, texto, { extra = '', estado = null }, ancho, alto, tam) {
-  ctx.font = `800 ${tam}px ${FAMILIA_PLACA}`;
+  ctx.font = `700 ${tam}px ${FAMILIA_PLACA}`;
   const disponible = ancho - alto * 1.1 - (estado ? tam * 0.9 : 0);
   const completo = extra ? `${texto}  ${extra}` : texto;
   if (ctx.measureText(completo).width <= disponible) return { lineas: [completo], cabe: true };
@@ -274,9 +274,9 @@ export function montarEstanteria3D(o) {
 
   // Luz pareja: mucha luz ambiente y un sol suave, para que la madera se
   // vea de un solo color (sin zonas oscuras).
-  escena.add(new THREE.AmbientLight('#FFFFFF', 1.1));
+  escena.add(new THREE.AmbientLight('#FFFFFF', 0.8));
   escena.add(new THREE.HemisphereLight('#FFFFFF', '#F1E2CF', 1.2));
-  const sol = new THREE.DirectionalLight('#FFFFFF', 0.9);
+  const sol = new THREE.DirectionalLight('#FFFFFF', 1.25);
   sol.position.set(-4, 9, 8);
   sol.castShadow = true;
   sol.shadow.mapSize.set(1024, 1024);
@@ -403,6 +403,11 @@ export function montarEstanteria3D(o) {
     // Placa 3D clavada al frente de la tabla de abajo del compartimiento.
     const anchoPlaca = Math.min(1.55, (c.x1 - c.x0) * 0.62);
     const placa3d = crearPlaca(categoria.nombre, anchoPlaca, 0.25, {}, registrar);
+    // Si Roboto aún no había cargado, se vuelve a dibujar el texto con ella.
+    document.fonts?.load('900 40px Roboto').then(() => {
+      placa3d.material.map = texturaPlaca(categoria.nombre, { proporcion: anchoPlaca / 0.25 }, registrar);
+      placa3d.material.needsUpdate = true;
+    });
     placa3d.position.set((c.x0 + c.x1) / 2, c.y0 - 0.125, FRENTE_Z + 0.035);
     placa3d.userData.categoria = categoria.id;
     escena.add(placa3d);
@@ -522,22 +527,26 @@ export function montarEstanteria3D(o) {
   }
 
   async function cargarTodo() {
+    // Los letreros se dibujan con Roboto: se espera a que cargue.
+    await document.fonts?.load('900 40px Roboto').catch(() => {});
     // Estantería
     const gltfMueble = await cargarGLB(cargador, MODELO_ESTANTERIA);
     const mueble = gltfMueble.scene;
     prepararMateriales(mueble);
-    // Madera de un solo tono: casi todo el color sale del propio material
-    // (emissive) y la luz solo agrega un sombreado suave, así el mueble se
-    // ve parejo en todas sus caras, sin manchas de luz ni zonas oscuras.
+    // Madera de un solo tono: parte del color sale del propio material
+    // (emissive, para que no haya zonas negras) y la luz marca las caras
+    // y los huecos (sombreado), para que el mueble no se vea plano.
     const madera = registrar(
       // Color de la paleta: #A8623A (madera más oscura y rojiza).
-      new THREE.MeshLambertMaterial({ color: '#7A4826', emissive: '#7E4524', emissiveIntensity: 1 })
+      new THREE.MeshLambertMaterial({ color: '#B87048', emissive: '#4E2A14', emissiveIntensity: 1 })
     );
     mueble.traverse((n) => {
       if (n.isMesh) {
         n.material = madera;
-        n.castShadow = false;
-        n.receiveShadow = false;
+        // Sombras propias: los productos y las tablas dejan sombra en el
+        // fondo y en las repisas (da profundidad a cada compartimiento).
+        n.castShadow = true;
+        n.receiveShadow = true;
       }
     });
     mueble.rotation.y = Math.PI; // la cara abierta mira hacia la cámara

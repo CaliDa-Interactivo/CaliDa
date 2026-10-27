@@ -40,15 +40,23 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
     paneles crema #FFF6E6, desabastecido #F4C66E, mapa con fondo café suave.
   - **Admin (azules):** fondo #7DB8DC, botón principal #1F5490 con texto crema, paneles
     #FFF8EC; menú y paneles de función en azules claros (#E3F0F9, #CFE5F4, #B9D9EF).
-  - **Volver y botones secundarios:** pastilla crema con borde blanco y texto oscuro del rol
-    (#8A3B12 donador, #12406E admin): siempre legibles.
-  - **Comunes:** estantería y gato #A8623A (mismo color), pantalla principal #7FB8CC.
+  - **Volver y botones secundarios:** pastilla crema **sin borde** y texto oscuro del rol
+    (#8A3B12 donador, #12406E admin). Ningún botón lleva borde blanco.
+  - **Comunes:** estantería y gato #A8623A (mismo color; el gato con su luz original, clara),
+    pantalla principal #7FB8CC. Mapa del donante con fondo azul verdoso suave (#8DB5AF).
+  - Tarjetas de centros: infladas sin brillo arriba; distancia (km) en blanco.
   - Paleta de referencia del equipo (más saturada): donador #AF2000, #E47832, #E68D36, #FDC254,
     #FEB454, #FCDEA8; admin #FCDEA8, #58B0DC, #459FD4, #236CB5, #093E7E.
-- **Tipografía:** títulos 40px, subtítulos 28px, párrafos 14px, pequeños textos 12px (en celular
-  títulos 30px y subtítulos 22px). **Pequeños textos en blanco**, sobre una pastilla del tono
-  oscuro del rol para que se lean.
-- Estantería con sombra en el piso y sombra suave alrededor del mueble.
+- **Tipografía: Roboto** (títulos 900/700) y **Roboto Condensed** en mensajes pequeños; títulos
+  40px, subtítulos 28px, párrafos 14px, pequeños textos 12px (en celular títulos 30px y
+  subtítulos 22px). **Pequeños textos en blanco**, sobre una pastilla del tono oscuro del rol
+  (excepto "Estás fuera de Cali…", que es solo texto). Los letreros 3D también usan Roboto.
+- Espacios parejos: misma distancia arriba (24px / 16px celular) y al pie (32px / 24px) en todas
+  las pantallas (`--margen-arriba`, `--margen-abajo`); en celular el encabezado del mapa, ficha y
+  pre-registro va en una fila con botones de solo ícono, y el "inicio" del admin no flota.
+- Cédula: solo de 8 a 10 dígitos (pre-registro y registrar donación), con ayuda debajo.
+- Estantería con sombras propias (los productos y tablas dan sombra), sombra en el piso y
+  alrededor del mueble; color parejo pero con volumen.
 - Letreros de las subcategorías: todos con el mismo tamaño de letra (`fraccionMaxima` en
   `js/estanteria3d.js`), en una o dos líneas, siempre dentro de la placa.
 - Paleta oficial (`claude_paleta`): rojo carmín #CC0100 (botón principal), rojo profundo #A5121A,
@@ -89,7 +97,7 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   e "Ir a la estantería" a la derecha; al medio el panel grande (mapa o `pantalla-panel`) con el
   gato en su columna derecha (mensaje con título rojo arriba, gato abajo); al pie los botones de
   acción (en el mapa, además, las zonas en una pastilla segmentada; zonas con urgencias en rojo).
-- Tipografía Montserrat. Los ajustes de estilo más recientes están al final de `css/tema.css`.
+- Tipografía Roboto (antes Montserrat). Los ajustes más recientes están al final de `css/tema.css`.
 
 ## Gato (mascota) — `js/gato3d.js`, modelo `assets/modelos/gato.glb`
 - Modelo del equipo procesado: simplificado, suavizado (Taubin), colores por partes, brazo

@@ -3163,3 +3163,222 @@ html:is([data-rol="donante"], [data-rol="admin"]) .pasos-insumo .seccion-nivel__
   align-self: flex-start;
   justify-self: start;
 }
+
+/* ===================================================================
+   AJUSTES (oct 2026): tipografía Roboto, botones sin borde, tarjetas
+   de centros sin brillo, mapa y espacios parejos (computador y celular).
+   =================================================================== */
+
+/* --- Roboto en toda la página; mensajes pequeños en Roboto Condensed --- */
+:root {
+  --fuente-titulo: 'Roboto', 'Segoe UI', Arial, sans-serif;
+  --fuente-texto: 'Roboto', 'Segoe UI', Arial, sans-serif;
+  --fuente-condensada: 'Roboto Condensed', 'Roboto', 'Segoe UI', Arial, sans-serif;
+}
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--fuente-texto) !important;
+}
+h1,
+h2,
+h3 {
+  font-family: var(--fuente-titulo) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em;
+}
+.vista h1,
+.bienvenida-inicio h1 {
+  font-weight: 900 !important;
+}
+.boton,
+.boton-principal,
+.boton-atras,
+.boton-inicio,
+.boton-contorno,
+.chip-zona,
+.mapa__indicador {
+  font-weight: 700 !important;
+}
+:is(.mapa3d__ubicacion-estado, .escena3d__ayuda, .admin-instruccion, .admin-encabezado__centro, .campo__ayuda, .ficha-centro__nota, .bandeja__nota, .prerregistro__ubicacion-estado, .zoom__instruccion, .necesidades-editor__ayuda, .pasos-insumo__indicador, .campo__error, .centro-tarjeta__zona, .centro-tarjeta__badge, .mapa3d__leyenda, .gato-mapa__colores) {
+  font-family: var(--fuente-condensada) !important;
+}
+
+/* --- Ningún botón lleva borde blanco; Volver igual en todas partes --- */
+.boton,
+.boton-principal,
+.boton-atras,
+.boton-inicio,
+.boton-contorno,
+.chip-zona,
+.zoom-capa__cerrar,
+.estanteria3d__volver,
+html:is([data-rol="donante"], [data-rol="admin"]) :is(.boton-atras, .boton.boton--azul, .boton.boton--secundario, .boton-inicio, .boton-contorno) {
+  border: none !important;
+  outline-offset: 3px;
+}
+.boton-atras {
+  box-shadow: var(--relieve-claro), var(--sombra-gordita) !important;
+}
+
+/* --- Tarjetas de los centros: infladas pero sin luz arriba; distancia
+   (km) en blanco --- */
+.mapa3d__lista .centro-tarjeta.centro-tarjeta--urgente {
+  background: var(--relleno-rojo) !important;
+}
+.mapa3d__lista .centro-tarjeta.centro-tarjeta--desabastecido,
+html[data-rol="donante"] .mapa3d__lista .centro-tarjeta.centro-tarjeta--desabastecido {
+  background: var(--relleno-amarillo) !important;
+}
+.mapa3d__lista .centro-tarjeta {
+  box-shadow: inset 0 -4px 6px rgba(90, 40, 10, 0.16), 0 6px 14px rgba(90, 40, 10, 0.16) !important;
+}
+.mapa3d__lista .centro-tarjeta__distancia {
+  color: #FFFFFF !important;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(60, 25, 5, 0.45);
+}
+
+/* --- Mapa del donante: fondo azul verdoso suave (contrasta con las
+   zonas y no es café); conteo de "Toda Cali" en crema --- */
+html[data-rol="donante"] .vista-mapa3d .mapa3d {
+  background: radial-gradient(ellipse 70% 60% at 50% 42%, #A9C9C4 0%, #8DB5AF 55%, #739E98 100%) !important;
+}
+.vista-mapa3d .chip-zona[aria-pressed="true"] .chip-zona__conteo,
+html[data-rol="donante"] .vista-mapa3d .chip-zona[aria-pressed="true"] .chip-zona__conteo {
+  background: #FFF6E6 !important;
+  color: #8A3B12 !important;
+}
+
+/* "Estás fuera de Cali…": solo el texto (sin pastilla), en blanco */
+.mapa3d__ubicacion-estado,
+html:is([data-rol="donante"], [data-rol="admin"]) .mapa3d__ubicacion-estado:not(:empty) {
+  background: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  text-decoration: none !important;
+  color: #FFFFFF !important;
+  text-shadow: 0 1px 2px rgba(60, 25, 5, 0.55);
+}
+
+/* Registrar donación: la ayuda bajo el correo con más aire y más pequeña */
+.vista-formulario-admin .campo__ayuda {
+  margin-top: 10px !important;
+  font-size: 11px !important;
+}
+.vista-formulario-admin .campo {
+  gap: 6px;
+}
+
+/* --- Espacios parejos: misma distancia arriba y al pie en todas las
+   pantallas; títulos y párrafos con la misma separación --- */
+:root {
+  --margen-arriba: 24px;
+  --margen-abajo: 32px;
+  --margen-lado: 24px;
+}
+@media (max-width: 600px) {
+  :root {
+    --margen-arriba: 16px;
+    --margen-abajo: 24px;
+    --margen-lado: 16px;
+  }
+}
+.vista:not(.vista-3d) {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: var(--margen-arriba) !important;
+  padding-bottom: var(--margen-abajo) !important;
+  min-height: 100vh !important;
+  box-sizing: border-box;
+}
+.escena3d__arriba {
+  padding-top: var(--margen-arriba) !important;
+}
+.escena3d__ayuda,
+.estanteria3d__volver {
+  bottom: var(--margen-abajo) !important;
+}
+.escena3d__ayuda {
+  left: var(--margen-lado) !important;
+}
+.estanteria3d__volver {
+  right: var(--margen-lado) !important;
+}
+.vista-admin > .barra-inicio {
+  top: var(--margen-arriba) !important;
+  right: var(--margen-lado) !important;
+}
+.vista h1,
+.vista h2 {
+  margin-top: 0 !important;
+  margin-bottom: 12px !important;
+}
+.vista p {
+  line-height: 1.5;
+}
+
+/* --- Celular --- */
+@media (max-width: 600px) {
+  /* Encabezado del mapa, ficha y pre-registro: botones compactos en una
+     fila (los de inicio y estantería solo con su ícono) y la ruta abajo */
+  :is(.vista-mapa3d, .vista-columnas) .mapa3d__encabezado {
+    display: grid !important;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 8px !important;
+  }
+  :is(.vista-mapa3d, .vista-columnas) .mapa3d__encabezado .mapa__indicador {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: start;
+  }
+  :is(.vista-mapa3d, .vista-columnas) .mapa3d__encabezado .barra-inicio {
+    grid-column: 3;
+    margin: 0 !important;
+  }
+  :is(.vista-mapa3d, .vista-columnas) .mapa3d__encabezado :is(.boton-inicio, .boton-estanteria) {
+    font-size: 0 !important;
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0 !important;
+    justify-content: center;
+    gap: 0 !important;
+  }
+  :is(.vista-mapa3d, .vista-columnas) .mapa3d__encabezado .boton-estanteria {
+    grid-column: 4;
+  }
+  /* Estantería del donante: menos espacio vacío entre el buscador y el
+     mueble */
+  .escena3d__arriba .buscador {
+    margin-top: 8px;
+  }
+}
+
+/* "Volver a pantalla principal" del admin: en pantallas angostas deja de
+   flotar (no tapa títulos) y en celular queda solo con su ícono. */
+@media (max-width: 1100px) {
+  .vista-admin:not(.vista-3d) > .barra-inicio {
+    position: static !important;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 0 12px !important;
+  }
+}
+@media (max-width: 600px) {
+  .vista-admin > .barra-inicio .boton-inicio {
+    font-size: 0 !important;
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0 !important;
+    justify-content: center;
+    gap: 0 !important;
+  }
+  .vista-admin.vista-3d .escena3d__arriba {
+    padding-right: 76px !important;
+  }
+}

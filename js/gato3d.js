@@ -102,14 +102,14 @@ async function montarUno(el) {
   canvas.setAttribute('aria-hidden', 'true');
 
   const escena = new THREE.Scene();
-  // Poca luz de relleno y una luz principal de lado: el gato se ve un poco
-  // más oscuro y se notan sus sombras (volumen).
-  escena.add(new THREE.AmbientLight('#FFF4EA', 0.6));
-  escena.add(new THREE.HemisphereLight('#FFF8EE', '#B98A6E', 1.0));
-  const sol = new THREE.DirectionalLight('#FFF1E0', 2.4);
-  sol.position.set(2.6, 3.2, 3);
+  // Luz original del gato (clara y cálida): con el color nuevo se ve
+  // del mismo tono de la estantería, sin oscurecerse.
+  escena.add(new THREE.AmbientLight('#FFF4EA', 0.9));
+  escena.add(new THREE.HemisphereLight('#FFF8EE', '#E9B99A', 1.3));
+  const sol = new THREE.DirectionalLight('#FFF1E0', 1.7);
+  sol.position.set(1.5, 3, 4);
   escena.add(sol);
-  const borde = new THREE.DirectionalLight('#FFD9B8', 0.8); // luz de contorno cálida
+  const borde = new THREE.DirectionalLight('#FFD9B8', 1.1); // luz de contorno cálida
   borde.position.set(-2.5, 2, -2);
   escena.add(borde);
 
