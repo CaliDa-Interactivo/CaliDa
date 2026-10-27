@@ -132,7 +132,8 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - El gato explica colores (roja urgente / amarilla desabastecido) y el centro más cercano.
 - En el mapa **solo se pueden tocar las casas**; las zonas se eligen con los botones de abajo.
 - Subtítulo de la lista: "Selecciona un centro de acopio que necesita <producto>".
-- "← Volver" del mapa lleva a la estantería completa (no a la categoría acercada).
+- "← Volver" del pre-registro lleva a la estantería completa (todas las categorías); el del
+  mapa vuelve a la categoría acercada.
 
 ## Otros datos
 - Subcategorías: incluye "Comida para animales" (Alimento) y "Analgésicos" (sin "y fiebre").

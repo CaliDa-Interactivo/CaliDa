@@ -29,7 +29,6 @@ export function render({ centroId, subcategoriaId }) {
   const centro = getCentro(centroId);
   const subcategoria = obtenerSubcategoria(subcategoriaId);
   const categoria = obtenerCategoriaPorSubcategoria(subcategoriaId);
-  const ficha = `#/donante/ficha/${centroId}/${subcategoriaId}`;
 
   if (!centro || !subcategoria) {
     return `<section class="vista"><a class="boton-atras" href="#/donante/estanteria">← Volver</a><h1>Centro no encontrado</h1></section>`;
@@ -40,7 +39,8 @@ export function render({ centroId, subcategoriaId }) {
     html: `
       <section class="vista vista-prerregistro vista-columnas">
         <header class="mapa3d__encabezado">
-          <a class="boton-atras" href="${ficha}">← Volver</a>
+          <!-- "Volver" lleva a la estantería completa, con todas las categorías -->
+          <a class="boton-atras" href="#/donante/estanteria">← Volver</a>
           <p class="mapa__indicador">${subcategoria.nombre} › ${centro.nombre}</p>
           ${renderBotonInicio()}
         </header>

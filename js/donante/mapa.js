@@ -65,8 +65,7 @@ export function render({ subcategoriaId }) {
     (a, b) => a.insumos[subcategoriaId] - b.insumos[subcategoriaId]
   );
   const total = necesitan.length;
-  // "Volver" lleva a la estantería completa (no a la categoría acercada).
-  const volverAtras = '#/donante/estanteria';
+  const volverAtras = `#/donante/subcategorias/${categoria.id}`;
 
   const conteoPorZona = Object.fromEntries(
     ORDEN_ZONAS.map((z) => [z, necesitan.filter((c) => c.zona === z).length])
