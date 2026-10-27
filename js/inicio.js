@@ -13,32 +13,144 @@ import { isLoggedIn } from './store.js';
 export const RUTA_DONANTE = '#/donante/estanteria';
 
 // --- Pantalla 1 · Bienvenida --------------------------------------------
+// 1) Intro: la cámara baja desde el cielo hasta el gato, que dice el
+//    mensaje principal en un globo. Se ve una vez por sesión (o con
+//    "Ver el mensaje"), se puede saltar y no aparece si el sistema pide
+//    reducir el movimiento.
+// 2) Portada (distribución de la referencia del equipo): logos arriba,
+//    texto a la izquierda y, a la derecha, una isla flotante en 3D con
+//    mesas y cajas llenas de donaciones y el gato 3D; de fondo, un sol y
+//    formas suaves que flotan.
+
+const MENSAJE_PRINCIPAL = 'En una emergencia, ayudar también es saber dónde hace falta.';
+const CLAVE_INTRO = 'calida_intro_vista';
+const DURACION_INTRO = 7600; // ms (bajada de cámara + mensaje)
+
 export function renderBienvenida() {
-  return `
-    <section class="vista pantalla-entrada">
+  return {
+    html: `
+    <section class="vista pantalla-entrada portada">
+      <div class="portada__fondo" aria-hidden="true">
+        <span class="portada__mancha portada__mancha--1"></span>
+        <span class="portada__mancha portada__mancha--2"></span>
+        <span class="portada__mancha portada__mancha--3"></span>
+        <span class="portada__punto portada__punto--1"></span>
+        <span class="portada__punto portada__punto--2"></span>
+        <span class="portada__punto portada__punto--3"></span>
+      </div>
+
       ${renderEncabezado()}
 
-      <div class="bienvenida-inicio">
-        <div>
-          <h1>En una emergencia, ayudar también es saber dónde hace falta.</h1>
-          <p class="bienvenida-inicio__apoyo">
+      <div class="portada__contenido">
+        <div class="portada__texto">
+          <p class="portada__etiqueta">${MENSAJE_PRINCIPAL}</p>
+          <h1 class="portada__titulo">CaliDa</h1>
+          <p class="portada__apoyo">
             Descubre qué necesita cada centro de acopio de la Cruz Roja en Cali
             y lleva tu donación a donde de verdad sirve.
           </p>
+          <div class="portada__acciones">
+            <a class="boton-principal" href="#/entrar">
+              Siguiente
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+                <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <button type="button" class="portada__repetir" data-repetir-intro>
+              <span class="portada__repetir-icono" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+              </span>
+              Ver el mensaje
+            </button>
+          </div>
         </div>
-        ${renderMascota({ pose: 'saluda', mensaje: null })}
+
+        <div class="portada__escena" aria-hidden="true">
+          <span class="portada__sol"></span>
+          <div class="portada__isla"></div>
+          <div class="portada__gato gato3d" data-gato3d data-pose="saluda" data-encuadre="completo"></div>
+        </div>
       </div>
 
-      <div class="bienvenida-inicio__acciones">
-        <a class="boton-principal" href="#/entrar">
-          Siguiente
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-            <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
+      <div class="intro" data-intro hidden>
+        <div class="intro__cielo" aria-hidden="true">
+          <span class="intro__sol"></span>
+          <span class="intro__nube intro__nube--1"></span>
+          <span class="intro__nube intro__nube--2"></span>
+          <span class="intro__nube intro__nube--3"></span>
+        </div>
+        <div class="intro__mundo">
+          <div class="intro__suelo" aria-hidden="true"></div>
+          <div class="intro__escena">
+            <p class="intro__globo" aria-hidden="true">${MENSAJE_PRINCIPAL}</p>
+            <div class="intro__gato gato3d" data-gato3d data-pose="saluda" data-encuadre="completo" aria-hidden="true"></div>
+          </div>
+        </div>
+        <button type="button" class="intro__saltar" data-saltar-intro>Saltar</button>
       </div>
     </section>
-  `;
+  `,
+    init(contenedor) {
+      const intro = contenedor.querySelector('[data-intro]');
+      const portada = contenedor.querySelector('.portada');
+      const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let temporizador = 0;
+
+      function terminarIntro() {
+        clearTimeout(temporizador);
+        if (intro.hidden) return;
+        intro.classList.add('intro--saliendo');
+        portada.classList.add('portada--entrando');
+        setTimeout(() => {
+          intro.hidden = true;
+          intro.classList.remove('intro--saliendo', 'intro--andando');
+        }, 650);
+      }
+
+      function mostrarIntro() {
+        if (reducido) return;
+        intro.hidden = false;
+        portada.classList.remove('portada--entrando');
+        // reinicia la animación de la cámara
+        intro.classList.remove('intro--andando');
+        void intro.offsetWidth;
+        intro.classList.add('intro--andando');
+        temporizador = setTimeout(terminarIntro, DURACION_INTRO);
+        try {
+          sessionStorage.setItem(CLAVE_INTRO, '1');
+        } catch {
+          /* sin almacenamiento */
+        }
+      }
+
+      let vista = false;
+      try {
+        vista = sessionStorage.getItem(CLAVE_INTRO) === '1';
+      } catch {
+        /* sin almacenamiento */
+      }
+      if (!vista) mostrarIntro();
+      else portada.classList.add('portada--entrando');
+
+      contenedor.querySelector('[data-saltar-intro]').addEventListener('click', terminarIntro);
+      contenedor.querySelector('[data-repetir-intro]').addEventListener('click', mostrarIntro);
+
+      // Isla 3D (si three.js no carga, la portada queda con el sol y el gato)
+      let liberarIsla = null;
+      let salir = false;
+      import('./inicio3d.js')
+        .then(({ montarIsla }) => {
+          if (!salir) liberarIsla = montarIsla(contenedor.querySelector('.portada__isla'));
+        })
+        .catch(() => {});
+
+      return () => {
+        salir = true;
+        clearTimeout(temporizador);
+        liberarIsla?.();
+      };
+    },
+  };
 }
 
 // --- Pantalla 2 · Elige tu perfil -------------------------------------------
@@ -56,7 +168,7 @@ export function renderEntrar() {
     html: `
       <section class="vista pantalla-entrada">
         ${renderEncabezado()}
-        <a class="enlace-volver" href="#/">← Volver</a>
+        <a class="boton-atras enlace-volver" href="#/">← Volver</a>
 
         <div class="perfiles">
           <div>

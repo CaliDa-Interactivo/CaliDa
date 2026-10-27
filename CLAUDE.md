@@ -43,14 +43,16 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   - **Volver y botones secundarios:** pastilla crema **sin borde** y texto oscuro del rol
     (#8A3B12 donador, #12406E admin). Ningún botón lleva borde blanco.
   - **Comunes:** estantería y gato #A8623A (mismo color; el gato con su luz original, clara),
-    pantalla principal #7FB8CC. Mapa del donante con fondo azul verdoso suave (#8DB5AF).
-  - Tarjetas de centros: infladas sin brillo arriba; distancia (km) en blanco.
+    pantalla principal #7FB8CC. Mapa del donante: plano, colinas y pinos verdes; zonas en
+    tonos cobrizos y cafés.
+  - Tarjetas de centros: infladas sin brillo arriba; desabastecidos en amarillo más oscuro
+    (#E6A341); distancia (km) en negrilla.
   - Paleta de referencia del equipo (más saturada): donador #AF2000, #E47832, #E68D36, #FDC254,
     #FEB454, #FCDEA8; admin #FCDEA8, #58B0DC, #459FD4, #236CB5, #093E7E.
 - **Tipografía: Roboto** (títulos 900/700) y **Roboto Condensed** en mensajes pequeños; títulos
   40px, subtítulos 28px, párrafos 14px, pequeños textos 12px (en celular títulos 30px y
-  subtítulos 22px). **Pequeños textos en blanco**, sobre una pastilla del tono oscuro del rol
-  (excepto "Estás fuera de Cali…", que es solo texto). Los letreros 3D también usan Roboto.
+  subtítulos 22px). **Pequeños textos sin recuadro** (solo texto, en el tono oscuro del rol:
+  café en donador, azul en admin). Los letreros 3D también usan Roboto.
 - Espacios parejos: misma distancia arriba (24px / 16px celular) y al pie (32px / 24px) en todas
   las pantallas (`--margen-arriba`, `--margen-abajo`); en celular el encabezado del mapa, ficha y
   pre-registro va en una fila con botones de solo ícono, y el "inicio" del admin no flota.
@@ -73,15 +75,22 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - **Botones, pastillas y tarjetas "gorditos" y MATES** (mismo material que los productos de la
   estantería): relieve suave, sin brillo ni reflejo (variables `--brillo-arriba`, `--relieve`,
   `--relleno-rojo/azul/marfil/amarillo/salvia`, redefinidas al final de `css/tema.css`).
-- **Pantalla principal: como estaba al inicio del proyecto** (el equipo lo pidió tras probar
-  escenario, tarima y título 3D): fondo salvia original con luces suaves, título sin efectos,
-  gato frontal sin base. No volver a cambiarla sin que el equipo lo pida.
+- **Pantalla principal (oct 2026, la pidió el equipo así):** `js/inicio.js` + `js/inicio3d.js`.
+  1) **Intro**: la cámara baja del cielo (sol, nubes, paralaje) hasta el gato en una colina, que
+  dice el mensaje principal en un globo; luego pasa a la portada. Una vez por sesión
+  (`calida_intro_vista`), botón "Saltar", "Ver el mensaje" la repite; sin intro si el sistema
+  pide reducir el movimiento. 2) **Portada** como la referencia (Polyfarm): logos arriba; a la
+  izquierda la frase en pequeño, "CaliDa" grande, el mensaje y los botones; a la derecha una isla
+  flotante 3D con mesas de madera, cajas de cartón con donaciones (modelos de la estantería) y el
+  gato 3D encima; de fondo un sol grande, manchas y puntos que flotan.
 - Tarjetas de centros bajo el mapa: urgentes en rojo carmín, desabastecidos en amarillo.
 - Menú del admin: cada tarea con su color (insumos amarillo, donación coral, despacho azul claro)
   e íconos 3D mates hechos con three.js (`generarIconoMenu` en `js/miniaturas3d.js`). Los
   paneles y formularios de cada función usan ese mismo color (`vista-funcion-insumos/
   donacion/despacho`).
-- Admin: "Volver a pantalla principal" fijo arriba a la derecha en todas las pantallas.
+- Admin: "Volver a pantalla principal" fijo arriba a la derecha (sin taparse con el buscador);
+  leyenda de estados centrada encima de la estantería; ejemplos de "lo que falta" según la
+  subcategoría (`EJEMPLOS_NECESIDADES` en `js/data.js`).
 - Menú del admin: las tres tareas se reparten todo el alto de la pantalla.
 - Panel de estado de insumos (zoom del admin): casi pantalla completa, recuadros que llenan el
   alto; los 5 puestos de cada repisa en una cuadrícula pareja (nada se sale del recuadro).
@@ -151,8 +160,8 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   amarillo, paredes marfil), acortadas de fondo para verse compactas, giradas a tres cuartos.
   Las "fotos" de las casas (tarjetas y ficha) son de frente y sin perspectiva (cámara
   ortográfica, `{ plano: true }` en `generarMiniaturaDe`), como un dibujo 2D dentro de su casilla.
-- Fondo del mapa azul petróleo (contraste); zonas con colores bien distintos y sin rojo ni
-  amarillo (Norte coral, Occidente arena, Centro lila, Oriente menta, Sur rosa).
+- Mapa: plano verde, colinas y pinos verdes; zonas cobrizas y cafés (Norte cobre, Occidente
+  arena tostada, Centro siena, Oriente ámbar, Sur café).
 - Ubicación del usuario: se pide al entrar; si está fuera de Cali el pin va al borde con la
   distancia. (Se quitó "Marcar dónde estoy".)
 - El gato explica colores (roja urgente / amarilla desabastecido) y el centro más cercano.

@@ -20,20 +20,20 @@ import { cargarGLB, MODELO_CASA, estilizarCasa } from './cargar-glb.js';
 // --- Paleta del mapa (derivada de la paleta CaliDa) -----------------
 
 const COLORES = {
-  // Un color bien distinto por zona (sobre el fondo azul del mapa), sin
-  // usar el rojo ni el amarillo de las casas.
+  // Tonos cobrizos y cafés de la paleta, distintos entre sí para que se
+  // diferencien las zonas (las casas, roja y amarilla, resaltan encima).
   zonas: {
-    Norte: '#F4896B', // coral
-    Occidente: '#F5DDB0', // arena
-    Centro: '#A68BE0', // lila
-    Oriente: '#5FC2A0', // verde menta
-    Sur: '#F2A7C3', // rosa
+    Norte: '#C8754A', // cobre
+    Occidente: '#E4B585', // arena tostada
+    Centro: '#A0522D', // siena
+    Oriente: '#D99055', // ámbar cobrizo
+    Sur: '#8B5E3C', // café
   },
   zonaAtenuada: '#ECE6DC',
   base: '#F3E9D8',
   // Colinas y pinos estilo ilustración plana (paleta: salvia y verde bosque).
-  colina: ['#B9D8CC', '#A2CABB', '#86B5A9', '#9CC3B4'],
-  pino: ['#3E7A6C', '#4E8F7E', '#2F6457'],
+  colina: ['#9CC78A', '#86B874', '#B3D49F', '#79AE68'],
+  pino: ['#3F7F3A', '#4F9145', '#2F6A2D'],
   tronco: '#A7835C',
   pared: '#FFF8EE',
   puerta: '#7A5A3C',

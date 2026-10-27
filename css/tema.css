@@ -3382,3 +3382,437 @@ html:is([data-rol="donante"], [data-rol="admin"]) .mapa3d__ubicacion-estado:not(
     padding-right: 76px !important;
   }
 }
+
+/* ===================================================================
+   AJUSTES (oct 2026, 2): textos pequeños sin recuadro, mapa verde,
+   tarjetas de centros, leyenda del admin y espacios.
+   =================================================================== */
+
+/* Textos pequeños que no son botones: sin recuadro, solo el texto en el
+   tono oscuro del rol (café en donador, azul en admin) */
+html:is([data-rol="donante"], [data-rol="admin"]) :is(.mapa3d__ubicacion-estado, .escena3d__ayuda, .admin-instruccion, .admin-encabezado__centro, .campo__ayuda, .ficha-centro__nota, .bandeja__nota, .prerregistro__ubicacion-estado, .zoom__instruccion, .necesidades-editor__ayuda, .pasos-insumo__indicador),
+html:is([data-rol="donante"], [data-rol="admin"]) :is(.mapa3d__ubicacion-estado:not(:empty), .prerregistro__ubicacion-estado:not(:empty)) {
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  color: var(--rol-texto) !important;
+  text-shadow: none !important;
+}
+/* "Estás fuera de Cali…": café, como "Selecciona un centro de acopio…" */
+html[data-rol="donante"] .mapa3d__ubicacion-estado {
+  color: #5A2A0C !important;
+  font-weight: 500;
+}
+
+/* Mapa del donante: plano verde (con colinas y árboles verdes) */
+html[data-rol="donante"] .vista-mapa3d .mapa3d {
+  background: radial-gradient(ellipse 70% 60% at 50% 42%, #B7D69C 0%, #9CC583 55%, #82AF6B 100%) !important;
+}
+
+/* Tarjetas de centros: amarillo más oscuro (se distingue del fondo) y
+   distancia en negrilla, del mismo color del texto de la tarjeta */
+.mapa3d__lista .centro-tarjeta.centro-tarjeta--desabastecido,
+html[data-rol="donante"] .mapa3d__lista .centro-tarjeta.centro-tarjeta--desabastecido {
+  background: linear-gradient(180deg, #EDB45A 0%, #E6A341 55%, #DB9530 100%) !important;
+}
+.mapa3d__lista .centro-tarjeta__distancia {
+  color: inherit !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+}
+
+/* Admin: leyenda de estados centrada encima de la estantería y el
+   buscador con espacio respecto a "Volver a pantalla principal" */
+@media (min-width: 761px) {
+  .vista-admin .escena3d__arriba .admin-barra .leyenda-estados {
+    position: absolute;
+    left: 50%;
+    top: calc(var(--margen-arriba) + 64px);
+    transform: translateX(-50%);
+    margin: 0 !important;
+    white-space: nowrap;
+  }
+  .vista-admin .escena3d__arriba .admin-barra .buscador {
+    top: calc(var(--margen-arriba) + 64px) !important;
+  }
+}
+
+/* Elige tu perfil: Volver con el mismo estilo de los demás y más aire
+   entre el título y las tarjetas */
+.pantalla-entrada .enlace-volver.boton-atras {
+  display: inline-flex;
+  align-self: flex-start;
+  width: auto;
+  text-decoration: none;
+  background: var(--brillo-arriba), linear-gradient(180deg, #FFFBF3 0%, #FFF3DE 55%, #F3E6CC 100%) !important;
+  color: #0D3459 !important;
+  border: none !important;
+}
+.perfiles h1 {
+  margin-bottom: 32px !important;
+}
+
+/* ===================================================================
+   PANTALLA PRINCIPAL (oct 2026): portada con la distribución de la
+   referencia del equipo e intro donde la cámara baja hasta el gato.
+   =================================================================== */
+.vista.portada {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex !important;
+  flex-direction: column;
+  max-width: none !important;
+  width: 100% !important;
+  padding-left: max(var(--margen-lado), 4vw) !important;
+  padding-right: max(var(--margen-lado), 4vw) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.portada > .encabezado-logos {
+  position: relative;
+  z-index: 2;
+}
+
+/* Fondo con dinamismo: manchas suaves y puntos que flotan despacio */
+.portada__fondo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.portada__mancha,
+.portada__punto {
+  position: absolute;
+  border-radius: 50%;
+  animation: portada-flotar 9s ease-in-out infinite;
+}
+.portada__mancha--1 {
+  width: 46vw;
+  height: 46vw;
+  left: -14vw;
+  bottom: -26vw;
+  background: radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.12) 70%);
+}
+.portada__mancha--2 {
+  width: 30vw;
+  height: 30vw;
+  right: -10vw;
+  bottom: -8vw;
+  background: radial-gradient(circle at 40% 40%, rgba(246, 201, 168, 0.75), rgba(246, 201, 168, 0.15) 70%);
+  animation-delay: -3s;
+}
+.portada__mancha--3 {
+  width: 18vw;
+  height: 18vw;
+  left: 38vw;
+  top: -8vw;
+  background: radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 70%);
+  animation-delay: -5s;
+}
+.portada__punto {
+  width: 14px;
+  height: 14px;
+  background: rgba(255, 248, 237, 0.85);
+  animation-duration: 6s;
+}
+.portada__punto--1 { left: 8vw; top: 30vh; }
+.portada__punto--2 { left: 46vw; top: 72vh; width: 10px; height: 10px; background: #FDD794; animation-delay: -2s; }
+.portada__punto--3 { right: 6vw; top: 22vh; width: 18px; height: 18px; animation-delay: -4s; }
+@keyframes portada-flotar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+.portada__contenido {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: 2rem;
+}
+.portada__texto {
+  max-width: 460px;
+}
+.vista.portada .portada__etiqueta {
+  margin: 0 0 14px !important;
+  font-family: var(--fuente-condensada) !important;
+  font-size: 14px !important;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1E3A4F !important;
+}
+.vista.portada .portada__titulo {
+  margin: 0 0 18px !important;
+  font-size: 72px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  letter-spacing: -0.02em;
+  color: #011E41 !important;
+}
+.vista.portada .portada__apoyo {
+  max-width: 380px;
+  margin: 0 0 28px !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  color: #1E3A4F !important;
+}
+.portada__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+.portada__repetir {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #011E41;
+  font-family: var(--fuente-condensada) !important;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.portada__repetir-icono {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--relleno-marfil);
+  box-shadow: var(--relieve-claro), var(--sombra-gordita);
+}
+.portada__repetir:focus-visible {
+  outline: 3px solid #011E41;
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+/* Escena: sol grande detrás, isla 3D flotando y el gato encima */
+.portada__escena {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 0.92;
+  max-height: calc(100vh - 140px);
+  animation: portada-flotar 7s ease-in-out infinite;
+}
+.portada__sol {
+  position: absolute;
+  width: 62%;
+  aspect-ratio: 1;
+  left: 4%;
+  top: 4%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #FFE7B3 0%, #FDD794 60%, #F8C977 100%);
+  opacity: 0.95;
+}
+.portada__isla {
+  position: absolute;
+  inset: 0;
+}
+.isla3d__canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+.portada__gato {
+  position: absolute;
+  left: 18%;
+  bottom: 37%;
+  width: 26%;
+  aspect-ratio: 240 / 300;
+}
+
+/* Entrada de la portada después de la intro */
+.portada--entrando .portada__texto {
+  animation: portada-desde-izquierda 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.portada--entrando .portada__escena {
+  animation: portada-desde-derecha 800ms cubic-bezier(0.2, 0.8, 0.2, 1) both, portada-flotar 7s ease-in-out 800ms infinite;
+}
+@keyframes portada-desde-izquierda {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes portada-desde-derecha {
+  from { opacity: 0; transform: translateX(40px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+/* --- Intro: la cámara baja del cielo hasta el gato --- */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  overflow: hidden;
+  background: linear-gradient(180deg, #CDE7F1 0%, #A9D3E2 45%, #8DC1D3 100%);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+.intro[hidden] {
+  display: none;
+}
+.intro--saliendo {
+  opacity: 0;
+  transform: scale(1.04);
+}
+.intro__cielo,
+.intro__mundo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  will-change: transform;
+}
+.intro__cielo {
+  height: 140vh;
+}
+.intro__mundo {
+  height: 200vh;
+}
+.intro__sol {
+  position: absolute;
+  width: 30vmin;
+  aspect-ratio: 1;
+  right: 14vw;
+  top: 14vh;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #FFE7B3 0%, #FDD794 60%, #F8C977 100%);
+}
+.intro__nube {
+  position: absolute;
+  height: 9vmin;
+  border-radius: 999px;
+  background: #FFFFFF;
+  opacity: 0.85;
+  box-shadow: 4vmin -3vmin 0 1vmin #FFFFFF, -4vmin -1.5vmin 0 0.4vmin #FFFFFF;
+}
+.intro__nube--1 { width: 22vmin; left: 12vw; top: 22vh; }
+.intro__nube--2 { width: 16vmin; left: 52vw; top: 42vh; opacity: 0.7; }
+.intro__nube--3 { width: 26vmin; left: 70vw; top: 78vh; opacity: 0.75; }
+.intro__suelo {
+  position: absolute;
+  left: -10vw;
+  right: -10vw;
+  bottom: 0;
+  height: 30vh;
+  border-radius: 50% 50% 0 0 / 30% 30% 0 0;
+  background: linear-gradient(180deg, #9CC78A 0%, #86B874 100%);
+  box-shadow: inset 0 10px 24px rgba(255, 255, 255, 0.25);
+}
+.intro__escena {
+  position: absolute;
+  left: 50%;
+  bottom: 18vh;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(92vw, 760px);
+}
+.intro__gato {
+  width: min(42vh, 64vw);
+  aspect-ratio: 240 / 300;
+}
+.intro .intro__globo {
+  position: relative;
+  margin: 0 0 18px !important;
+  padding: 20px 28px;
+  border-radius: 28px;
+  background: #FFF8ED;
+  box-shadow: 0 14px 34px rgba(1, 30, 65, 0.18);
+  color: #011E41 !important;
+  font-family: var(--fuente-titulo) !important;
+  font-size: clamp(22px, 3.2vw, 40px) !important;
+  font-weight: 900;
+  line-height: 1.15 !important;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(12px) scale(0.92);
+}
+.intro__globo::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -14px;
+  width: 28px;
+  height: 28px;
+  background: #FFF8ED;
+  transform: translateX(-50%) rotate(45deg);
+  border-radius: 4px;
+}
+.intro__saltar {
+  position: absolute;
+  right: var(--margen-lado);
+  bottom: var(--margen-abajo);
+  z-index: 2;
+  min-height: 44px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(1, 30, 65, 0.72);
+  color: #FFFFFF;
+  font-family: var(--fuente-condensada) !important;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+.intro__saltar:focus-visible {
+  outline: 3px solid #FFFFFF;
+  outline-offset: 3px;
+}
+/* La bajada: el mundo sube 100vh y el cielo menos (paralaje) */
+.intro--andando .intro__mundo {
+  animation: intro-bajar 3.2s cubic-bezier(0.55, 0, 0.25, 1) 0.4s both;
+}
+.intro--andando .intro__cielo {
+  animation: intro-bajar-cielo 3.2s cubic-bezier(0.55, 0, 0.25, 1) 0.4s both;
+}
+.intro--andando .intro__globo {
+  animation: intro-globo 600ms cubic-bezier(0.2, 0.9, 0.3, 1.2) 3.6s both;
+}
+@keyframes intro-bajar {
+  from { transform: translateY(0); }
+  to { transform: translateY(-100vh); }
+}
+@keyframes intro-bajar-cielo {
+  from { transform: translateY(0); }
+  to { transform: translateY(-40vh); }
+}
+@keyframes intro-globo {
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 860px) {
+  .portada__contenido {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .portada__texto {
+    max-width: none;
+  }
+  .vista.portada .portada__titulo {
+    font-size: 48px !important;
+  }
+  .portada__escena {
+    max-height: none;
+    order: 2;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portada__mancha,
+  .portada__punto,
+  .portada__escena,
+  .portada--entrando .portada__texto,
+  .portada--entrando .portada__escena {
+    animation: none !important;
+  }
+}

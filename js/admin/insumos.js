@@ -6,7 +6,7 @@
 //   − y + se cambia, y "Guardar" la hace oficial.
 // ============================================================
 
-import { estadoDeNivel, ETIQUETA_ESTADO, NIVEL_MAX } from '../data.js';
+import { estadoDeNivel, ETIQUETA_ESTADO, NIVEL_MAX, EJEMPLOS_NECESIDADES } from '../data.js';
 import { actualizarNivelInsumo, actualizarNecesidades, getCentroAdminActual } from '../store.js';
 import { renderRepisaNivel, cargarMiniaturas } from '../ilustraciones.js';
 import { renderGato } from '../gato.js';
@@ -48,7 +48,7 @@ function renderCantidades(categoria) {
             <ul class="necesidades-editor__lista" aria-label="Elementos que necesitan de ${sub.nombre}"></ul>
             <input id="nec-${sub.id}" class="necesidades-editor__campo" autocomplete="off"
                    placeholder="Escribe y presiona Enter" aria-describedby="nec-ayuda-${sub.id}" />
-            <p class="necesidades-editor__ayuda" id="nec-ayuda-${sub.id}">Escribe palabras cortas y presiona Enter. Ej.: cascos, guantes</p>
+            <p class="necesidades-editor__ayuda" id="nec-ayuda-${sub.id}">Escribe palabras cortas y presiona Enter. Ej.: ${EJEMPLOS_NECESIDADES[sub.id] ?? 'arroz, jabón'}</p>
           </div>
           <span class="seccion-insumo__cambio" hidden>Sin guardar</span>
         </article>`;

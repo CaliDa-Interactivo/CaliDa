@@ -428,3 +428,24 @@ export function coincideBusqueda(categoria, consulta) {
     })
   );
 }
+
+// Ejemplos de "lo que falta" por subcategoría (ayuda del paso 2 de
+// Gestionar insumos): cada uno acorde a su tipo de donación.
+export const EJEMPLOS_NECESIDADES = {
+  'alimento-agua': 'botellas de 5 litros, bolsas de agua',
+  'alimento-no-perecederos': 'arroz, lentejas, atún',
+  'alimento-bebe': 'leche de fórmula, compotas',
+  'alimento-animal': 'concentrado para perro, arena',
+  'aseo-corporal': 'jabón, papel higiénico, toallas',
+  'aseo-bucal': 'cepillos, crema dental',
+  'aseo-limpieza-hogar': 'detergente, cloro, escobas',
+  'ropa-hombre': 'camisetas talla L, chaquetas',
+  'ropa-mujer': 'blusas, ropa interior',
+  'ropa-ninos': 'pijamas, medias, talla 6',
+  'medicamentos-analgesicos': 'acetaminofén, ibuprofeno',
+  'medicamentos-antibioticos': 'amoxicilina, cefalexina',
+  'medicamentos-cronicos': 'insulina, losartán',
+  'construccion-herramientas': 'palas, martillos, linternas',
+  'construccion-materiales': 'cemento, tejas, plásticos',
+  'construccion-proteccion': 'cascos, guantes, tapabocas',
+};
