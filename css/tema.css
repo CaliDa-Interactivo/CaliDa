@@ -2927,3 +2927,15 @@ body:has(.bienvenida-inicio) {
     linear-gradient(180deg, #92BDB2 0%, #86B5A9 55%, #7AAC9F 100%) !important;
   background-attachment: fixed !important;
 }
+
+/* El gato 2D de respaldo no se ve mientras carga el 3D (antes aparecía
+   un instante en la pantalla principal); solo se muestra si el 3D falla. */
+.gato3d:not(.gato3d--sin3d) > .gato3d__respaldo {
+  visibility: hidden;
+}
+
+/* La ilustración del administrador (cajas con donaciones) con sus
+   colores reales, sin el filtro de color que tenía el paisaje */
+.tarjeta-ilustracion--admin {
+  filter: none !important;
+}

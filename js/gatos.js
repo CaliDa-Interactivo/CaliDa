@@ -11,7 +11,8 @@ export function montarGatos(raiz) {
   cargar()
     .then((m) => m.montarGatos(raiz))
     .catch(() => {
-      /* sin three.js: se queda el gato 2D */
+      // sin three.js: se muestra el gato 2D
+      raiz.querySelectorAll('[data-gato3d]').forEach((el) => el.classList.add('gato3d--sin3d'));
     });
 }
 

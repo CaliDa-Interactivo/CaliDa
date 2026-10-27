@@ -60,7 +60,8 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Panel de estado de insumos (zoom del admin): casi pantalla completa, recuadros que llenan el
   alto; los 5 puestos de cada repisa en una cuadrícula pareja (nada se sale del recuadro).
 - Registrar donación y despacho (`vista-formulario-admin`): formulario grande en dos columnas.
-- "Iniciar sesión" (elige tu perfil) en azul petróleo.
+- "Iniciar sesión" (elige tu perfil) en azul petróleo; su ilustración muestra cajas con
+  donaciones (`renderPaisaje({ centro: 'cajas' })`) en vez de casas.
 - Pre-registro y demás pantallas: sin desplazamiento vacío (el gato 2D de respaldo se oculta con
   `display: none` cuando carga el 3D).
 - Gestionar insumos: recuadros marfil con relieve, franja y pastilla del color del estado.
@@ -86,12 +87,16 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   con su mensaje arriba; nunca tapa el contenido. En celular va en una fila encima del panel.
 - three.js cambia los espacios de los nombres de las partes por "_" ("Pupilas_espejo"): buscar
   partes con `parte()` en `gato3d.js`, no con `getObjectByName` directo.
-- Si no hay WebGL, se usa el gato 2D (PNG/SVG) como respaldo.
+- Luz del gato con poco relleno y luz principal de lado: un poco más oscuro, con sombras visibles.
+- Si no hay WebGL, se usa el gato 2D (PNG/SVG) como respaldo; mientras carga el 3D el 2D no se ve
+  (solo aparece con la clase `gato3d--sin3d` si el 3D falla).
 - **Tono de los mensajes:** primera persona, frases cortas y cálidas; al admin le dice
   "tu centro" (p. ej. "Cuéntame cuánto hay de cada cosa en tu centro…").
 
 ## Estantería 3D — `js/estanteria3d.js`
-- Mueble `estanteria.glb` (girado para quedar de frente), madera de un solo tono (`#DBA878`).
+- Mueble `estanteria.glb` (girado para quedar de frente), madera de un solo tono y pareja: el
+  color sale casi todo del material (`MeshLambertMaterial`, emissive `#B98450`) y la luz solo
+  agrega un sombreado suave.
 - Compartimientos: Alimento y Aseo arriba, Ropa y Medicamentos al medio, Construcción abajo.
 - **Cámara fija** (no se arrastra); llena la pantalla; se ve la placa de Construcción.
 - Placas de categoría y etiquetas de producto **clavadas a la madera** (3D, no flotantes).
@@ -100,10 +105,8 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Buscador con palabras parecidas y sinónimos (`SINONIMOS_SUBCATEGORIA` en `js/data.js`).
 - Un modelo por subcategoría (`MODELOS_SUBCATEGORIA`); ajustes de color y calcomanías (maíz en la
   lata, huella en la bolsa de mascotas, botella de agua azul) en `js/ajustes-modelos.js`.
-  Ropa (camisa, vestido, overol) y papel higiénico fueron generados para el proyecto; la ropa se
-  reemplaza en código por prendas "infladas" de formas orgánicas (`PRENDAS` en
-  `js/ajustes-modelos.js`: camisa con cuello y botones, vestido con cinturón y moño, overol con
-  tirantes), mates y un poco de lado. Los
+  Camisa, vestido y overol son los modelos finales del equipo (oct 2026, `camisa.glb`,
+  `vestido.glb`, `overol.glb`); "Limpieza del hogar" usa `jabon.glb` (antes una escoba). Los
   cepillos de dientes se giran un cuarto de vuelta para que se vean los dos.
 - **Todos los íconos de productos** de la página usan "fotos" de los modelos 3D
   (`js/miniaturas3d.js`, `iconoProducto()` en `js/ilustraciones.js`).
@@ -116,12 +119,14 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   ajustable con el valor `0.8` en `encuadrarCiudad`).
 - Casas `casa_roja.glb` / `casa_amarilla.glb` estilizadas con la paleta (techo rojo carmín o
   amarillo, paredes marfil), acortadas de fondo para verse compactas, giradas a tres cuartos.
-  Las "fotos" de las casas (tarjetas y ficha) son de frente, un poco desde arriba (se ve el techo).
+  Las "fotos" de las casas (tarjetas y ficha) son de frente, apenas desde arriba.
 - Fondo del mapa azul petróleo (contraste); zonas con colores bien distintos y sin rojo ni
   amarillo (Norte coral, Occidente arena, Centro lila, Oriente menta, Sur rosa).
 - Ubicación del usuario: se pide al entrar; si está fuera de Cali el pin va al borde con la
   distancia. (Se quitó "Marcar dónde estoy".)
 - El gato explica colores (roja urgente / amarilla desabastecido) y el centro más cercano.
+- En el mapa **solo se pueden tocar las casas**; las zonas se eligen con los botones de abajo.
+- Subtítulo de la lista: "Selecciona un centro de acopio que necesita <producto>".
 
 ## Otros datos
 - Subcategorías: incluye "Comida para animales" (Alimento) y "Analgésicos" (sin "y fiebre").

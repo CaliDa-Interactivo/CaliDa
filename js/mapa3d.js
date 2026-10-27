@@ -695,13 +695,7 @@ export function montarMapa3D(opciones) {
         if (obj) return { tipo: 'centro', id: obj.userData.centroId };
       }
     }
-    const mallasZona = [...zonas.values()].map((z) => z.malla);
-    const golpeZona = raycaster.intersectObjects(mallasZona, true)[0];
-    if (golpeZona) {
-      let obj = golpeZona.object;
-      while (obj && !obj.userData.zona) obj = obj.parent;
-      if (obj) return { tipo: 'zona', id: obj.userData.zona };
-    }
+    // Solo las casas se pueden tocar; las zonas se eligen con los botones.
     return null;
   }
 
@@ -716,7 +710,7 @@ export function montarMapa3D(opciones) {
     }
     resaltarCentro(golpe?.tipo === 'centro' ? golpe.id : null);
     aplicarObjetivos();
-    renderer.domElement.style.cursor = golpe ? 'pointer' : 'grab';
+    renderer.domElement.style.cursor = golpe ? 'pointer' : 'default';
   }
 
   function alSalirPuntero() {

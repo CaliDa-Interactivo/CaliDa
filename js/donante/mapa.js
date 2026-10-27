@@ -177,7 +177,7 @@ export function render({ subcategoriaId }) {
               </div>
               <p class="mapa3d__ubicacion-estado" aria-live="polite"></p>
               <h2 class="mapa3d__titulo-lista">
-                ${plural(total, 'Centro que lo necesita', 'Centros que lo necesitan')}
+                Selecciona un centro de acopio que necesita ${nombreSub}
               </h2>
               <ul class="mapa__lista mapa3d__lista">${itemsLista}</ul>
               <p class="mapa3d__sin-resultados" hidden>No hay centros en esta zona que lo necesiten.</p>

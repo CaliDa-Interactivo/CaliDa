@@ -34,7 +34,7 @@ export const MODELOS_SUBCATEGORIA = {
   'alimento-animal': `${RUTA}comida_animal.glb`,
   'aseo-corporal': `${RUTA}papel_higienico.glb`,
   'aseo-bucal': `${RUTA}higiene_bucal.glb`,
-  'aseo-limpieza-hogar': `${RUTA}limpieza_hogar.glb`,
+  'aseo-limpieza-hogar': `${RUTA}jabon.glb`,
   'medicamentos-analgesicos': `${RUTA}analgesicos.glb`,
   'medicamentos-antibioticos': `${RUTA}antibioticos.glb`,
   'medicamentos-cronicos': `${RUTA}cronico.glb`,
@@ -489,10 +489,11 @@ export function montarEstanteria3D(o) {
     const gltfMueble = await cargarGLB(cargador, MODELO_ESTANTERIA);
     const mueble = gltfMueble.scene;
     prepararMateriales(mueble);
-    // Madera clara de un solo tono: material mate con un poco de brillo
-    // propio, sin sombras sobre el mueble (así el color se ve uniforme).
+    // Madera de un solo tono: casi todo el color sale del propio material
+    // (emissive) y la luz solo agrega un sombreado suave, así el mueble se
+    // ve parejo en todas sus caras, sin manchas de luz ni zonas oscuras.
     const madera = registrar(
-      new THREE.MeshStandardMaterial({ color: '#DBA878', emissive: '#DBA878', emissiveIntensity: 0.28, roughness: 0.95, metalness: 0 })
+      new THREE.MeshLambertMaterial({ color: '#5E4128', emissive: '#B98450', emissiveIntensity: 1 })
     );
     mueble.traverse((n) => {
       if (n.isMesh) {

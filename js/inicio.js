@@ -72,7 +72,7 @@ export function renderEntrar() {
               </article>
 
               <article class="tarjeta-entrada tarjeta-entrada--hover" data-perfil="admin">
-                <div class="tarjeta-ilustracion tarjeta-ilustracion--admin" aria-hidden="true">${renderPaisaje()}</div>
+                <div class="tarjeta-ilustracion tarjeta-ilustracion--admin" aria-hidden="true">${renderPaisaje({ centro: 'cajas' })}</div>
                 <h2>Administro un centro</h2>
                 <p>Actualiza lo que necesita tu centro y registra donaciones y despachos.</p>
                 <a class="boton-contorno boton-ancho" href="${destinoAdmin}">

@@ -90,12 +90,14 @@ async function montarUno(el) {
   canvas.setAttribute('aria-hidden', 'true');
 
   const escena = new THREE.Scene();
-  escena.add(new THREE.AmbientLight('#FFF4EA', 0.9));
-  escena.add(new THREE.HemisphereLight('#FFF8EE', '#E9B99A', 1.3));
-  const sol = new THREE.DirectionalLight('#FFF1E0', 1.7);
-  sol.position.set(1.5, 3, 4);
+  // Poca luz de relleno y una luz principal de lado: el gato se ve un poco
+  // más oscuro y se notan sus sombras (volumen).
+  escena.add(new THREE.AmbientLight('#FFF4EA', 0.35));
+  escena.add(new THREE.HemisphereLight('#FFF8EE', '#B98A6E', 0.75));
+  const sol = new THREE.DirectionalLight('#FFF1E0', 2.1);
+  sol.position.set(2.6, 3.2, 3);
   escena.add(sol);
-  const borde = new THREE.DirectionalLight('#FFD9B8', 1.1); // luz de contorno cálida
+  const borde = new THREE.DirectionalLight('#FFD9B8', 0.8); // luz de contorno cálida
   borde.position.set(-2.5, 2, -2);
   escena.add(borde);
 
@@ -373,6 +375,7 @@ async function montarUno(el) {
       renderer.dispose();
       canvas.remove();
       el.classList.remove('gato3d--listo');
+      el.classList.add('gato3d--sin3d');
       activos.delete(instancia);
     },
   };
@@ -386,7 +389,10 @@ export function montarGatos(raiz = document) {
   pendientes.forEach((el) => {
     el.dataset.gato3dMontando = '1';
     montarUno(el)
-      .catch((e) => console.warn('Gato 3D no disponible; se usa el 2D.', e))
+      .catch((e) => {
+        console.warn('Gato 3D no disponible; se usa el 2D.', e);
+        el.classList.add('gato3d--sin3d');
+      })
       .finally(() => delete el.dataset.gato3dMontando);
   });
 }
