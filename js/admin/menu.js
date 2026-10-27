@@ -64,7 +64,7 @@ export const render = conSesion((_params, centro) => ({
   init(contenedor) {
     contenedor.querySelector('[data-cerrar-sesion]').addEventListener('click', () => {
       logout();
-      location.hash = '#/';
+      location.hash = '#/entrar';
     });
 
     // Íconos 3D (si three.js no carga, se quedan los emojis).

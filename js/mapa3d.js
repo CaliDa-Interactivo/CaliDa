@@ -425,7 +425,9 @@ export function montarMapa3D(opciones) {
     const material = registrar(new THREE.MeshStandardMaterial({ color: colorBase.clone(), roughness: 0.85 }));
     const malla = new THREE.Mesh(geometria, material);
     malla.position.y = 0;
-    malla.castShadow = true;
+    // La ciudad no proyecta sombra sobre el suelo (se veía como una mancha
+    // oscura alrededor de Cali); solo recibe la de las casas.
+    malla.castShadow = false;
     malla.receiveShadow = true;
     malla.userData.zona = nombre;
     escena.add(malla);

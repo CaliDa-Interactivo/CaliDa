@@ -78,8 +78,8 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   `--relleno-rojo/azul/marfil/amarillo/salvia`, redefinidas al final de `css/tema.css`).
 - **Pantalla principal (oct 2026, la pidió el equipo así):** `js/inicio.js` + `js/inicio3d.js`.
   1) **Intro**: la cámara baja del cielo (sol, nubes, paralaje) hasta el gato en una colina, que
-  dice **dos mensajes** en un globo grande: el principal ("En una emergencia…") y luego "Yo te
-  muestro qué necesita cada centro…". **Se ve cada vez que se llega a la pantalla principal**,
+  dice **dos mensajes** en un globo grande: el principal ("En una emergencia…") y luego "Aquí te
+  mostraré a dónde llevar tus donaciones.". **Se ve cada vez que se llega a la pantalla principal**,
   botón "Saltar"; sin intro si el sistema pide reducir el movimiento. Globo proporcional al gato (hasta 32px;
   ojo: la regla general de párrafos a 14px excluye `.intro__globo` y `.portada__colabora`). 2) **Portada** como la referencia: sin
   encabezado de logos; a la izquierda "CaliDa" grande con los colores del logo (Cali #F67751,
@@ -217,3 +217,14 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Registrar donación y despacho: títulos de 52px (34px en celular).
 - `index.html` carga CSS y `main.js` con `?v=AAAAMMDD`: **subir la versión en cada cambio de
   estilos** para que GitHub Pages no muestre la versión vieja.
+
+## Ajustes de oct 2026 (7)
+- **"Pantalla principal" = Elige tu perfil (`#/entrar`)**, la de los botones de donador y admin;
+  la intro/portada (`#/`) solo se ve al abrir el sitio. `RUTA_PRINCIPAL` en `js/boton-inicio.js`;
+  "Cerrar sesión" del admin también lleva a `#/entrar`.
+- Mapa: la ciudad (zonas) ya no proyecta sombra sobre el suelo (se veía una mancha oscura);
+  el gato del lado baja (`translateY(9%)`) para que sus pies queden en el borde inferior del
+  mapa y el globo en el borde superior.
+- Los módulos que cambian también llevan `?v=` en sus `import` (main.js, mapa.js, ficha.js,
+  prerregistro.js), porque el navegador guarda los módulos JS aunque cambie `main.js?v=`.
+  Al cambiar uno de esos archivos, subir la versión en todos (buscar el `?v=` actual).

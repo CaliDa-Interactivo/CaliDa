@@ -1,12 +1,14 @@
 // ============================================================
-// boton-inicio.js — botón "Volver a pantalla principal" (#/) o,
+// boton-inicio.js — botón "Volver a pantalla principal" (#/entrar) o,
 // en las funciones del administrador, "Volver al menú".
 // main.js lo agrega solo en las pantallas a las que se llega
 // después de pasar más de dos pantallas (donante y administrador),
 // y en la pantalla de pre-registro.
 // ============================================================
 
-export const RUTA_PRINCIPAL = '#/';
+// La pantalla principal es "Elige tu perfil" (botones de donador y admin),
+// no la intro animada.
+export const RUTA_PRINCIPAL = '#/entrar';
 
 // En las funciones del administrador (insumos, donación, despacho y la
 // bandeja de correos) el botón lleva al menú: "Volver al menú".

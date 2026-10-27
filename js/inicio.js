@@ -24,7 +24,7 @@ export const RUTA_DONANTE = '#/donante/estanteria';
 //    formas suaves que flotan.
 
 const MENSAJE_PRINCIPAL = 'En una emergencia, ayudar también es saber dónde hace falta.';
-const MENSAJE_SEGUNDO = 'Yo te muestro qué necesita cada centro de acopio y cómo llevarle tu ayuda.';
+const MENSAJE_SEGUNDO = 'Aquí te mostraré a dónde llevar tus donaciones.';
 const DURACION_INTRO = 11400; // ms (bajada de cámara + dos mensajes)
 
 export function renderBienvenida() {

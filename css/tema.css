@@ -4112,3 +4112,12 @@ html[data-rol="admin"] body .leyenda-estados li:not(#estado):not(#estado-claro) 
   color: #12406E !important;
   box-shadow: 0 3px 8px rgba(9, 62, 126, 0.18) !important;
 }
+
+/* Mapa (computador): el gato baja hasta que sus pies quedan en la línea
+   del borde inferior del mapa; el globo ya empieza a la altura del borde
+   superior. Así el recuadro del mapa va del globo a los pies del gato. */
+@media (min-width: 761px) {
+  .mapa-envoltura .mapa3d__gato.gato-asoma--lado .gato-guia__imagen:not(#gato-mapa) {
+    transform: translateY(9%) !important;
+  }
+}
