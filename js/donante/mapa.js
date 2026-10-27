@@ -12,7 +12,7 @@ import { obtenerUbicacion, ubicacionGuardada, distanciaKm, formatoKm } from '../
 import { getCentros, getCentrosPorSubcategoria } from '../store.js';
 import { renderGato } from '../gato.js';
 import { cargarMiniaturas } from '../ilustraciones.js';
-import { renderBotonInicio } from '../boton-inicio.js?v=20261027e';
+import { renderBotonInicio } from '../boton-inicio.js?v=20261027f';
 
 // Recuerda la zona elegida por subcategoría, para que al volver
 // de la ficha (D5) el mapa siga enfocado donde estaba.
@@ -351,7 +351,7 @@ export function render({ subcategoriaId }) {
       }
 
       // Carga diferida del mapa 3D.
-      import('../mapa3d.js?v=20261027e')
+      import('../mapa3d.js?v=20261027f')
         .then(({ montarMapa3D }) => {
           if (destruido) return;
           const necesidades = Object.fromEntries(

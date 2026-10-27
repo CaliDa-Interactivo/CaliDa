@@ -4121,3 +4121,35 @@ html[data-rol="admin"] body .leyenda-estados li:not(#estado):not(#estado-claro) 
     transform: translateY(9%) !important;
   }
 }
+
+/* ===================================================================
+   AJUSTES (oct 2026, 8)
+   =================================================================== */
+/* Intro: cada mensaje centrado en el globo (horizontal y vertical) */
+.intro .intro__mensaje {
+  align-self: center;
+  justify-self: center;
+  text-align: center;
+}
+
+/* Mapa (computador): el recuadro crece con la columna del gato, así su
+   borde inferior llega a los pies del gato aunque el mensaje sea largo
+   o la ventana poco alta (antes tenía un alto fijo de 62vh). */
+@media (min-width: 761px) {
+  :is(.vista-mapa3d, .vista-columnas) .mapa-envoltura > .mapa3d:not(#mapa) {
+    height: auto !important;
+    min-height: max(360px, min(62vh, 640px)) !important;
+    align-self: stretch !important;
+  }
+}
+
+/* Botón de zona elegido ("Toda Cali", etc.): color plano, sin la sombra
+   de arriba */
+html:is([data-rol="donante"], [data-rol="admin"]) :is(.vista-mapa3d, .vista-columnas) .chip-zona[aria-pressed="true"]:not(#zona) {
+  background: var(--rol-boton, #B8432A) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+html[data-rol="admin"] :is(.vista-mapa3d, .vista-columnas) .chip-zona[aria-pressed="true"]:not(#zona) {
+  background: #1F5490 !important;
+}
