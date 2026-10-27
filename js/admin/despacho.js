@@ -9,6 +9,7 @@
 import { registrarDespacho, getCentroAdminActual } from '../store.js';
 import { generarCorreosDespacho } from '../email.js';
 import { MUNICIPIOS_VALLE } from '../data.js';
+import { MINIATURAS } from '../cache-miniaturas.js';
 import {
   conSesion,
   renderEncabezado,
@@ -28,7 +29,12 @@ export const render = conSesion((_params, centro) => {
       <section class="vista vista-admin vista-formulario-admin vista-funcion-despacho">
         ${renderEncabezado({ atras: '#/admin/menu', titulo: 'Registro salida de donaciones', centro })}
         <form class="tarjeta formulario" novalidate>
-          <p class="formulario__categoria"><span aria-hidden="true">🚚</span> Despacho de la semana</p>
+          <p class="formulario__categoria">
+            <span class="formulario__icono" data-icono-despacho aria-hidden="true">${
+              MINIATURAS.get('menu-despacho') ? `<img src="${MINIATURAS.get('menu-despacho')}" alt="" width="88" height="88" />` : '🚚'
+            }</span>
+            Despacho de la semana
+          </p>
 
           <div class="campo">
             <label for="desp-fecha">Fecha</label>
@@ -58,6 +64,15 @@ export const render = conSesion((_params, centro) => {
       </section>
     `,
     init(contenedor) {
+      // Camión 3D (el mismo ícono del menú)
+      import('../miniaturas3d.js')
+        .then(({ generarIconoMenu }) => generarIconoMenu('despacho'))
+        .then((foto) => {
+          const el = contenedor.querySelector('[data-icono-despacho]');
+          if (foto && el) el.innerHTML = `<img src="${foto}" alt="" width="88" height="88" />`;
+        })
+        .catch(() => {});
+
       const form = contenedor.querySelector('form');
       const { fecha, placa, destino } = form;
       destino.addEventListener('change', () => marcarError(destino, ''));

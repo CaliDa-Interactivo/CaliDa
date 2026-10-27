@@ -15,8 +15,8 @@ export const RUTA_DONANTE = '#/donante/estanteria';
 // --- Pantalla 1 · Bienvenida --------------------------------------------
 // 1) Intro: la cámara baja desde el cielo hasta el gato, que dice dos
 //    mensajes en un globo grande (el principal y luego una invitación).
-//    Se ve una vez por sesión, se puede saltar y no aparece si el sistema
-//    pide reducir el movimiento.
+//    Se ve cada vez que se llega a esta pantalla, se puede saltar y no
+//    aparece si el sistema pide reducir el movimiento.
 // 2) Portada (distribución de la referencia del equipo): a la izquierda
 //    "CaliDa" con los colores del logo, la colaboración con la Cruz Roja,
 //    el mensaje y "Siguiente"; a la derecha una isla flotante en 3D con
@@ -24,7 +24,6 @@ export const RUTA_DONANTE = '#/donante/estanteria';
 //    formas suaves que flotan.
 
 const MENSAJE_PRINCIPAL = 'En una emergencia, ayudar también es saber dónde hace falta.';
-const CLAVE_INTRO = 'calida_intro_vista';
 const MENSAJE_SEGUNDO = 'Yo te muestro qué necesita cada centro de acopio y cómo llevarle tu ayuda.';
 const DURACION_INTRO = 11400; // ms (bajada de cámara + dos mensajes)
 
@@ -118,21 +117,11 @@ export function renderBienvenida() {
         void intro.offsetWidth;
         intro.classList.add('intro--andando');
         temporizador = setTimeout(terminarIntro, DURACION_INTRO);
-        try {
-          sessionStorage.setItem(CLAVE_INTRO, '1');
-        } catch {
-          /* sin almacenamiento */
-        }
       }
 
-      let vista = false;
-      try {
-        vista = sessionStorage.getItem(CLAVE_INTRO) === '1';
-      } catch {
-        /* sin almacenamiento */
-      }
-      if (!vista) mostrarIntro();
-      else portada.classList.add('portada--entrando');
+      // La intro se ve cada vez que se llega a la pantalla principal.
+      if (reducido) portada.classList.add('portada--entrando');
+      else mostrarIntro();
 
       contenedor.querySelector('[data-saltar-intro]').addEventListener('click', terminarIntro);
 

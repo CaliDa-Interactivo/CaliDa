@@ -55,7 +55,7 @@ export const renderEstanteria = conSesion(({ categoriaId = null } = {}, centro) 
   const encabezado = `
     ${renderEncabezado({ atras: '#/admin/menu', titulo: 'Registrar donación', centro })}
     <div class="admin-barra">
-      <p class="admin-instruccion">¿Qué trajo la persona?</p>
+      <p class="admin-instruccion">Selecciona el tipo de donación a registrar</p>
       ${renderBuscador('buscador-donacion')}
     </div>`;
   return {
@@ -115,7 +115,7 @@ export const renderFormulario = conSesion(({ subcategoriaId }, centro) => {
         ${renderEncabezado({ atras: '#/admin/donacion', titulo: 'Registrar donación', centro })}
         <form class="tarjeta formulario" novalidate>
           <p class="formulario__categoria">
-            ${iconoProducto(subcategoria.id, 48)}
+            ${iconoProducto(subcategoria.id, 88)}
             <span>${subcategoria.nombre}<span class="formulario__categoria-de">${categoria.nombre}</span></span>
           </p>
 

@@ -3100,7 +3100,7 @@ html[data-rol="inicio"] body:has(.bienvenida-inicio) {
   font-size: 28px !important;
   line-height: 1.2 !important;
 }
-.vista p:not(.mapa__indicador):not(.estado-grande):not(.prerregistro__que):not(.formulario__categoria),
+.vista p:not(.mapa__indicador):not(.estado-grande):not(.prerregistro__que):not(.formulario__categoria):not(.intro__globo):not(.portada__colabora),
 .gato-guia__globo p,
 .bienvenida-inicio__apoyo,
 .menu-admin__descripcion,
@@ -3939,4 +3939,85 @@ html[data-rol] body :is(.mapa3d__ubicacion-estado, .escena3d__ayuda, .admin-inst
   box-shadow: none !important;
   padding: 0 !important;
   border-radius: 0 !important;
+}
+
+/* ===================================================================
+   AJUSTES (oct 2026, 4)
+   =================================================================== */
+/* Intro: globo todavía más grande */
+.intro__escena {
+  width: min(96vw, 1120px) !important;
+}
+.intro .intro__globo {
+  padding: 36px 56px !important;
+  border-radius: 44px !important;
+  font-size: clamp(28px, 4.2vw, 54px) !important;
+  line-height: 1.12 !important;
+}
+
+/* Portada: "En colaboración con" más grande y en negrilla */
+.vista.portada .portada__colabora {
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  gap: 14px;
+}
+.portada__logo-cr img {
+  height: 38px;
+}
+
+/* Admin: con recuadro (pastilla azul oscuro y texto blanco) el nombre
+   del centro, la instrucción y la leyenda de estados */
+html[data-rol="admin"] body :is(.admin-encabezado__centro, .admin-instruccion):not(#con-recuadro) {
+  display: inline-block;
+  width: fit-content !important;
+  padding: 4px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(18, 64, 110, 0.85) !important;
+  color: #FFFFFF !important;
+}
+html[data-rol="admin"] .leyenda-estados li {
+  padding: 4px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(18, 64, 110, 0.85) !important;
+  color: #FFFFFF !important;
+}
+
+/* Registrar donación y despacho: producto/categoría e ícono más grandes */
+.vista-formulario-admin .formulario__categoria {
+  gap: 16px !important;
+  font-size: 28px !important;
+  font-weight: 700;
+}
+.vista-formulario-admin .formulario__categoria-de {
+  display: block;
+  font-size: 16px !important;
+  font-weight: 500;
+}
+.vista-formulario-admin .formulario__categoria .icono-producto,
+.vista-formulario-admin .formulario__categoria .icono-producto img,
+.vista-formulario-admin .formulario__icono img {
+  width: 88px !important;
+  height: 88px !important;
+}
+.vista-formulario-admin .formulario__icono {
+  display: inline-grid;
+  place-items: center;
+  font-size: 56px;
+  line-height: 1;
+}
+
+/* Pre-registro: la parte de la ubicación sin recuadro azul claro */
+.prerregistro__ubicacion,
+.vista-columnas .prerregistro__ubicacion {
+  background: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+/* Con el globo grande, el gato un poco más pequeño para que todo quepa */
+.intro__gato {
+  width: min(32vh, 56vw) !important;
+}
+.intro__escena {
+  bottom: 14vh !important;
 }

@@ -79,10 +79,11 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - **Pantalla principal (oct 2026, la pidió el equipo así):** `js/inicio.js` + `js/inicio3d.js`.
   1) **Intro**: la cámara baja del cielo (sol, nubes, paralaje) hasta el gato en una colina, que
   dice **dos mensajes** en un globo grande: el principal ("En una emergencia…") y luego "Yo te
-  muestro qué necesita cada centro…". Una vez por sesión (`calida_intro_vista`), botón "Saltar";
-  sin intro si el sistema pide reducir el movimiento. 2) **Portada** como la referencia: sin
+  muestro qué necesita cada centro…". **Se ve cada vez que se llega a la pantalla principal**,
+  botón "Saltar"; sin intro si el sistema pide reducir el movimiento. Globo grande (hasta 54px;
+  ojo: la regla general de párrafos a 14px excluye `.intro__globo` y `.portada__colabora`). 2) **Portada** como la referencia: sin
   encabezado de logos; a la izquierda "CaliDa" grande con los colores del logo (Cali #F67751,
-  Da #CC0100), "En colaboración con" + logo de la Cruz Roja sobre blanco, el mensaje y
+  Da #CC0100), "En colaboración con" (16px, negrilla) + logo de la Cruz Roja sobre blanco, el mensaje y
   "Siguiente"; a la derecha la isla 3D con mesas, cajas con donaciones y el gato; de fondo un
   sol, manchas y puntos que flotan.
 - Tarjetas de centros bajo el mapa: urgentes en rojo carmín, desabastecidos en amarillo.
@@ -92,7 +93,9 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   donacion/despacho`).
 - Admin: en el menú, "Volver a pantalla principal"; en sus funciones (insumos, donación,
   despacho, bandeja) **"Volver al menú"** (`renderBotonInicio({ alMenu })`). Va fijo arriba a la
-  derecha (sin taparse con el buscador). Textos sobre el fondo azul del admin en blanco;
+  derecha (sin taparse con el buscador). Textos sobre el fondo azul del admin en blanco; con
+  recuadro (pastilla azul oscuro): nombre del centro, leyenda de estados y la instrucción
+  "Selecciona el tipo de donación a registrar";
   leyenda de estados centrada encima de la estantería; ejemplos de "lo que falta" según la
   subcategoría (`EJEMPLOS_NECESIDADES` en `js/data.js`).
 - Menú del admin: las tres tareas se reparten todo el alto de la pantalla.
