@@ -4180,3 +4180,75 @@ html:is([data-rol="donante"], [data-rol="admin"]) .vista-mapa3d .chip-zona[aria-
   background: #8A3B12 !important;
   color: #FFF6E6 !important;
 }
+
+/* ===================================================================
+   AJUSTES (oct 2026, 9)
+   =================================================================== */
+/* Al abrir el sitio: la pantalla aparece con un desvanecimiento suave
+   (desde crema) antes de la intro. Solo pasa una vez, al cargar. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #FFF8ED;
+  pointer-events: none;
+  animation: desvanecer-inicio 1.2s ease 0.15s both;
+}
+@keyframes desvanecer-inicio {
+  from { opacity: 1; }
+  to { opacity: 0; visibility: hidden; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before { animation-duration: 0.01s; animation-delay: 0s; }
+}
+
+/* Estantería del donante: "Toca un compartimiento…" arriba, debajo de
+   la pregunta */
+body .escena3d .escena3d__ayuda.escena3d__ayuda--arriba:not(#ayuda) {
+  position: static !important;
+  transform: none !important;
+  left: auto !important;
+  bottom: auto !important;
+  margin: 6px 0 0 !important;
+  white-space: normal !important;
+  pointer-events: none;
+}
+
+/* Ficha del centro: "Toma un minuto…" centrado con los botones */
+.vista .pantalla-acciones .ficha-centro__nota:not(#nota) {
+  align-self: center !important;
+  text-align: center !important;
+  margin: 0 auto !important;
+}
+
+/* "¡Todo listo…!": el botón de volver separado del cuadro */
+.vista-llegar .barra-inicio {
+  margin-bottom: 24px !important;
+}
+@media (min-width: 1100px) {
+  .vista-llegar .barra-inicio {
+    position: static !important;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+/* Logo de CaliDa: enlace a la página inicial */
+.logo-enlace {
+  display: inline-flex;
+  border-radius: 8px;
+}
+.logo-enlace:focus-visible {
+  outline: 3px solid #011E41;
+  outline-offset: 4px;
+}
+.estanteria__titulo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+.estanteria__titulo h1 {
+  margin: 0 !important;
+}

@@ -11,7 +11,9 @@ export function renderEncabezado() {
   return `
     <header class="encabezado-logos">
       <img class="logo logo--cruz-roja" src="${LOGO_CRUZ_ROJA}" alt="Cruz Roja" width="401" height="104" />
-      <img class="logo logo--calida" src="${LOGO_CALIDA}" alt="CaliDa" width="640" height="167" />
+      <a class="logo-enlace" href="#/" aria-label="CaliDa, ir a la página inicial">
+        <img class="logo logo--calida" src="${LOGO_CALIDA}" alt="" width="640" height="167" />
+      </a>
     </header>
   `;
 }

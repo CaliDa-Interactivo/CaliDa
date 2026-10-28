@@ -235,3 +235,14 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   pantallas al 125 % (1536 × 730) y con el mensaje largo del gato.
 - Botón de zona elegido ("Toda Cali"…): mismo estilo que los botones rojos de las zonas con
   urgencias (sin sombra hundida arriba), con el conteo en café.
+
+## Ajustes de oct 2026 (9)
+- Al abrir el sitio, la pantalla aparece con un desvanecimiento desde crema (`body::before`,
+  1,2 s) antes de la intro.
+- Estantería del donante: "Toca un compartimiento para ver sus productos" va arriba, debajo de
+  la pregunta (`renderEscena3D({ ayudaArriba: true })`; el texto en `TEXTO_AYUDA_ESTANTERIA`).
+- Los centros de ejemplo ya no dicen "(ejemplo)" en el nombre (`js/data.js`; `store.js` lo
+  quita también de los datos guardados).
+- Ficha: "Toma un minuto…" centrado con los botones. "¡Todo listo…!": el botón de volver va
+  separado del cuadro.
+- El logo de CaliDa del encabezado (elegir perfil, login) es un enlace a la página inicial `#/`.

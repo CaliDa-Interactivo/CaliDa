@@ -58,6 +58,11 @@ export function inicializarStore() {
       Object.assign(centro, { zona: 'Centro', lat: 3.4528, lng: -76.5318 });
       cambio = true;
     }
+    // Los centros de ejemplo ya no llevan "(ejemplo)" en el nombre.
+    if (/\s*\(ejemplo\)$/.test(centro.nombre)) {
+      centro.nombre = centro.nombre.replace(/\s*\(ejemplo\)$/, '');
+      cambio = true;
+    }
     if (!centro.necesidades) {
       centro.necesidades = structuredClone(NECESIDADES_SEMILLA[centro.id] ?? {});
       cambio = true;

@@ -195,7 +195,7 @@ export const CENTROS_SEMILLA = [
   // --- Centros de ejemplo (placeholder), reemplazar con datos reales ---
   {
     id: 'centro-norte-1',
-    nombre: 'Centro de Acopio Norte 1 (ejemplo)',
+    nombre: 'Centro de Acopio Norte 1',
     zona: 'Norte',
     foto: 'assets/icons/centro-placeholder.svg',
     horario: '8:00 a.m. – 5:00 p.m.',
@@ -209,7 +209,7 @@ export const CENTROS_SEMILLA = [
   },
   {
     id: 'centro-norte-2',
-    nombre: 'Centro de Acopio Norte 2 (ejemplo)',
+    nombre: 'Centro de Acopio Norte 2',
     zona: 'Norte',
     foto: 'assets/icons/centro-placeholder.svg',
     horario: '8:00 a.m. – 5:00 p.m.',
@@ -223,7 +223,7 @@ export const CENTROS_SEMILLA = [
   },
   {
     id: 'centro-centro-1',
-    nombre: 'Centro de Acopio Centro 1 (ejemplo)',
+    nombre: 'Centro de Acopio Centro 1',
     zona: 'Centro',
     foto: 'assets/icons/centro-placeholder.svg',
     horario: '8:00 a.m. – 5:00 p.m.',
@@ -237,7 +237,7 @@ export const CENTROS_SEMILLA = [
   },
   {
     id: 'centro-centro-2',
-    nombre: 'Centro de Acopio Centro 2 (ejemplo)',
+    nombre: 'Centro de Acopio Centro 2',
     zona: 'Centro',
     foto: 'assets/icons/centro-placeholder.svg',
     horario: '8:00 a.m. – 5:00 p.m.',
@@ -250,7 +250,7 @@ export const CENTROS_SEMILLA = [
   },
   {
     id: 'centro-oriente-2',
-    nombre: 'Centro de Acopio Oriente 2 (ejemplo)',
+    nombre: 'Centro de Acopio Oriente 2',
     zona: 'Oriente',
     foto: 'assets/icons/centro-placeholder.svg',
     horario: '8:00 a.m. – 5:00 p.m.',
@@ -264,7 +264,7 @@ export const CENTROS_SEMILLA = [
   },
   {
     id: 'centro-occidente-2',
-    nombre: 'Centro de Acopio Occidente 2 (ejemplo)',
+    nombre: 'Centro de Acopio Occidente 2',
     zona: 'Occidente',
     foto: 'assets/icons/centro-placeholder.svg',
     horario: '8:00 a.m. – 5:00 p.m.',

@@ -9,13 +9,17 @@
 
 import { CATEGORIAS, coincideBusqueda } from './data.js';
 
-export function renderEscena3D({ encabezado, etiqueta = 'Estantería 3D de CaliDa' }) {
+// `ayudaArriba`: el encabezado ya trae el mensaje "Toca un
+// compartimiento…" debajo de la pregunta (donante); no se repite abajo.
+export const TEXTO_AYUDA_ESTANTERIA = 'Toca un compartimiento para ver sus productos';
+
+export function renderEscena3D({ encabezado, etiqueta = 'Estantería 3D de CaliDa', ayudaArriba = false }) {
   return `
     <div class="escena3d" data-estado="cargando">
       <div class="escena3d__lienzo" role="img" aria-label="${etiqueta}"></div>
       <div class="escena3d__etiquetas"></div>
       <div class="escena3d__arriba">${encabezado}</div>
-      <p class="escena3d__ayuda">Toca un compartimiento para ver sus productos</p>
+      ${ayudaArriba ? '' : `<p class="escena3d__ayuda">${TEXTO_AYUDA_ESTANTERIA}</p>`}
       <p class="escena3d__cargando" aria-live="polite">Armando la estantería…</p>
     </div>`;
 }
