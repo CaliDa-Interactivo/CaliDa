@@ -246,3 +246,12 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Ficha: "Toma un minuto…" centrado con los botones. "¡Todo listo…!": el botón de volver va
   separado del cuadro.
 - El logo de CaliDa del encabezado (elegir perfil, login) es un enlace a la página inicial `#/`.
+
+## Ajustes de oct 2026 (10) — isla 3D de la portada (`js/inicio3d.js`)
+- Nada flota: cada producto se apoya en el fondo de una caja (`EN_CAJA`), en un tablero
+  (`SOBRE_MESA`) o en la tapa de una caja cerrada.
+- La caja del papel higiénico (mesa del frente) va cerrada (`cajaCerrada`); el papel y el
+  analgésico van encima.
+- Mesita nueva (`mesaC`) para el vaso de los cepillos; la bolsa roja de comida para animales va
+  encima de la pila de cajas cerradas; en la caja de la camisa también va el vestido.
+- Portada: todo el bloque de texto un 25 % más grande (`zoom: 1.25` en `.portada__texto`).

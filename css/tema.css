@@ -4252,3 +4252,9 @@ body .escena3d .escena3d__ayuda.escena3d__ayuda--arriba:not(#ayuda) {
 .estanteria__titulo h1 {
   margin: 0 !important;
 }
+
+/* Portada: todo el bloque de texto (título, colaboración, mensaje y
+   botón) un 25 % más grande, sin cambiar su diseño */
+.vista.portada .portada__texto {
+  zoom: 1.25;
+}

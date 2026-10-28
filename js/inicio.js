@@ -128,7 +128,7 @@ export function renderBienvenida() {
       // Isla 3D (si three.js no carga, la portada queda con el sol y el gato)
       let liberarIsla = null;
       let salir = false;
-      import('./inicio3d.js')
+      import('./inicio3d.js?v=20261028b')
         .then(({ montarIsla }) => {
           if (!salir) liberarIsla = montarIsla(contenedor.querySelector('.portada__isla'));
         })

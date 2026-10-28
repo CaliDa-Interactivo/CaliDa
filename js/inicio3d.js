@@ -149,14 +149,19 @@ export function montarIsla(contenedor) {
   const mesaB = mesa(1.0, 0.65, 0.62);
   mesaB.position.set(1.15, 0, 0.45);
   mesaB.rotation.y = -0.5;
-  mundo.add(mesaA, mesaB);
+  // Mesita para el vaso de los cepillos (antes flotaba junto a la mesa B).
+  const mesaC = mesa(0.45, 0.4, 0.62);
+  mesaC.position.set(1.65, 0, -0.3);
+  mesaC.rotation.y = -0.5;
+  mundo.add(mesaA, mesaB, mesaC);
 
   // Cajas abiertas sobre las mesas y cajas cerradas apiladas en el piso
   const cajaA = cajaCarton(0.62, 0.32, 0.45, { cruz: true });
   cajaA.position.set(0.05, 0.655, -0.72);
   const cajaB = cajaCarton(0.5, 0.28, 0.4);
   cajaB.position.set(0.68, 0.655, -0.78);
-  const cajaC = cajaCarton(0.55, 0.3, 0.42, { cruz: true });
+  // La caja del papel va cerrada; el papel y el analgésico van encima.
+  const cajaC = cajaCerrada(0.55, 0.3, 0.42, true);
   cajaC.position.set(1.15, 0.655, 0.45);
   cajaC.rotation.y = -0.5;
   mundo.add(cajaA, cajaB, cajaC);
@@ -179,17 +184,25 @@ export function montarIsla(contenedor) {
   };
 
   // Donaciones: los modelos de la estantería, asomándose de las cajas y
-  // sueltas sobre las mesas.
+  // sueltas sobre las mesas. Cada uno se apoya en algo: el fondo de una
+  // caja (y ≈ 0.685), el tablero de una mesa (y = 0.655) o la tapa de una
+  // caja cerrada.
+  const SOBRE_MESA = 0.655;
+  const EN_CAJA = 0.685;
+  const SOBRE_CAJA_C = 0.655 + 0.3 + 0.012;
+  const SOBRE_PILA = 0.36 + 0.3 + 0.012;
   const cargador = new GLTFLoader();
   const productos = [
-    ['alimento-agua', 0.42, [-0.08, 0.72, -0.72]],
-    ['alimento-no-perecederos', 0.24, [0.17, 0.72, -0.66]],
-    ['ropa-hombre', 0.34, [0.68, 0.72, -0.8]],
-    ['medicamentos-analgesicos', 0.26, [1.05, 0.72, 0.42]],
-    ['aseo-corporal', 0.24, [1.3, 0.72, 0.5]],
-    ['alimento-bebe', 0.3, [0.85, 0.69, -0.45]],
-    ['aseo-bucal', 0.3, [1.45, 0.69, 0.1]],
-    ['alimento-animal', 0.3, [-0.45, 0.69, -0.65]],
+    ['alimento-agua', 0.42, [-0.08, EN_CAJA, -0.72]],
+    ['alimento-no-perecederos', 0.24, [0.17, EN_CAJA, -0.66]],
+    ['ropa-hombre', 0.34, [0.57, EN_CAJA, -0.8]],
+    ['ropa-mujer', 0.34, [0.8, EN_CAJA, -0.78]],
+    ['medicamentos-analgesicos', 0.26, [1.03, SOBRE_CAJA_C, 0.4]],
+    ['aseo-corporal', 0.24, [1.27, SOBRE_CAJA_C, 0.5]],
+    ['alimento-bebe', 0.3, [0.85, SOBRE_MESA, -0.47]],
+    ['aseo-bucal', 0.3, [1.65, SOBRE_MESA, -0.3]],
+    // La bolsa de comida para animales, encima de la pila de cajas cerradas.
+    ['alimento-animal', 0.3, [-1.25, SOBRE_PILA, -0.55]],
   ];
   for (const [sub, alto, [x, y, z]] of productos) {
     const ruta = MODELOS_SUBCATEGORIA[sub];
