@@ -10,18 +10,18 @@
 // ============================================================
 
 import { inicializarStore } from './store.js';
-import { agregarBotonInicio } from './boton-inicio.js?v=20261028b';
+import { agregarBotonInicio } from './boton-inicio.js?v=20261028c';
 import { montarGatos, limpiarGatos } from './gatos.js';
 import { cargarMiniaturas } from './ilustraciones.js';
-import * as inicio from './inicio.js?v=20261028b';
+import * as inicio from './inicio.js?v=20261028c';
 import * as estanteriaDonante from './donante/estanteria.js';
-import * as mapaDonante from './donante/mapa.js?v=20261028b';
-import * as fichaDonante from './donante/ficha.js?v=20261028b';
-import * as prerregistroDonante from './donante/prerregistro.js?v=20261028b';
+import * as mapaDonante from './donante/mapa.js?v=20261028c';
+import * as fichaDonante from './donante/ficha.js?v=20261028c';
+import * as prerregistroDonante from './donante/prerregistro.js?v=20261028c';
 import * as llegarDonante from './donante/llegar.js';
-import * as loginAdmin from './admin/login.js';
+import * as loginAdmin from './admin/login.js?v=20261028c';
 import * as bienvenidaAdmin from './admin/bienvenida.js';
-import * as menuAdmin from './admin/menu.js?v=20261028b';
+import * as menuAdmin from './admin/menu.js?v=20261028c';
 import * as insumosAdmin from './admin/insumos.js';
 import * as donacionAdmin from './admin/donacion.js';
 import * as despachoAdmin from './admin/despacho.js';
@@ -155,6 +155,11 @@ function navegar() {
   cargarMiniaturas(contenedor);
 
   contenedor.classList.add('vista--entrando');
+  // Transición especial pedida por la pantalla anterior (p. ej. "Siguiente"
+  // de la portada: desvanecimiento). Vale solo para esta entrada.
+  if (contenedor.dataset.transicion) {
+    setTimeout(() => delete contenedor.dataset.transicion, 900);
+  }
   window.scrollTo(0, 0);
   anunciarVista();
   esPrimeraCarga = false;

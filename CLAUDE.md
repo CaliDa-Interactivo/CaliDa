@@ -18,6 +18,7 @@ contrario.** Responde siempre en español.
 - Administrador (Martha, 52 años, líder de centro). Login de prueba:
   `jairo.varela@calida.co` / `calida2026` → centro **Plazoleta Jairo Varela, zona Centro**
   (lat 3.4528, lng -76.5318). Contraseña con PBKDF2 en `js/auth.js` (no texto plano).
+  Segunda cuenta de prueba del equipo: `admin@calida.co` / `admin123` (mismo centro).
 
 ## Flujos
 **Donante:** bienvenida `#/` → elegir perfil `#/entrar` → estantería 3D `#/donante/estanteria`
@@ -255,3 +256,12 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Mesita nueva (`mesaC`) para el vaso de los cepillos; la bolsa roja de comida para animales va
   encima de la pila de cajas cerradas; en la caja de la camisa también va el vestido.
 - Portada: todo el bloque de texto un 25 % más grande (`zoom: 1.25` en `.portada__texto`).
+
+## Ajustes de oct 2026 (11)
+- "Siguiente" de la portada: la portada se desvanece (450 ms, `portada--saliendo`) y "Elige tu
+  perfil" aparece con desvanecimiento (`#app[data-transicion="desvanecer"]`, solo esa entrada).
+- Menos lag al cargar: la isla 3D y el gato de la portada (`data-gato3d-diferido`) se montan
+  después de la bajada de la cámara de la intro (o al saltarla), no al mismo tiempo que la intro.
+  La isla usa `pixelRatio` máx. 1,5.
+- Correos reales: EmailJS responde 422 "The recipients address is corrupted" → falta arreglar la
+  plantilla en el panel de EmailJS (campo **To Email** = `{{to_email}}`). El código ya envía.

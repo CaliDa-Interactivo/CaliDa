@@ -4258,3 +4258,18 @@ body .escena3d .escena3d__ayuda.escena3d__ayuda--arriba:not(#ayuda) {
 .vista.portada .portada__texto {
   zoom: 1.25;
 }
+
+/* "Siguiente" en la portada: desvanecimiento suave hacia "Elige tu perfil" */
+#app > .vista.portada:not(#portada) {
+  transition: opacity 450ms ease !important;
+}
+#app > .vista.portada.portada--saliendo:not(#portada) {
+  opacity: 0 !important;
+}
+#app[data-transicion="desvanecer"].vista--entrando {
+  animation: calida-desvanecer 600ms ease both !important;
+}
+@keyframes calida-desvanecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

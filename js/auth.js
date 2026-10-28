@@ -26,7 +26,7 @@
 
 import { iniciarSesion } from './store.js';
 
-// Cuenta de prueba (ver README): correo jairo.varela@calida.co
+// Cuentas de prueba (ver CLAUDE.md): jairo.varela@calida.co y admin@calida.co
 // La contraseña NO está en el código; solo su huella.
 const CUENTAS_PRUEBA = [
   {
@@ -34,6 +34,14 @@ const CUENTAS_PRUEBA = [
     centroId: 'centro-jairo-varela',
     sal: 'z/mleJpBUHikTaR+lNyb0A==',
     huella: '/YSKzZuRB1bYfF8QQiRUJZ5U0cMX1LWTCFNLcFRE+jA=',
+  },
+  // Cuenta general de prueba del equipo (admin@calida.co), ligada al
+  // mismo centro.
+  {
+    correo: 'admin@calida.co',
+    centroId: 'centro-jairo-varela',
+    sal: 'JNzufilmFTOPonALFfTmPw==',
+    huella: '7ke+3FdC0luKQXU9aOD55kpTkWLxUAmNhgi5AyESb6A=',
   },
 ];
 

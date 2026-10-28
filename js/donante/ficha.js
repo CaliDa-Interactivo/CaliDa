@@ -15,7 +15,7 @@ import {
   NIVEL_MAX,
 } from '../data.js';
 import { renderGato } from '../gato.js';
-import { renderBotonInicio } from '../boton-inicio.js?v=20261028b';
+import { renderBotonInicio } from '../boton-inicio.js?v=20261028c';
 import { renderRepisaNivel, cargarMiniaturas } from '../ilustraciones.js';
 import { urlEmoji, EMOJI_CENTRO } from '../iconos.js';
 import { prerregistroVigente, horaVencimiento } from './prerregistro-sesion.js';

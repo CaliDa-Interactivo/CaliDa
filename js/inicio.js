@@ -8,6 +8,7 @@ import { renderEncabezado, LOGO_CRUZ_ROJA } from './encabezado.js';
 import { renderMascota, decir } from './mascota.js';
 import { renderPaisaje } from './paisaje.js';
 import { isLoggedIn } from './store.js';
+import { montarGatos } from './gatos.js';
 
 // Recorrido del donante: estantería → subcategorías → mapa → ficha.
 export const RUTA_DONANTE = '#/donante/estanteria';
@@ -54,7 +55,7 @@ export function renderBienvenida() {
             y lleva tu donación a donde de verdad sirve.
           </p>
           <div class="portada__acciones">
-            <a class="boton-principal" href="#/entrar">
+            <a class="boton-principal" href="#/entrar" data-siguiente>
               Siguiente
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
                 <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -66,7 +67,7 @@ export function renderBienvenida() {
         <div class="portada__escena" aria-hidden="true">
           <span class="portada__sol"></span>
           <div class="portada__isla"></div>
-          <div class="portada__gato gato3d" data-gato3d data-pose="saluda" data-encuadre="completo"></div>
+          <div class="portada__gato gato3d" data-gato3d-diferido data-pose="saluda" data-encuadre="completo"></div>
         </div>
       </div>
 
@@ -97,8 +98,32 @@ export function renderBienvenida() {
       const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       let temporizador = 0;
 
+      // Para que la intro no se trabe, la isla 3D y el gato de la portada
+      // se cargan después de la bajada de la cámara (o al saltar la intro).
+      let liberarIsla = null;
+      let salir = false;
+      let portadaMontada = false;
+      let temporizadorPortada = 0;
+      function montarPortada() {
+        clearTimeout(temporizadorPortada);
+        if (portadaMontada || salir) return;
+        portadaMontada = true;
+        const gato = contenedor.querySelector('[data-gato3d-diferido]');
+        if (gato) {
+          gato.removeAttribute('data-gato3d-diferido');
+          gato.setAttribute('data-gato3d', '');
+          montarGatos(contenedor.querySelector('.portada__escena'));
+        }
+        import('./inicio3d.js?v=20261028c')
+          .then(({ montarIsla }) => {
+            if (!salir) liberarIsla = montarIsla(contenedor.querySelector('.portada__isla'));
+          })
+          .catch(() => {});
+      }
+
       function terminarIntro() {
         clearTimeout(temporizador);
+        montarPortada();
         if (intro.hidden) return;
         intro.classList.add('intro--saliendo');
         portada.classList.add('portada--entrando');
@@ -117,26 +142,37 @@ export function renderBienvenida() {
         void intro.offsetWidth;
         intro.classList.add('intro--andando');
         temporizador = setTimeout(terminarIntro, DURACION_INTRO);
+        // La cámara termina de bajar a los 3,6 s: ahí se carga lo demás,
+        // cuando la escena ya está quieta.
+        temporizadorPortada = setTimeout(() => {
+          (window.requestIdleCallback ?? ((f) => setTimeout(f, 0)))(montarPortada, { timeout: 1500 });
+        }, 4200);
       }
 
       // La intro se ve cada vez que se llega a la pantalla principal.
-      if (reducido) portada.classList.add('portada--entrando');
-      else mostrarIntro();
+      if (reducido) {
+        portada.classList.add('portada--entrando');
+        montarPortada();
+      } else mostrarIntro();
 
       contenedor.querySelector('[data-saltar-intro]').addEventListener('click', terminarIntro);
 
-      // Isla 3D (si three.js no carga, la portada queda con el sol y el gato)
-      let liberarIsla = null;
-      let salir = false;
-      import('./inicio3d.js?v=20261028b')
-        .then(({ montarIsla }) => {
-          if (!salir) liberarIsla = montarIsla(contenedor.querySelector('.portada__isla'));
-        })
-        .catch(() => {});
+      // "Siguiente": la portada se desvanece y la pantalla de perfiles
+      // aparece también con un desvanecimiento (sin deslizarse).
+      contenedor.querySelector('[data-siguiente]').addEventListener('click', (evento) => {
+        if (reducido) return;
+        evento.preventDefault();
+        portada.classList.add('portada--saliendo');
+        setTimeout(() => {
+          document.getElementById('app').dataset.transicion = 'desvanecer';
+          location.hash = '#/entrar';
+        }, 450);
+      });
 
       return () => {
         salir = true;
         clearTimeout(temporizador);
+        clearTimeout(temporizadorPortada);
         liberarIsla?.();
       };
     },
