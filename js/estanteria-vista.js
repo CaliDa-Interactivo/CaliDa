@@ -13,9 +13,12 @@ import { CATEGORIAS, coincideBusqueda } from './data.js';
 // compartimiento…" debajo de la pregunta (donante); no se repite abajo.
 export const TEXTO_AYUDA_ESTANTERIA = 'Toca un compartimiento para ver sus productos';
 
-export function renderEscena3D({ encabezado, etiqueta = 'Estantería 3D de CaliDa', ayudaArriba = false }) {
+// `lado`: HTML que va a la derecha del mueble (p. ej. el gato que pregunta);
+// el 3D corre el mueble a la izquierda para dejarle ese espacio.
+export function renderEscena3D({ encabezado, etiqueta = 'Estantería 3D de CaliDa', ayudaArriba = false, lado = '' }) {
   return `
-    <div class="escena3d" data-estado="cargando">
+    <div class="escena3d${lado ? ' escena3d--con-lado' : ''}" data-estado="cargando">
+      ${lado ? `<aside class="escena3d__lado">${lado}</aside>` : ''}
       <div class="escena3d__lienzo" role="img" aria-label="${etiqueta}"></div>
       <div class="escena3d__etiquetas"></div>
       <div class="escena3d__arriba">${encabezado}</div>
@@ -44,13 +47,17 @@ export function montarVistaEstanteria3D(contenedor, opciones) {
     opciones.alFallar?.();
   };
 
-  import('./estanteria3d.js?v=20261029f')
+  import('./estanteria3d.js?v=20261030a')
     .then(({ montarEstanteria3D }) => {
       if (destruido) return;
       api = montarEstanteria3D({
         ...opciones,
         lienzo: escena.querySelector('.escena3d__lienzo'),
         margenSuperior: () => escena.querySelector('.escena3d__arriba')?.offsetHeight * 0.85 || 0,
+        margenDerecho: () => {
+          const lado = escena.querySelector('.escena3d__lado');
+          return lado && lado.offsetWidth ? escena.getBoundingClientRect().right - lado.getBoundingClientRect().left : 0;
+        },
         capaEtiquetas: escena.querySelector('.escena3d__etiquetas'),
         alCambiarCategoria: (cat) => {
           history.replaceState(null, '', cat ? opciones.rutaAbierta(cat) : opciones.rutaCerrada);

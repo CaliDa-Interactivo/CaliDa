@@ -264,8 +264,13 @@ async function montarUno(el) {
   lienzoSombra.width = lienzoSombra.height = 128;
   const ctxS = lienzoSombra.getContext('2d');
   const grad = ctxS.createRadialGradient(64, 64, 4, 64, 64, 62);
-  grad.addColorStop(0, 'rgba(90, 40, 20, 0.32)');
-  grad.addColorStop(1, 'rgba(90, 40, 20, 0)');
+  // Con la luz de la isla, la sombra es más oscura y del mismo tono que la
+  // de las mesas sobre el césped (verde oscuro), igual de difusa.
+  const tonoSombra = el.dataset.luz === 'isla' ? '30, 62, 34' : '90, 40, 20';
+  const fuerza = el.dataset.luz === 'isla' ? 0.55 : 0.32;
+  grad.addColorStop(0, `rgba(${tonoSombra}, ${fuerza})`);
+  grad.addColorStop(0.45, `rgba(${tonoSombra}, ${fuerza * 0.6})`);
+  grad.addColorStop(1, `rgba(${tonoSombra}, 0)`);
   ctxS.fillStyle = grad;
   ctxS.fillRect(0, 0, 128, 128);
   const texSombra = new THREE.CanvasTexture(lienzoSombra);

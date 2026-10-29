@@ -62,15 +62,49 @@ function isla() {
   return g;
 }
 
+// Sombra suave pintada (un degradado), igual a la del gato en la portada
+// (gato3d.js con data-luz="isla"): verde oscuro sobre el césped; café
+// sobre la madera de las mesas.
+const TONO_SOMBRA = { cesped: '30, 62, 34', madera: '70, 34, 14' };
+const texturasSombra = {};
+function texturaSombra(tono, fuerza) {
+  const clave = `${tono}|${fuerza}`;
+  if (texturasSombra[clave]) return texturasSombra[clave];
+  const lienzo = document.createElement('canvas');
+  lienzo.width = lienzo.height = 128;
+  const ctx = lienzo.getContext('2d');
+  const grad = ctx.createRadialGradient(64, 64, 4, 64, 64, 62);
+  grad.addColorStop(0, `rgba(${tono}, ${fuerza})`);
+  grad.addColorStop(0.45, `rgba(${tono}, ${fuerza * 0.6})`);
+  grad.addColorStop(1, `rgba(${tono}, 0)`);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 128, 128);
+  return (texturasSombra[clave] = new THREE.CanvasTexture(lienzo));
+}
+// fuerza: las sombras grandes (mesas) se reparten en más área y se ven más
+// claras; por eso llevan un poco más de fuerza que la del gato (0,55).
+function sombraSuave(ancho, fondo, sobre = 'cesped', fuerza = 0.55) {
+  const plano = new THREE.Mesh(
+    new THREE.PlaneGeometry(ancho, fondo),
+    new THREE.MeshBasicMaterial({ map: texturaSombra(TONO_SOMBRA[sobre], fuerza), transparent: true, depthWrite: false })
+  );
+  plano.rotation.x = -Math.PI / 2;
+  plano.renderOrder = 1;
+  return plano;
+}
+
 /**
  * Monta la escena en `contenedor` (un div). Devuelve una función para
  * liberar todo al salir de la pantalla.
  */
-export function montarIsla(contenedor) {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+export function montarIsla(contenedor, { camara: vistaCamara = null, capturable = false } = {}) {
+  // `camara` ({ posicion, mira, fov }) y `capturable` sirven para sacar
+  // "fotos" de la isla (p. ej. la tarjeta del admin en Elige tu perfil).
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: capturable });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  // Sin sombras proyectadas: cada mesa y caja lleva una sombra suave
+  // pintada (sombraSuave), igual de difusa y del mismo tono que la del gato.
+  renderer.shadowMap.enabled = false;
   const canvas = renderer.domElement;
   canvas.className = 'isla3d__canvas';
   canvas.setAttribute('aria-hidden', 'true');
@@ -81,14 +115,11 @@ export function montarIsla(contenedor) {
   escena.add(new THREE.AmbientLight('#FFFFFF', 0.45));
   const sol = new THREE.DirectionalLight('#FFF1E0', 2.2);
   sol.position.set(-3, 6, 4);
-  sol.castShadow = true;
-  sol.shadow.mapSize.set(1024, 1024);
-  Object.assign(sol.shadow.camera, { left: -3, right: 3, top: 3, bottom: -3, near: 0.5, far: 20 });
   escena.add(sol);
 
-  const camara = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
-  camara.position.set(3.6, 3.1, 6.4);
-  camara.lookAt(0, 0.35, 0);
+  const camara = new THREE.PerspectiveCamera(vistaCamara?.fov ?? 30, 1, 0.1, 50);
+  camara.position.set(...(vistaCamara?.posicion ?? [3.6, 3.1, 6.4]));
+  camara.lookAt(...(vistaCamara?.mira ?? [0, 0.35, 0]));
 
   const mundo = new THREE.Group();
   mundo.rotation.y = -0.35;
@@ -107,6 +138,13 @@ export function montarIsla(contenedor) {
   mesaC.position.set(1.65, 0, -0.3);
   mesaC.rotation.y = -0.5;
   mundo.add(mesaA, mesaB, mesaC);
+  // Sombra suave de cada mesa sobre el césped, corrida hacia donde cae la
+  // luz (como la del gato).
+  for (const [m, ancho, fondo] of [[mesaA, 1.3, 0.7], [mesaB, 1.0, 0.65], [mesaC, 0.45, 0.4]]) {
+    const s = sombraSuave(ancho * 1.2, fondo * 1.45, 'cesped', 0.78);
+    s.position.set(0.12, 0.004, -0.06);
+    m.add(s);
+  }
 
   let id = 0;
   let destruido = false;
@@ -186,6 +224,16 @@ export function montarIsla(contenedor) {
     cajaPiso.position.set(-0.7, 0, -1.2);
     cajaPiso.rotation.y = -0.2;
     mundo.add(cajaA, cajaB, cajaC, pila, cajaPiso);
+    // Sombras suaves: las cajas del piso sobre el césped; las de las mesas
+    // sobre la madera.
+    for (const [caja, ancho, sobre] of [
+      [pila, 0.5, 'cesped'], [cajaPiso, 0.46, 'cesped'],
+      [cajaA, 0.62, 'madera'], [cajaB, 0.5, 'madera'], [cajaC, 0.55, 'madera'],
+    ]) {
+      const s = sombraSuave(ancho * 1.45, ancho * 1.25, sobre);
+      s.position.set(0.06, 0.004, -0.04);
+      caja.add(s);
+    }
     dibujar();
     return {
       // el fondo de una caja abierta (el cartón tiene ~2 cm de grosor)

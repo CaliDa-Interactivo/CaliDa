@@ -5039,3 +5039,334 @@ html[data-rol="inicio"] #app .boton-nav { color: #011E41 !important; }
     height: 150px !important;
   }
 }
+
+/* ===================================================================
+   AJUSTES (oct 2026, 16)
+   =================================================================== */
+
+/* Intro: las nubes son las del archivo del equipo (imágenes PNG) */
+.intro__nube {
+  height: auto !important;
+  border-radius: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  opacity: 0.96 !important;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 10px rgba(60, 110, 140, 0.12));
+}
+.intro__nube--1 { width: 34vmin !important; left: 6vw !important; top: 18vh !important; }
+.intro__nube--2 { width: 24vmin !important; left: 50vw !important; top: 38vh !important; }
+.intro__nube--3 { width: 38vmin !important; left: 64vw !important; top: 74vh !important; }
+.intro__nube--4 { position: absolute; width: 20vmin; left: 30vw; top: 60vh; }
+.intro__nube--5 { position: absolute; width: 26vmin; left: 78vw; top: 12vh; }
+
+/* Estantería del donante: el mueble a la izquierda y el gato a la derecha,
+   preguntando "¿Qué deseas donar?" (el título va en su globo). */
+.escena3d__lado {
+  position: absolute;
+  z-index: 15;
+  top: calc(var(--margen-arriba) + var(--tam-nav) + 20px);
+  right: var(--margen-lado);
+  bottom: calc(var(--margen-abajo) + 64px);
+  width: min(27vw, 360px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  pointer-events: none;
+}
+.estanteria__gato .gato-guia {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  position: static !important;
+}
+.estanteria__gato .gato-guia__globo {
+  order: -1 !important;
+  position: static !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  transform: none !important;
+  pointer-events: auto;
+}
+.estanteria__gato .gato-guia__globo p {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+.estanteria__pregunta {
+  font-family: var(--fuente-titulo, 'Roboto', sans-serif);
+  font-size: clamp(22px, 2.4vw, 34px);
+  font-weight: 900;
+  line-height: 1.1;
+  color: #5A2A0C;
+}
+.estanteria__ayuda {
+  font-size: 14px;
+  color: #8A3B12;
+}
+#app .estanteria__gato :is(.gato-guia__imagen, .gato3d):not(#gato-estanteria) {
+  width: min(22vw, 280px) !important;
+  height: calc(min(22vw, 280px) * 1.25) !important;
+  max-height: 46vh !important;
+  aspect-ratio: auto !important;
+  margin: 0 auto !important;
+  transform: none !important;
+  position: relative !important;
+}
+@media (max-width: 760px) {
+  /* En celular el gato va arriba, en una fila, y el mueble ocupa el resto */
+  .escena3d__lado {
+    top: calc(var(--margen-arriba) + var(--tam-nav) + 64px);
+    bottom: auto;
+    left: var(--margen-lado);
+    width: auto;
+  }
+  .estanteria__gato .gato-guia {
+    flex-direction: row !important;
+  }
+  .estanteria__gato .gato-guia__globo {
+    order: 0 !important;
+  }
+  #app .estanteria__gato :is(.gato-guia__imagen, .gato3d):not(#gato-estanteria) {
+    width: 90px !important;
+    height: 112px !important;
+  }
+}
+
+/* Mapa (oct 2026, 16): zonas más cortas, título centrado, gato más grande
+   y el mensaje "Selecciona un centro…" al pie del mapa. */
+#app .vista-mapa-completo .mapa3d__zonas .chip-zona:not(#zona) {
+  min-width: 112px !important;
+  width: auto !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 10px 0 14px !important;
+  font-size: 13px !important;
+  gap: 8px !important;
+}
+#app .vista-mapa-completo .mapa3d__encabezado .mapa__indicador {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  max-width: calc(100% - 4 * var(--tam-nav) - 64px);
+  text-align: center;
+}
+#app .vista-mapa-completo .mapa3d__gato {
+  width: min(400px, 34vw) !important;
+}
+#app .vista-mapa-completo .mapa3d__gato :is(.gato-guia__imagen, .gato3d):not(#gato-mapa) {
+  width: min(250px, 24vw) !important;
+  height: calc(min(250px, 24vw) * 1.25) !important;
+}
+#app .vista-mapa-completo .mapa3d__gato .gato-guia__globo p {
+  font-size: 15px !important;
+}
+#app .vista-mapa-completo .mapa3d__gato .gato-mapa__principal {
+  font-size: 20px !important;
+}
+.vista-mapa-completo .mapa3d__pie {
+  position: absolute;
+  z-index: 20;
+  left: 50%;
+  bottom: var(--margen-abajo);
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: min(560px, 44vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+.vista-mapa-completo .mapa3d__instruccion {
+  margin: 0 !important;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--brillo-arriba), var(--relleno-marfil);
+  box-shadow: var(--relieve-claro), 0 5px 12px rgba(1, 30, 65, 0.14);
+  color: #5A2A0C !important;
+  font-size: 15px !important;
+  font-weight: 700;
+  text-align: center;
+}
+.vista-mapa-completo .mapa3d__pie .mapa3d__ubicacion-estado {
+  margin: 0 !important;
+  font-size: 12px !important;
+  color: #5A2A0C !important;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(255, 248, 237, 0.8);
+}
+.vista-mapa-completo .mapa3d__pie .mapa3d__ubicacion-estado:empty {
+  display: none;
+}
+.vista-mapa-completo .mapa3d__leyenda {
+  display: none !important;
+}
+@media (max-width: 600px) {
+  #app .vista-mapa-completo .mapa3d__gato {
+    width: min(240px, 62vw) !important;
+  }
+  #app .vista-mapa-completo .mapa3d__gato :is(.gato-guia__imagen, .gato3d):not(#gato-mapa) {
+    width: 110px !important;
+    height: 138px !important;
+  }
+  #app .vista-mapa-completo .mapa3d__gato .gato-mapa__principal {
+    font-size: 15px !important;
+  }
+  .vista-mapa-completo .mapa3d__pie {
+    left: var(--margen-lado);
+    right: auto;
+    transform: none;
+    max-width: 38vw;
+    align-items: flex-start;
+  }
+  .vista-mapa-completo .mapa3d__instruccion {
+    font-size: 12px !important;
+    padding: 8px 12px;
+    border-radius: 16px;
+    text-align: left;
+  }
+  #app .vista-mapa-completo .mapa3d__zonas .chip-zona:not(#zona) {
+    min-width: 0 !important;
+    height: 32px !important;
+    min-height: 32px !important;
+  }
+}
+
+/* Menú del admin (oct 2026, 16): las tareas llegan hasta la mitad de la
+   pantalla, a la izquierda; a la derecha el gato invita a elegir. */
+.vista-menu-admin .menu-admin__cuerpo {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 32px;
+  min-height: 0;
+}
+.vista-menu-admin .menu-admin__cuerpo > .menu-admin {
+  margin-top: 1.25rem;
+}
+.vista-menu-admin .menu-admin__gato {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.vista-menu-admin .menu-admin__gato .gato-guia {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 10px !important;
+  position: static !important;
+}
+.vista-menu-admin .menu-admin__gato .gato-guia__globo {
+  order: -1 !important;
+  position: static !important;
+  max-width: 380px !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+.vista-menu-admin .menu-admin__gato .gato-guia__globo p {
+  font-size: clamp(18px, 1.8vw, 24px) !important;
+  font-weight: 700;
+  text-align: center;
+}
+#app .vista-menu-admin .menu-admin__gato :is(.gato-guia__imagen, .gato3d):not(#gato-menu) {
+  width: min(24vw, 300px) !important;
+  height: calc(min(24vw, 300px) * 1.25) !important;
+  max-height: 52vh !important;
+  aspect-ratio: auto !important;
+  transform: none !important;
+  position: relative !important;
+}
+@media (max-width: 900px) {
+  .vista-menu-admin .menu-admin__cuerpo {
+    grid-template-columns: 1fr;
+  }
+  .vista-menu-admin .menu-admin__gato {
+    order: -1;
+  }
+  .vista-menu-admin .menu-admin__gato .gato-guia {
+    flex-direction: row !important;
+  }
+  .vista-menu-admin .menu-admin__gato .gato-guia__globo {
+    order: 0 !important;
+  }
+  #app .vista-menu-admin .menu-admin__gato :is(.gato-guia__imagen, .gato3d):not(#gato-menu) {
+    width: 96px !important;
+    height: 120px !important;
+  }
+}
+
+/* Estado del centro: "Volver a las cantidades" solo con el ícono (círculo
+   3D como los botones de navegación). */
+#app .pasos-insumo__botones .boton-icono {
+  display: inline-grid !important;
+  place-items: center;
+  width: var(--tam-nav) !important;
+  height: var(--tam-nav) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+}
+#app .pasos-insumo__botones .boton-icono svg {
+  width: var(--tam-nav-icono);
+  height: var(--tam-nav-icono);
+}
+
+/* Registrar donación y despacho: la pantalla mide justo el alto de la
+   ventana (sin scroll); el espacio interno del formulario se adapta al
+   alto disponible. */
+#app > .vista.vista-formulario-admin {
+  height: 100vh !important;
+  height: 100dvh !important;
+  min-height: 0 !important;
+  overflow: hidden;
+}
+#app > .vista.vista-formulario-admin > .tarjeta.formulario {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: clamp(12px, 3vh, 32px) !important;
+  padding-bottom: clamp(12px, 3vh, 32px) !important;
+  row-gap: clamp(6px, 1.6vh, 20px) !important;
+  align-content: center !important;
+  overflow: auto; /* solo en pantallas muy bajas: nunca la página */
+}
+#app > .vista.vista-formulario-admin .formulario__categoria {
+  padding-top: clamp(8px, 1.6vh, 20px) !important;
+  padding-bottom: clamp(8px, 1.6vh, 20px) !important;
+}
+#app > .vista.vista-formulario-admin .campo {
+  gap: clamp(2px, 0.6vh, 6px) !important;
+}
+
+/* Estado del centro: el panel mide lo mismo que las tarjetas de Registrar
+   donación y despacho (empieza 20 px debajo de un encabezado de 96 px y
+   llega al margen de abajo, con los mismos márgenes a los lados). */
+#app .vista-admin .zoom-capa__panel {
+  top: calc(var(--margen-arriba) + 116px) !important;
+}
+@media (max-width: 600px) {
+  #app .vista-admin .zoom-capa__panel {
+    top: calc(var(--margen-arriba) + 92px) !important;
+  }
+}
+/* El círculo de "Volver a las cantidades" solo se ve en el paso 2 */
+#app .pasos-insumo[data-paso="1"] .pasos-insumo__botones .solo-paso-2,
+#app .pasos-insumo[data-paso="2"] .pasos-insumo__botones .solo-paso-1 {
+  display: none !important;
+}
+#app .vista-menu-admin .menu-admin__gato .gato-guia__globo p:not(#globo) {
+  font-size: clamp(18px, 1.7vw, 24px) !important;
+  line-height: 1.3 !important;
+}
+#app .vista-menu-admin .menu-admin__gato .gato-guia__globo:not(#globo) {
+  padding: 16px 24px !important;
+}

@@ -357,3 +357,30 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   costados de la torre, las cruces y el Cristo; el encuadre tiene en cuenta la altura de los
   puntos. En computador "Toda Cali" incluye los tres lugares; en celular solo la ciudad.
 - Versión actual de los módulos cambiados: `?v=20261029f`.
+
+## Ajustes de oct 2026 (16)
+- **Intro:** las nubes son las de `escena_mapa.blend` (`Nube_0…5`), renderizadas en Blender
+  (Eevee, fondo transparente) como `assets/intro/nube_N.png`; cinco `<img class="intro__nube">`.
+- **Isla de la portada:** sin sombras proyectadas; cada mesa y caja lleva una sombra suave pintada
+  (`sombraSuave()` en `js/inicio3d.js`), igual de difusa y del mismo tono que la del gato (verde
+  oscuro en el césped, café sobre la madera). La sombra del gato con `data-luz="isla"` es más
+  oscura (mismo tono). `montarIsla(el, { camara, capturable })` permite sacar "fotos" de la isla.
+- **Elige tu perfil:** `assets/entrar/admin.jpg` es una captura de la isla vista desde la derecha
+  (se ven las mesas con las cajas y los productos).
+- **Estantería del donante:** la luz volvió a la de antes (ambiente + hemisferio + sol + relleno; la
+  madera `#B87048` con emissive `#4E2A14`): los productos se ven del mismo material mate que todo.
+  El mueble va a la izquierda (`margenDerecho` en `montarEstanteria3D`) y a la derecha el gato
+  pregunta "¿Qué deseas donar?" (`renderEscena3D({ lado })`; el h1 queda oculto para lectores).
+  La luz del hover es más sutil y difusa.
+- **Mapa:** zonas más cortas; ruta "Categoría › Producto" centrada en la pantalla; **río Cauca** al
+  oriente (cinta azul mate con orilla, por fuera de las zonas, de Jamundí hacia Yumbo); las casas y
+  el pin se ven **de frente** (la figura se inclina hacia la cámara, `VER_TECHO` deja ver el techo
+  de color), casas más grandes (`ALTO_CASA` 1,2), pin más pequeño; sin leyenda; mapa más grande
+  (`RELLENO.ciudad` 0,99); gato y globo más grandes; sin tarjetas de centros abajo (solo quedan
+  como respaldo si el 3D no carga) y al pie del mapa: "Selecciona un centro de acopio para obtener
+  más información."
+- **Admin:** menú con las tareas hasta la mitad de la pantalla (izquierda) y el gato a la derecha:
+  "Selecciona la tarea que deseas realizar."; en el estado del centro "Volver a las cantidades" es
+  solo un ícono; Registrar donación y despacho miden justo el alto de la ventana (sin scroll); el
+  panel de estado del centro tiene el mismo tamaño que esas tarjetas (arriba a 116 px del margen).
+- Versión actual: `?v=20261030a`.

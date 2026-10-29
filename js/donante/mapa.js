@@ -143,28 +143,22 @@ export function render({ subcategoriaId }) {
 
           ${
             total
-              ? `<ul class="mapa3d__leyenda" aria-label="Leyenda">
-                   <li><span class="punto punto--urgente"></span>Urgente</li>
-                   <li><span class="punto punto--desabastecido"></span>Desabastecido</li>
-                 </ul>`
+              ? `<div class="mapa3d__pie">
+                   <p class="mapa3d__ubicacion-estado" aria-live="polite"></p>
+                   <p class="mapa3d__instruccion">Selecciona un centro de acopio para obtener más información.</p>
+                 </div>`
               : ''
           }
-
-
-
         </div>
 
         </div>
         ${
           total
-            ? `
-              <p class="mapa3d__ubicacion-estado" aria-live="polite"></p>
-              <h2 class="mapa3d__titulo-lista">
-                Selecciona un centro de acopio que necesita ${nombreSub}
-              </h2>
-              <ul class="mapa__lista mapa3d__lista">${itemsLista}</ul>
-              <p class="mapa3d__sin-resultados" hidden>No hay centros en esta zona que lo necesiten.</p>
-            `
+            ? `<!-- Respaldo: solo se muestra si el mapa 3D no puede cargar -->
+               <div class="mapa3d__respaldo" hidden>
+                 <h2 class="mapa3d__titulo-lista">Selecciona un centro de acopio que necesita ${nombreSub}</h2>
+                 <ul class="mapa__lista mapa3d__lista">${itemsLista}</ul>
+               </div>`
             : `
               <div class="mapa3d__vacio">
                 <button class="boton" data-navegar="#/donante/estanteria">Volver a la estantería</button>
@@ -276,24 +270,19 @@ export function render({ subcategoriaId }) {
       });
 
       actualizarInterfaz(zonaActual);
-      cargarMiniaturas(contenedor); // casitas 3D en las tarjetas
 
       // --- Mi ubicación: distancia a cada centro y lista ordenada por cercanía.
       // (Sin botón "Actualizar mi ubicación": se pide sola al entrar.)
       let miUbicacion = null;
       const estadoUbicacion = contenedor.querySelector('.mapa3d__ubicacion-estado');
-      const lista = contenedor.querySelector('.mapa3d__lista');
 
       function aplicarUbicacion(ubicacion) {
         miUbicacion = ubicacion;
         const conDistancia = necesitan
           .map((c) => ({ c, km: distanciaKm(ubicacion, c) }))
           .sort((a, b) => a.km - b.km);
-        conDistancia.forEach(({ c, km }) => {
-          const tarjeta = contenedor.querySelector(`[data-centro-id="${c.id}"]`);
-          tarjeta.querySelector('[data-distancia]').textContent = ` · a ${formatoKm(km)} de ti`;
-          lista.appendChild(tarjeta.closest('li')); // reordena por cercanía
-        });
+        // (La lista de centros debajo del mapa se quitó: el gato dice el
+        // más cercano y las casitas se tocan en el mapa.)
         // El gato nombra los más cercanos, estén urgentes o desabastecidos.
         const [a, b] = conDistancia;
         void b;
@@ -309,7 +298,7 @@ export function render({ subcategoriaId }) {
       // Si ya la compartió en esta sesión, se usa sin volver a preguntar;
       // si no, se pide al entrar al mapa (el navegador muestra su permiso).
       const guardada = ubicacionGuardada();
-      if (lista) {
+      if (total) {
         if (guardada) aplicarUbicacion(guardada);
         else
           obtenerUbicacion()
@@ -321,7 +310,7 @@ export function render({ subcategoriaId }) {
       }
 
       // Carga diferida del mapa 3D.
-      import('../mapa3d.js?v=20261029f')
+      import('../mapa3d.js?v=20261030a')
         .then(({ montarMapa3D }) => {
           if (destruido) return;
           const necesidades = Object.fromEntries(
@@ -374,6 +363,11 @@ export function render({ subcategoriaId }) {
           console.error('No se pudo cargar el mapa 3D:', error);
           if (destruido) return;
           mapaEl.dataset.estado = 'sin-mapa';
+          const respaldo = contenedor.querySelector('.mapa3d__respaldo');
+          if (respaldo) {
+            respaldo.hidden = false;
+            cargarMiniaturas(respaldo);
+          }
           filtroListo = true;
           actualizarInterfaz(zonaActual);
         });

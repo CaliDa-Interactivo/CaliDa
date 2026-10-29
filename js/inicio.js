@@ -68,9 +68,12 @@ export function renderBienvenida() {
       <div class="intro" data-intro hidden>
         <div class="intro__cielo" aria-hidden="true">
           <span class="intro__sol"></span>
-          <span class="intro__nube intro__nube--1"></span>
-          <span class="intro__nube intro__nube--2"></span>
-          <span class="intro__nube intro__nube--3"></span>
+          <!-- Nubes del equipo (escena_mapa.blend), renderizadas en Blender -->
+          <img class="intro__nube intro__nube--1" src="assets/intro/nube_0.png" alt="" />
+          <img class="intro__nube intro__nube--2" src="assets/intro/nube_2.png" alt="" />
+          <img class="intro__nube intro__nube--3" src="assets/intro/nube_5.png" alt="" />
+          <img class="intro__nube intro__nube--4" src="assets/intro/nube_3.png" alt="" />
+          <img class="intro__nube intro__nube--5" src="assets/intro/nube_1.png" alt="" />
         </div>
         <div class="intro__mundo">
           <div class="intro__suelo" aria-hidden="true"></div>
@@ -108,7 +111,7 @@ export function renderBienvenida() {
           gato.setAttribute('data-gato3d', '');
           montarGatos(contenedor.querySelector('.portada__escena'));
         }
-        import('./inicio3d.js?v=20261029f')
+        import('./inicio3d.js?v=20261030a')
           .then(({ montarIsla }) => {
             if (!salir) liberarIsla = montarIsla(contenedor.querySelector('.portada__isla'));
           })
@@ -207,7 +210,7 @@ export function renderEntrar() {
 
               <article class="tarjeta-entrada tarjeta-entrada--hover" data-perfil="admin">
                 <div class="tarjeta-ilustracion tarjeta-ilustracion--admin tarjeta-ilustracion--foto" aria-hidden="true">
-                  <img src="assets/entrar/admin.jpg" alt="" width="1300" height="500" loading="eager" />
+                  <img src="assets/entrar/admin.jpg?v=20261030a" alt="" width="1300" height="500" loading="eager" />
                 </div>
                 <h2>Administro un centro</h2>
                 <p>Actualiza lo que necesita tu centro y registra donaciones y despachos.</p>

@@ -7,6 +7,7 @@
 import { logout } from '../store.js';
 import { MINIATURAS } from '../cache-miniaturas.js';
 import { conSesion, renderEncabezado } from './comun.js';
+import { renderGato } from '../gato.js';
 
 const OPCIONES = [
   {
@@ -42,6 +43,9 @@ export const render = conSesion((_params, centro) => ({
   html: `
     <section class="vista vista-admin vista-menu-admin">
       ${renderEncabezado({ titulo: 'Menú principal', centro })}
+      <!-- Las tareas a la izquierda (hasta la mitad de la pantalla) y el
+           gato a la derecha, invitando a elegir (oct 2026). -->
+      <div class="menu-admin__cuerpo">
       <nav class="menu-admin" aria-label="Tareas del administrador">
         ${OPCIONES.map(
           (o) => `
@@ -55,6 +59,10 @@ export const render = conSesion((_params, centro) => ({
             </button>`
         ).join('')}
       </nav>
+      <div class="menu-admin__gato">
+        ${renderGato('Selecciona la tarea que deseas realizar.', { tamano: 'lado' })}
+      </div>
+      </div>
       <div class="menu-admin__pie">
         <a class="boton-texto" href="#/correos-enviados">Bandeja de correos (prueba)</a>
         <button type="button" class="boton-texto" data-cerrar-sesion>Cerrar sesión</button>

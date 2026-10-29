@@ -108,9 +108,11 @@ function texturaLuzFondo() {
   lienzo.width = lienzo.height = 256;
   const ctx = lienzo.getContext('2d');
   const grad = ctx.createRadialGradient(128, 128, 8, 128, 128, 128);
-  grad.addColorStop(0, 'rgba(255, 236, 190, 0.85)');
-  grad.addColorStop(0.45, 'rgba(255, 214, 150, 0.45)');
-  grad.addColorStop(1, 'rgba(255, 200, 130, 0)');
+  // Sutil y difusa: poca intensidad y un degradado largo.
+  grad.addColorStop(0, 'rgba(255, 238, 200, 0.32)');
+  grad.addColorStop(0.35, 'rgba(255, 226, 175, 0.22)');
+  grad.addColorStop(0.7, 'rgba(255, 214, 150, 0.08)');
+  grad.addColorStop(1, 'rgba(255, 205, 140, 0)');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 256, 256);
   texturaLuz = new THREE.CanvasTexture(lienzo);
@@ -281,6 +283,7 @@ export function montarEstanteria3D(o) {
     estadoDe = null,
     alCargar = () => {},
     margenSuperior = null, // () => px que tapa el encabezado flotante
+    margenDerecho = null, // () => px que ocupa algo a la derecha (el gato)
   } = o;
 
   const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -299,18 +302,21 @@ export function montarEstanteria3D(o) {
   const escena = new THREE.Scene();
   const camara = new THREE.PerspectiveCamera(38, 1, 0.05, 200);
 
-  // Una sola luz, de frente (pedido del equipo, oct 2026): sin luz
-  // ambiente ni de relleno. Viene un poco desde arriba para que cada
-  // producto deje su sombra en la tabla. La madera saca casi todo su
-  // color del material (emissive), así que no se oscurece.
-  const sol = new THREE.DirectionalLight('#FFFFFF', 3.2);
-  sol.position.set(0, 5, 12);
+  // Luz pareja (la de antes, oct 2026: con una sola luz frontal los
+  // productos se veían oscuros): mucha luz ambiente y un sol suave, para
+  // que los productos se vean del mismo material mate que el resto.
+  escena.add(new THREE.AmbientLight('#FFFFFF', 0.8));
+  escena.add(new THREE.HemisphereLight('#FFFFFF', '#F1E2CF', 1.2));
+  const sol = new THREE.DirectionalLight('#FFFFFF', 1.25);
+  sol.position.set(-4, 9, 8);
   sol.castShadow = true;
   sol.shadow.mapSize.set(1024, 1024);
-  sol.shadow.bias = -0.0005;
   Object.assign(sol.shadow.camera, { left: -6, right: 6, top: 7, bottom: -2, near: 1, far: 30 });
   sol.shadow.camera.updateProjectionMatrix();
   escena.add(sol);
+  const relleno = new THREE.DirectionalLight('#FFFFFF', 0.6);
+  relleno.position.set(0, 2, 10);
+  escena.add(relleno);
 
   // Piso suave para la sombra del mueble.
   const piso = new THREE.Mesh(
@@ -359,17 +365,26 @@ export function montarEstanteria3D(o) {
     return THREE.MathUtils.clamp((margenSuperior?.() ?? 0) / alto, 0, 0.45);
   }
 
+  function fraccionOcupadaDerecha() {
+    const ancho = lienzo.clientWidth || 1;
+    return THREE.MathUtils.clamp((margenDerecho?.() ?? 0) / ancho, 0, 0.5);
+  }
+
   // Distancia para que una caja (ancho × alto) llene el área visible.
   function encuadrar(centro, ancho, alto, { margen = 1.04, elevacion = 0 } = {}) {
     const vfov = THREE.MathUtils.degToRad(camara.fov);
     const tan = Math.tan(vfov / 2);
     const frac = fraccionOcupadaArriba();
+    const fracDer = fraccionOcupadaDerecha();
     const dAlto = alto / (1 - frac) / 2 / tan;
-    const dAncho = ancho / 2 / (tan * camara.aspect);
+    const dAncho = ancho / (1 - fracDer) / 2 / (tan * camara.aspect);
     const d = Math.max(dAlto, dAncho) * margen;
-    // Sube el objetivo para que la caja quede centrada en el área libre.
+    // Sube el objetivo para que la caja quede centrada en el área libre, y
+    // lo corre a la derecha si algo ocupa ese lado (el mueble queda a la
+    // izquierda, centrado en lo que queda).
     const desplazamiento = 2 * d * tan * (frac / 2);
-    const objetivo = centro.clone().add(new THREE.Vector3(0, desplazamiento, 0));
+    const corrimiento = 2 * d * tan * camara.aspect * (fracDer / 2);
+    const objetivo = centro.clone().add(new THREE.Vector3(corrimiento, desplazamiento, 0));
     return {
       objetivo,
       posicion: objetivo.clone().add(new THREE.Vector3(0, elevacion, d)),
@@ -583,9 +598,7 @@ export function montarEstanteria3D(o) {
     // y los huecos (sombreado), para que el mueble no se vea plano.
     const madera = registrar(
       // Color de la paleta: #A8623A (madera más oscura y rojiza).
-      // Con una sola luz (frontal), el emissive sube para que las caras en
-      // sombra no se vean negras.
-      new THREE.MeshLambertMaterial({ color: '#7A4428', emissive: '#8E4F2C', emissiveIntensity: 1 })
+      new THREE.MeshLambertMaterial({ color: '#B87048', emissive: '#4E2A14', emissiveIntensity: 1 })
     );
     mueble.traverse((n) => {
       if (n.isMesh) {

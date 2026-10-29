@@ -11,7 +11,7 @@ import { actualizarNivelInsumo, actualizarNecesidades, getCentroAdminActual } fr
 import { renderRepisaNivel, cargarMiniaturas } from '../ilustraciones.js';
 import { montarGatos } from '../gatos.js';
 import { activarZoomEstanteria, renderCapaZoom, renderCabeceraZoom } from '../zoom-estanteria.js';
-import { renderEscena3D, montarVistaEstanteria3D } from '../estanteria-vista.js?v=20261029f';
+import { renderEscena3D, montarVistaEstanteria3D } from '../estanteria-vista.js?v=20261030a';
 import {
   ESTADOS,
   conSesion,
@@ -66,7 +66,12 @@ function renderCantidades(categoria) {
           <span class="solo-paso-2">Paso 2 de 2 · ¿Qué le falta?</span>
         </p>
         <div class="admin-acciones pasos-insumo__botones">
-          <button class="boton boton--secundario solo-paso-2" type="button" data-paso-atras>← Cantidades</button>
+          <button class="boton boton--secundario boton-icono solo-paso-2" type="button" data-paso-atras
+                  aria-label="Volver a las cantidades" title="Volver a las cantidades">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M19 12H5M11 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4"
+                    stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
           <button class="boton boton--grande solo-paso-1" type="button" data-paso-siguiente>Siguiente →</button>
           <button class="boton boton--grande solo-paso-2" type="button" data-guardar disabled>Guardar</button>
         </div>

@@ -256,6 +256,10 @@ export function montarMapa3D(opciones) {
   // 0 sería cenital puro; con 20° el mapa se sigue leyendo desde arriba,
   // pero se notan los detalles de los lugares en 3D.
   const INCLINACION = THREE.MathUtils.degToRad(20);
+  // Las casas y el pin se inclinan hacia la cámara para verse de frente,
+  // pero no del todo: con 28° se sigue viendo el techo (su color dice si
+  // el centro está urgente o desabastecido).
+  const VER_TECHO = THREE.MathUtils.degToRad(28);
   const vista = { cx: 0, cz: 0, mitad: 10 };
   let vistaObjetivo = null;
   const puntosLugares = []; // cimas de torre, cruces y Cristo Rey: entran en el encuadre
@@ -328,6 +332,65 @@ export function montarMapa3D(opciones) {
   planoSombra.raycast = () => {}; // no interfiere con los toques
   escena.add(planoSombra);
 
+
+  // --- Río Cauca -----------------------------------------------------------
+  // Corre de sur a norte por el oriente de la ciudad (Navarro, Juanchito,
+  // Paso del Comercio): baja desde Jamundí (suroccidente), bordea Cali por
+  // fuera de las zonas y sigue hacia Yumbo (noroccidente). Cinta azul mate
+  // con la orilla un poco más oscura.
+  {
+    // x más al oriente de las zonas a la altura z (para no pisar la ciudad)
+    const bordeOriente = (z) => {
+      let max = -Infinity;
+      for (const pts of Object.values(ZONAS_PLANO)) {
+        for (let i = 0; i < pts.length; i++) {
+          const a = pts[i];
+          const b = pts[(i + 1) % pts.length];
+          if ((a.z - z) * (b.z - z) > 0 || a.z === b.z) continue;
+          max = Math.max(max, a.x + ((z - a.z) / (b.z - a.z)) * (b.x - a.x));
+        }
+      }
+      return max;
+    };
+    // Puntos reales del río (proyectados) y, donde la ciudad está, por fuera.
+    const curso = [
+      [-76.513, 3.27], [-76.505, 3.3], [-76.49, 3.33], [-76.478, 3.35], [-76.47, 3.37], [-76.468, 3.39],
+      [-76.466, 3.42], [-76.468, 3.445], [-76.472, 3.46], [-76.478, 3.47], [-76.482, 3.485], [-76.486, 3.5],
+      [-76.49, 3.52], [-76.495, 3.54], [-76.5, 3.57],
+    ].map(([lng, lat]) => {
+      const p = proyectar([lng, lat]);
+      const borde = bordeOriente(p.z);
+      return new THREE.Vector3(Number.isFinite(borde) ? Math.max(p.x, borde + 0.65) : p.x, 0, p.z);
+    });
+    const curva = new THREE.CatmullRomCurve3(curso, false, 'centripetal');
+    const cinta = (ancho, y, color) => {
+      const n = 220;
+      const pos = [];
+      const idx = [];
+      for (let i = 0; i <= n; i++) {
+        const u = i / n;
+        const p = curva.getPointAt(u);
+        const tg = curva.getTangentAt(u);
+        const nx = -tg.z;
+        const nz = tg.x;
+        const l = Math.hypot(nx, nz) || 1;
+        // un poco más angosto en las puntas
+        const a = (ancho / 2) * (0.75 + 0.25 * Math.sin(Math.PI * Math.min(1, u * 1.2)));
+        pos.push(p.x + (nx / l) * a, y, p.z + (nz / l) * a, p.x - (nx / l) * a, y, p.z - (nz / l) * a);
+        if (i < n) idx.push(2 * i, 2 * i + 2, 2 * i + 1, 2 * i + 1, 2 * i + 2, 2 * i + 3);
+      }
+      const geo = registrar(new THREE.BufferGeometry());
+      geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+      geo.setIndex(idx);
+      geo.computeVertexNormals();
+      const malla = new THREE.Mesh(geo, registrar(new THREE.MeshStandardMaterial({ color, roughness: 0.7, side: THREE.DoubleSide })));
+      malla.receiveShadow = true;
+      malla.raycast = () => {};
+      escena.add(malla);
+    };
+    cinta(0.62, 0.01, '#6FA6C2'); // orilla
+    cinta(0.42, 0.018, '#93C6DC'); // agua
+  }
 
   // --- Geografía de Cali (escena_mapa.blend del equipo) -------------------
   // Cordillera occidental (Farallones) con el Cristo Rey y las Tres Cruces
@@ -459,7 +522,12 @@ export function montarMapa3D(opciones) {
     anillo.rotation.x = -Math.PI / 2;
     anillo.position.y = 0.02;
 
-    grupo.add(pared, techo, puerta, anillo);
+    // La casa se ve de frente (como un dibujo), no desde arriba: la figura
+    // se inclina hacia la cámara; el anillo sigue plano en el suelo.
+    const figura = new THREE.Group();
+    figura.rotation.x = -(Math.PI / 2 - INCLINACION) + VER_TECHO;
+    figura.add(pared, techo, puerta);
+    grupo.add(figura, anillo);
     // Mientras cargan los modelos se ve una casita simple; luego se cambia
     // por casa_roja.glb (urgente) o casa_amarilla.glb (desabastecido).
     const provisional = [pared, techo, puerta];
@@ -473,6 +541,7 @@ export function montarMapa3D(opciones) {
       centro,
       estado,
       grupo,
+      figura,
       provisional,
       matTecho,
       matAnillo,
@@ -486,7 +555,7 @@ export function montarMapa3D(opciones) {
   });
 
   // --- Casas 3D del equipo (roja = urgente, amarilla = desabastecido) ---
-  const ALTO_CASA = 0.95;
+  const ALTO_CASA = 1.2; // un poco más grandes (oct 2026)
   const cargadorCasas = new GLTFLoader();
   for (const estado of ['urgente', 'desabastecido']) {
     const conEsteEstado = casas.filter((c) => c.estado === estado);
@@ -511,10 +580,10 @@ export function montarMapa3D(opciones) {
         });
         const molde = new THREE.Group();
         molde.add(modelo);
-        molde.rotation.y = -0.6; // vista de tres cuartos
+        // De frente (antes: tres cuartos).
         conEsteEstado.forEach((casa) => {
           const copia = molde.clone(true);
-          casa.grupo.add(copia);
+          casa.figura.add(copia);
           casa.provisional.forEach((m) => (m.visible = false));
         });
       })
@@ -703,7 +772,7 @@ export function montarMapa3D(opciones) {
   // Encuadre cenital: la ciudad (o la zona elegida) llena el espacio libre
   // de la pantalla, descontando lo que tapan los controles de encima
   // (opciones.margenes() en píxeles: arriba, abajo, izquierda, derecha).
-  const RELLENO = { ciudad: 0.92, zona: 0.7 };
+  const RELLENO = { ciudad: 0.99, zona: 0.74 };
   function encuadreDe(zona) {
     const { clientWidth: ancho, clientHeight: alto } = lienzo;
     if (!ancho || !alto) return null;
@@ -807,9 +876,13 @@ export function montarMapa3D(opciones) {
       );
       anilloUsuario.rotation.x = -Math.PI / 2;
       anilloUsuario.position.y = 0.03;
-      pinUsuario.add(cabeza, punta, centro, anilloUsuario);
+      // El pin también se ve de frente (inclinado hacia la cámara).
+      const figuraPin = new THREE.Group();
+      figuraPin.rotation.x = -(Math.PI / 2 - INCLINACION) + VER_TECHO;
+      figuraPin.add(cabeza, punta, centro);
+      pinUsuario.add(figuraPin, anilloUsuario);
       pinUsuario.traverse((o) => (o.castShadow = o !== anilloUsuario));
-      pinUsuario.scale.setScalar(1.5);
+      pinUsuario.scale.setScalar(0.95); // más pequeño (antes 1,5)
       escena.add(pinUsuario);
     }
     pinUsuario.visible = true;
@@ -824,7 +897,7 @@ export function montarMapa3D(opciones) {
       anilloUsuario.material.opacity = 0.55 * (1 - ciclo);
     }
     if (pinUsuario?.visible) {
-      const pu = proyectarAPantalla(pinUsuario.position.x, pinUsuario.position.y + 1.6, pinUsuario.position.z);
+      const pu = proyectarAPantalla(pinUsuario.position.x, pinUsuario.position.y + 0.4, pinUsuario.position.z - 1.3);
       etiquetaUsuario.hidden = !pu.visible;
       etiquetaUsuario.style.transform = `translate(-50%, -50%) translate(${pu.x}px, ${pu.y}px)`;
     }

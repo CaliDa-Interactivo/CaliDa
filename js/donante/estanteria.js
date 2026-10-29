@@ -6,13 +6,15 @@
 // zoom a ese recuadro AQUÍ MISMO (sin cambiar de pantalla): el
 // recuadro crece hasta llenar la vista y muestra cada producto con
 // su nombre. Al tocar un producto se abre el mapa. Buscador que resalta coincidencias.
-// El gato NO aparece en esta pantalla.
+// El gato va a la derecha del mueble y es él quien pregunta
+// "¿Qué deseas donar?" (oct 2026).
 // ============================================================
 
 import { CATEGORIAS } from '../data.js';
 import { ilustracion, productoPrincipal, iconoProducto } from '../ilustraciones.js';
 import { activarZoomEstanteria, renderCapaZoom, renderCabeceraZoom } from '../zoom-estanteria.js';
-import { renderEscena3D, montarVistaEstanteria3D, TEXTO_AYUDA_ESTANTERIA } from '../estanteria-vista.js?v=20261029f';
+import { renderEscena3D, montarVistaEstanteria3D, TEXTO_AYUDA_ESTANTERIA } from '../estanteria-vista.js?v=20261030a';
+import { renderGato } from '../gato.js';
 
 function renderRepisa(categoria) {
   const objetos = categoria.subcategorias
@@ -71,10 +73,7 @@ export function render({ categoriaId = null } = {}) {
   const encabezado = `
     <header class="estanteria__encabezado">
       <a class="boton-atras" href="#/entrar">← Volver</a>
-      <div class="estanteria__titulo">
-        <h1>¿Qué deseas donar?</h1>
-        <p class="escena3d__ayuda escena3d__ayuda--arriba">${TEXTO_AYUDA_ESTANTERIA}</p>
-      </div>
+      <h1 class="visually-hidden">¿Qué deseas donar?</h1>
       <label class="buscador">
         <span class="visually-hidden">Buscar categoría o subcategoría</span>
         <span class="buscador__icono" aria-hidden="true">🔍</span>
@@ -85,7 +84,15 @@ export function render({ categoriaId = null } = {}) {
   return {
     html: `
       <section class="vista vista-estanteria vista-3d">
-        ${renderEscena3D({ encabezado, etiqueta: 'Estantería 3D: cada compartimiento es una categoría', ayudaArriba: true })}
+        ${renderEscena3D({
+          encabezado,
+          etiqueta: 'Estantería 3D: cada compartimiento es una categoría',
+          ayudaArriba: true,
+          lado: `<div class="estanteria__gato">${renderGato(
+            `<span class="estanteria__pregunta">¿Qué deseas donar?</span><span class="estanteria__ayuda">${TEXTO_AYUDA_ESTANTERIA}.</span>`,
+            { tamano: 'lado' }
+          )}</div>`,
+        })}
 
         <!-- Respaldo 2D (si el navegador no puede mostrar 3D) -->
         <div class="estanteria2d" hidden>
