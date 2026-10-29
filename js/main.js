@@ -13,9 +13,9 @@ import { inicializarStore } from './store.js';
 import { agregarBotonInicio, botonesNavSoloIcono } from './boton-inicio.js?v=20261029e';
 import { montarGatos, limpiarGatos } from './gatos.js';
 import { cargarMiniaturas } from './ilustraciones.js';
-import * as inicio from './inicio.js?v=20261030d';
+import * as inicio from './inicio.js?v=20261030e';
 import * as estanteriaDonante from './donante/estanteria.js?v=20261030d';
-import * as mapaDonante from './donante/mapa.js?v=20261030c';
+import * as mapaDonante from './donante/mapa.js?v=20261030e';
 import * as fichaDonante from './donante/ficha.js?v=20261029b';
 import * as prerregistroDonante from './donante/prerregistro.js?v=20261030d';
 import * as llegarDonante from './donante/llegar.js?v=20261029b';
@@ -43,6 +43,7 @@ let limpiezaActual = null;
 // volver a uno menor la desliza desde la izquierda (retroceder).
 const NIVELES = [
   [/^#\/$/, 0], // bienvenida
+  [/^#\/portada$/, 0], // portada sin la intro
   [/^#\/entrar$/, 1], // elegir perfil
   [/^#\/admin\/login$/, 2],
   [/^#\/admin\/registro$/, 2.5],
@@ -182,6 +183,7 @@ function renderNoEncontrada(hash) {
 // --- Rutas del donante (D1–D6) -------------------------------
 // D4 (mapa.js) monta el mapa 3D de mapa3d.js.
 registrarRuta(/^#\/$/, inicio.renderBienvenida);
+registrarRuta(/^#\/portada$/, () => inicio.renderBienvenida({ sinIntro: true }));
 registrarRuta(/^#\/entrar$/, inicio.renderEntrar);
 // La bienvenida del donante ahora es la pantalla inicial (#/).
 registrarRuta(/^#\/donante\/bienvenida$/, () => {

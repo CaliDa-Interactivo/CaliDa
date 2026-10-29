@@ -435,3 +435,20 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   que los botones del izquierdo. "Volver a las cantidades" siempre redondo.
 - Servidor local de pruebas: `.claude/servidor.mjs` (Node, sin caché; el de Python cortaba
   `tema.css`). Versión actual: `?v=20261030d`.
+
+## Ajustes de oct 2026 (20)
+- **Menos lag:** los gatos 3D se arman cuando el navegador queda libre, después de la transición
+  (`montarGatos` en `gato3d.js`, 320 ms + `requestIdleCallback`), a `pixelRatio` 1,5 y
+  reutilizando los renderizadores de gatos anteriores (`poolRenderizadores`: crear el contexto
+  WebGL y compilar shaders era lo que trababa). Los productos de la isla se cargan uno por uno con
+  un respiro entre cada uno.
+- **"Volver" de Elige tu perfil → `#/portada`:** la portada (logos y "Siguiente") sin repetir la
+  intro (`renderBienvenida({ sinIntro: true })`; la isla se arma después de que aparece).
+- `donador.jpg` con la cámara más baja (ninguna casa cortada); la pregunta de Elige tu perfil
+  baja 18 px.
+- **Mapa:** con la ubicación de la persona, "Toda Cali" corre el mapa para que el pin "Tú estás
+  aquí" quede a 2 cm (76 px) del globo del gato (`objetivoUsuario` en `mapa.js`; `encuadreDe`
+  sin sacar la ciudad de la pantalla).
+- **Menú del admin:** título, centro, tareas y gato en un bloque centrado de 1120 px (mismo
+  margen a los dos lados); las tareas junto al gato (columna de 360 px).
+- Versión actual: `?v=20261030e`.

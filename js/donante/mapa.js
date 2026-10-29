@@ -310,7 +310,7 @@ export function render({ subcategoriaId }) {
       }
 
       // Carga diferida del mapa 3D.
-      import('../mapa3d.js?v=20261030c')
+      import('../mapa3d.js?v=20261030e')
         .then(({ montarMapa3D }) => {
           if (destruido) return;
           const necesidades = Object.fromEntries(
@@ -343,6 +343,12 @@ export function render({ subcategoriaId }) {
                 izquierda: zonasNav ? zonasNav.right - r.left + 12 : 0,
                 derecha: !angosta && gato.width ? r.right - gato.left + 8 : 12,
               };
+            },
+            // Con la ubicación: el pin queda a 2 cm (≈ 76 px) del globo del gato.
+            objetivoUsuario: () => {
+              const globo = gatoEl.querySelector('.gato-guia__globo')?.getBoundingClientRect();
+              if (!globo?.width) return null;
+              return globo.left - mapaEl.getBoundingClientRect().left - 76;
             },
             alClicCentro: (id) => {
               location.hash = `#/donante/ficha/${id}/${subcategoriaId}`;

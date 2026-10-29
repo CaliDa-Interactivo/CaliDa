@@ -5563,3 +5563,27 @@ html[data-rol="inicio"] #app .boton-nav { color: #011E41 !important; }
   aspect-ratio: 1;
   padding: 0 !important;
 }
+
+/* Elige tu perfil (oct 2026, 20): la pregunta un poco más abajo */
+.vista-perfiles .perfiles h1 {
+  position: relative;
+  top: 18px;
+}
+
+/* Menú del admin (oct 2026, 20): título, centro, tareas y gato forman un
+   bloque centrado (mismo margen a los dos lados); las tareas van junto al
+   gato. */
+@media (min-width: 901px) {
+  #app > .vista.vista-menu-admin:not(#x) {
+    max-width: 1120px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .vista-menu-admin .menu-admin__cuerpo {
+    grid-template-columns: minmax(0, 1fr) 360px !important;
+    gap: 24px !important;
+  }
+  .vista-menu-admin .menu-admin__gato {
+    justify-content: center !important;
+  }
+}

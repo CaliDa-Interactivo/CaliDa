@@ -246,12 +246,18 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
   // Donaciones: los modelos de la estantería, asomándose de las cajas y
   // sueltas sobre las mesas. Cada uno se apoya en algo: el fondo de una
   // caja, el tablero de una mesa o la tapa de una caja cerrada.
-  listasCajas.then((alturas) => {
+  // Se cargan uno por uno, dejando respirar al navegador entre cada uno
+  // (todos a la vez trababan la portada).
+  const respiro = () =>
+    new Promise((ok) => (window.requestIdleCallback ?? ((f) => setTimeout(f, 16)))(ok, { timeout: 300 }));
+  listasCajas.then(async (alturas) => {
     if (!alturas || destruido) return;
     for (const [sub, alto, [x, y, z]] of productos(alturas)) {
     const ruta = MODELOS_SUBCATEGORIA[sub];
     if (!ruta) continue;
-    cargarGLB(cargador, ruta)
+    await respiro();
+    if (destruido) return;
+    await cargarGLB(cargador, ruta)
       .then((gltf) => {
         if (destruido) return;
         const modelo = gltf.scene;

@@ -27,7 +27,9 @@ const MENSAJE_PRINCIPAL = 'En una emergencia, ayudar también es saber dónde ha
 const MENSAJE_SEGUNDO = 'Aquí te mostraré a dónde llevar tus donaciones.';
 const DURACION_INTRO = 11400; // ms (bajada de cámara + dos mensajes)
 
-export function renderBienvenida() {
+// sinIntro: se llega con "Volver" desde Elige tu perfil (#/portada): se
+// muestra la portada directamente, sin repetir la animación.
+export function renderBienvenida({ sinIntro = false } = {}) {
   return {
     html: `
     <section class="vista pantalla-entrada portada">
@@ -93,6 +95,7 @@ export function renderBienvenida() {
       const intro = contenedor.querySelector('[data-intro]');
       const portada = contenedor.querySelector('.portada');
       const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const saltarIntro = reducido || sinIntro;
       let temporizador = 0;
 
       // Para que la intro no se trabe, la isla 3D y el gato de la portada
@@ -111,7 +114,7 @@ export function renderBienvenida() {
           gato.setAttribute('data-gato3d', '');
           montarGatos(contenedor.querySelector('.portada__escena'));
         }
-        import('./inicio3d.js?v=20261030c')
+        import('./inicio3d.js?v=20261030e')
           .then(({ montarIsla }) => {
             if (!salir) liberarIsla = montarIsla(contenedor.querySelector('.portada__isla'));
           })
@@ -147,9 +150,13 @@ export function renderBienvenida() {
       }
 
       // La intro se ve cada vez que se llega a la pantalla principal.
-      if (reducido) {
+      if (saltarIntro) {
         portada.classList.add('portada--entrando');
-        montarPortada();
+        // La isla se arma cuando la pantalla ya apareció (si no, la entrada
+        // se trababa).
+        temporizadorPortada = setTimeout(() => {
+          (window.requestIdleCallback ?? ((f) => setTimeout(f, 0)))(montarPortada, { timeout: 900 });
+        }, 350);
       } else mostrarIntro();
 
       contenedor.querySelector('[data-saltar-intro]').addEventListener('click', terminarIntro);
@@ -191,7 +198,8 @@ export function renderEntrar() {
     html: `
       <section class="vista pantalla-entrada vista-perfiles">
         <!-- Sin logos en esta pantalla (oct 2026) -->
-        <a class="boton-atras enlace-volver" href="#/">← Volver</a>
+        <!-- Vuelve a la portada (logos y "Siguiente"), sin repetir la intro -->
+        <a class="boton-atras enlace-volver" href="#/portada">← Volver</a>
 
         <div class="perfiles">
           <div>
@@ -199,7 +207,7 @@ export function renderEntrar() {
             <div class="perfiles__tarjetas">
               <article class="tarjeta-entrada tarjeta-entrada--hover tarjeta-entrada--donador" data-perfil="donador">
                 <div class="tarjeta-ilustracion tarjeta-ilustracion--foto" aria-hidden="true">
-                  <img src="assets/entrar/donador.jpg?v=20261030d" alt="" width="1300" height="620" loading="eager" />
+                  <img src="assets/entrar/donador.jpg?v=20261030e" alt="" width="1300" height="620" loading="eager" />
                 </div>
                 <h2>Quiero ayudar</h2>
                 <p>Mira qué necesita cada centro de acopio, en qué zona está y cómo llegar. No necesitas registrarte.</p>

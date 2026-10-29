@@ -24,6 +24,9 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { cargarGLB, MODELO_GATO } from './cargar-glb.js';
 
 const activos = new Set();
+// Renderizadores de gatos que ya salieron de pantalla, listos para usarse
+// otra vez (máx. 3).
+const poolRenderizadores = [];
 const COLOR_GATO = '#A8623A'; // mismo color de la estantería (paleta oct 2026)
 let base = null; // Promise<THREE.Group> del modelo original
 
@@ -90,8 +93,10 @@ async function montarUno(el) {
   const modeloBase = await cargarBase();
   if (!el.isConnected) return;
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // Se reutiliza un renderizador de un gato anterior si hay (crear un
+  // contexto WebGL y compilar sus shaders es lo que trababa la pantalla).
+  const renderer = poolRenderizadores.pop() ?? new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   if (!('outputColorSpace' in renderer)) {
     // three r147 (vista previa publicada): mismo color que r160.
     renderer.outputEncoding = THREE.sRGBEncoding;
@@ -405,7 +410,10 @@ async function montarUno(el) {
       cancelAnimationFrame(id);
       observador.disconnect();
       io.disconnect();
-      renderer.dispose();
+      // En vez de destruirlo, el renderizador queda guardado para el
+      // próximo gato (si sobran, se libera).
+      if (poolRenderizadores.length < 3 && !renderer.getContext().isContextLost()) poolRenderizadores.push(renderer);
+      else renderer.dispose();
       canvas.remove();
       el.classList.remove('gato3d--listo');
       el.classList.add('gato3d--sin3d');
@@ -419,14 +427,21 @@ async function montarUno(el) {
 /** Pone el gato 3D en todos los [data-gato3d] dentro de `raiz`. */
 export function montarGatos(raiz = document) {
   const pendientes = [...raiz.querySelectorAll('[data-gato3d]:not(.gato3d--listo):not([data-gato3d-montando])')];
-  pendientes.forEach((el) => {
+  // Cada gato se arma cuando el navegador queda libre, después de la
+  // transición de la pantalla (si no, la entrada se trababa), uno a la vez.
+  const enReposo = (f) => (window.requestIdleCallback ?? ((g) => setTimeout(g, 16)))(f, { timeout: 800 });
+  pendientes.forEach((el, i) => {
     el.dataset.gato3dMontando = '1';
-    montarUno(el)
-      .catch((e) => {
-        console.warn('Gato 3D no disponible; se usa el 2D.', e);
-        el.classList.add('gato3d--sin3d');
-      })
-      .finally(() => delete el.dataset.gato3dMontando);
+    setTimeout(() =>
+      enReposo(() =>
+        montarUno(el)
+          .catch((e) => {
+            console.warn('Gato 3D no disponible; se usa el 2D.', e);
+            el.classList.add('gato3d--sin3d');
+          })
+          .finally(() => delete el.dataset.gato3dMontando)
+      ),
+    320 + i * 150);
   });
 }
 
