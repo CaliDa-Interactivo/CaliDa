@@ -292,3 +292,41 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - La intro mide el alto de la ventana (`#app .intro { height: 100dvh }`): la animación de
   entrada de la vista la estiraba al alto de la página y "Saltar" quedaba fuera de la pantalla.
   Versión actual: `?v=20261029c`.
+
+## Ajustes de oct 2026 (14) — lista grande del equipo (manda sobre lo anterior)
+- **Botones de navegación solo con ícono** (Volver, Pantalla principal / Menú, Estantería):
+  `botonesNavSoloIcono()` en `js/boton-inicio.js`, llamado por `main.js` después de cada
+  pantalla (y con un MutationObserver para los que aparecen después). Convierte `.boton-atras`,
+  `.boton-inicio` y `.boton-estanteria` en círculos 3D crema de `--tam-nav` (56px; 48px en
+  celular) con ícono de `--tam-nav-icono`; el texto queda en `aria-label` y `title`. En el HTML
+  se siguen escribiendo con su texto. Todos quedan arriba al mismo margen: "Volver" en la
+  esquina superior izquierda y los demás en la superior derecha, en todas las pantallas.
+- **Márgenes iguales en los cuatro bordes:** `--margen-arriba/abajo/lado` = 24px (16px en
+  celular). Las vistas usan todo el ancho (sin `max-width`) y el contenido se centra en el alto.
+- **Portada:** sin el texto entre logos y "Siguiente" (más espacio, `margin-top: 56px`); sin el
+  punto que flotaba detrás de "CaliDa" (`portada__punto--1`).
+- **Isla 3D (`js/inicio3d.js`):** termina en punta (`LatheGeometry`, perfil de abajo hacia
+  arriba para que las caras miren afuera); el lienzo baja un 45 % más que la escena y se encuadra
+  con `setViewOffset` (el gato no se mueve). La isla ya no gira sola (el gato parecía resbalar);
+  solo flota toda la escena con CSS. Tarro y papel lado a lado sobre la caja cerrada, sin meterse
+  uno en el otro.
+- **Gato con la luz de la isla:** `data-luz="isla"` en el gato de la portada → mismas luces que
+  la isla (sol desde la izquierda, sombra hacia la derecha). Las normales del brazo se calculan
+  en cada cuadro (antes "brincaba" la luz al saludar).
+- **Estantería (`js/estanteria3d.js`):** una sola luz frontal (sin ambiente ni relleno); la madera
+  sube su `emissive` (#8E4F2C) para no oscurecerse. Hover de una categoría: luz cálida desde el
+  fondo del compartimiento (`texturaLuzFondo`, plano aditivo), ya no el plano amarillo encima.
+- **Mapa a pantalla completa y cenital (`js/mapa3d.js`, `js/donante/mapa.js`):** cámara
+  ortográfica mirando hacia abajo (norte arriba), sin OrbitControls. `encuadreDe(zona)` encuadra
+  la ciudad o la zona en el espacio libre (`opciones.margenes()` descuenta encabezado, zonas y
+  gato). Las zonas van en columna arriba a la izquierda y al tocarlas la cámara se acerca a esa
+  zona. El gato con su globo va abajo a la derecha. La ruta "Categoría › Producto" es solo texto
+  (sin pastilla). Se quitó el botón "Usar/Actualizar mi ubicación" (se pide sola al entrar). La
+  lista de centros sigue debajo del mapa.
+- **Elige tu perfil:** las tarjetas usan capturas de la app (`assets/entrar/donador.jpg`: mapa;
+  `assets/entrar/admin.jpg`: mesas con cajas).
+- **Admin:** el panel de estado (zoom) ocupa toda la pantalla bajo la fila de navegación;
+  "Siguiente" / "Guardar" en su esquina superior derecha; sin el gato: una línea de texto explica
+  Urgente (0), Desabastecido (1–2), Provisionado (3–4) y Abastecido (5). Registrar donación y
+  despacho a todo el ancho.
+- Versión actual de CSS y módulos cambiados: `?v=20261029e`.

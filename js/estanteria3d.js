@@ -91,6 +91,25 @@ function encajar(objeto, ancho, alto, fondo) {
 // madera, dos clavitos y el texto. Se dibuja en un canvas (textura).
 const COLOR_ESTADO = { urgente: '#CC0100', desabastecido: '#F2C14E', medio: '#86B5A9', abastecido: '#B8AD9C' };
 
+// Luz cálida que sale del fondo de un compartimiento (hover): más fuerte
+// al centro y que se apaga hacia los bordes. Una sola textura para todos.
+let texturaLuz = null;
+function texturaLuzFondo() {
+  if (texturaLuz) return texturaLuz;
+  const lienzo = document.createElement('canvas');
+  lienzo.width = lienzo.height = 256;
+  const ctx = lienzo.getContext('2d');
+  const grad = ctx.createRadialGradient(128, 128, 8, 128, 128, 128);
+  grad.addColorStop(0, 'rgba(255, 236, 190, 0.85)');
+  grad.addColorStop(0.45, 'rgba(255, 214, 150, 0.45)');
+  grad.addColorStop(1, 'rgba(255, 200, 130, 0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 256, 256);
+  texturaLuz = new THREE.CanvasTexture(lienzo);
+  texturaLuz.colorSpace = THREE.SRGBColorSpace;
+  return texturaLuz;
+}
+
 function texturaPlaca(texto, { extra = '', estado = null, proporcion = 5, fraccion = null } = {}, registrar) {
   const ancho = 1024;
   const alto = Math.round(ancho / proporcion);
@@ -272,20 +291,18 @@ export function montarEstanteria3D(o) {
   const escena = new THREE.Scene();
   const camara = new THREE.PerspectiveCamera(38, 1, 0.05, 200);
 
-  // Luz pareja: mucha luz ambiente y un sol suave, para que la madera se
-  // vea de un solo color (sin zonas oscuras).
-  escena.add(new THREE.AmbientLight('#FFFFFF', 0.8));
-  escena.add(new THREE.HemisphereLight('#FFFFFF', '#F1E2CF', 1.2));
-  const sol = new THREE.DirectionalLight('#FFFFFF', 1.25);
-  sol.position.set(-4, 9, 8);
+  // Una sola luz, de frente (pedido del equipo, oct 2026): sin luz
+  // ambiente ni de relleno. Viene un poco desde arriba para que cada
+  // producto deje su sombra en la tabla. La madera saca casi todo su
+  // color del material (emissive), así que no se oscurece.
+  const sol = new THREE.DirectionalLight('#FFFFFF', 3.2);
+  sol.position.set(0, 5, 12);
   sol.castShadow = true;
   sol.shadow.mapSize.set(1024, 1024);
+  sol.shadow.bias = -0.0005;
   Object.assign(sol.shadow.camera, { left: -6, right: 6, top: 7, bottom: -2, near: 1, far: 30 });
   sol.shadow.camera.updateProjectionMatrix();
   escena.add(sol);
-  const relleno = new THREE.DirectionalLight('#FFFFFF', 0.6);
-  relleno.position.set(0, 2, 10);
-  escena.add(relleno);
 
   // Piso suave para la sombra del mueble.
   const piso = new THREE.Mesh(
@@ -400,6 +417,24 @@ export function montarEstanteria3D(o) {
     malla.userData.categoria = categoria.id;
     escena.add(malla);
 
+    // Hover: una luz que se enciende desde el fondo del compartimiento
+    // (en vez de pintar un plano encima).
+    const luzFondo = new THREE.Mesh(
+      registrar(new THREE.PlaneGeometry((c.x1 - c.x0) * 0.98, (c.y1 - c.y0) * 0.98)),
+      registrar(
+        new THREE.MeshBasicMaterial({
+          map: texturaLuzFondo(),
+          transparent: true,
+          opacity: 0,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending,
+        })
+      )
+    );
+    luzFondo.position.set((c.x0 + c.x1) / 2, (c.y0 + c.y1) / 2, FONDO_Z + 0.03);
+    luzFondo.raycast = () => {}; // no se toca: se toca la malla del compartimiento
+    escena.add(luzFondo);
+
     // Placa 3D clavada al frente de la tabla de abajo del compartimiento.
     const anchoPlaca = Math.min(1.55, (c.x1 - c.x0) * 0.62);
     const placa3d = crearPlaca(categoria.nombre, anchoPlaca, 0.25, {}, registrar);
@@ -430,6 +465,8 @@ export function montarEstanteria3D(o) {
       material,
       placa,
       placa3d,
+      luzFondo,
+      luzObjetivo: 0,
       opacidadObjetivo: 0,
       atenuada: false,
       productos: [],
@@ -450,8 +487,8 @@ export function montarEstanteria3D(o) {
     for (const [cat, z] of zonas) {
       let op = 0;
       if (z.atenuada && !abierta) op = 0.45; // velo azul sobre lo que no coincide
-      if (!abierta && hover === cat && !z.atenuada) op = 0.22;
       z.opacidadObjetivo = op;
+      z.luzObjetivo = !abierta && hover === cat && !z.atenuada ? 1 : 0;
       z.material.color.set(z.atenuada ? '#011E41' : '#FDD794');
       z.placa.hidden = Boolean(abierta);
       z.placa3d.visible = !abierta;
@@ -538,7 +575,9 @@ export function montarEstanteria3D(o) {
     // y los huecos (sombreado), para que el mueble no se vea plano.
     const madera = registrar(
       // Color de la paleta: #A8623A (madera más oscura y rojiza).
-      new THREE.MeshLambertMaterial({ color: '#B87048', emissive: '#4E2A14', emissiveIntensity: 1 })
+      // Con una sola luz (frontal), el emissive sube para que las caras en
+      // sombra no se vean negras.
+      new THREE.MeshLambertMaterial({ color: '#7A4428', emissive: '#8E4F2C', emissiveIntensity: 1 })
     );
     mueble.traverse((n) => {
       if (n.isMesh) {
@@ -803,6 +842,7 @@ export function montarEstanteria3D(o) {
 
     for (const z of zonas.values()) {
       z.material.opacity += (z.opacidadObjetivo - z.material.opacity) * k;
+      z.luzFondo.material.opacity += (z.luzObjetivo - z.luzFondo.material.opacity) * k;
       for (const p of z.productos) {
         if (!p.raiz) continue;
         const objetivo = hoverProducto === p ? 0.08 : 0;

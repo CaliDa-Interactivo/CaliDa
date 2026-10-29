@@ -10,12 +10,12 @@
 // ============================================================
 
 import { inicializarStore } from './store.js';
-import { agregarBotonInicio } from './boton-inicio.js?v=20261028c';
+import { agregarBotonInicio, botonesNavSoloIcono } from './boton-inicio.js?v=20261029e';
 import { montarGatos, limpiarGatos } from './gatos.js';
 import { cargarMiniaturas } from './ilustraciones.js';
-import * as inicio from './inicio.js?v=20261028c';
-import * as estanteriaDonante from './donante/estanteria.js';
-import * as mapaDonante from './donante/mapa.js?v=20261028c';
+import * as inicio from './inicio.js?v=20261029e';
+import * as estanteriaDonante from './donante/estanteria.js?v=20261029e';
+import * as mapaDonante from './donante/mapa.js?v=20261029e';
 import * as fichaDonante from './donante/ficha.js?v=20261029b';
 import * as prerregistroDonante from './donante/prerregistro.js?v=20261028c';
 import * as llegarDonante from './donante/llegar.js?v=20261029b';
@@ -23,8 +23,8 @@ import * as loginAdmin from './admin/login.js?v=20261029c';
 import * as registroAdmin from './admin/registro.js?v=20261029c';
 import * as bienvenidaAdmin from './admin/bienvenida.js';
 import * as menuAdmin from './admin/menu.js?v=20261028c';
-import * as insumosAdmin from './admin/insumos.js';
-import * as donacionAdmin from './admin/donacion.js';
+import * as insumosAdmin from './admin/insumos.js?v=20261029e';
+import * as donacionAdmin from './admin/donacion.js?v=20261029e';
 import * as despachoAdmin from './admin/despacho.js';
 import * as confirmacionAdmin from './admin/confirmacion.js';
 import * as bandejaCorreos from './correos.js';
@@ -149,6 +149,8 @@ function navegar() {
   // En las funciones del admin (no en el menú) el botón vuelve al menú.
   const enFuncionAdmin = /^#\/(admin\/(insumos|donacion|despacho)|correos-enviados)/.test(hash);
   if (conBotonInicio) agregarBotonInicio(contenedor.querySelector('.vista'), { alMenu: enFuncionAdmin });
+  // Volver, pantalla principal / menú y estantería: solo ícono.
+  botonesNavSoloIcono(contenedor);
 
   // El gato 3D (y se liberan los de la pantalla anterior).
   limpiarGatos();
@@ -243,6 +245,10 @@ contenedor.addEventListener('click', (evento) => {
     );
   }
 });
+
+// Algunas pantallas dibujan botones de navegación después (p. ej. el
+// "¡Listo!" del pre-registro): también pasan a ser solo ícono.
+new MutationObserver(() => botonesNavSoloIcono(contenedor)).observe(contenedor, { childList: true, subtree: true });
 
 window.addEventListener('hashchange', navegar);
 window.addEventListener('DOMContentLoaded', () => {

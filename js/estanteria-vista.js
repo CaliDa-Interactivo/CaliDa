@@ -44,7 +44,7 @@ export function montarVistaEstanteria3D(contenedor, opciones) {
     opciones.alFallar?.();
   };
 
-  import('./estanteria3d.js')
+  import('./estanteria3d.js?v=20261029e')
     .then(({ montarEstanteria3D }) => {
       if (destruido) return;
       api = montarEstanteria3D({

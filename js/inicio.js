@@ -6,7 +6,6 @@
 
 import { renderEncabezado, LOGO_CRUZ_ROJA } from './encabezado.js';
 import { renderMascota, decir } from './mascota.js';
-import { renderPaisaje } from './paisaje.js';
 import { isLoggedIn } from './store.js';
 import { montarGatos } from './gatos.js';
 
@@ -36,7 +35,6 @@ export function renderBienvenida() {
         <span class="portada__mancha portada__mancha--1"></span>
         <span class="portada__mancha portada__mancha--2"></span>
         <span class="portada__mancha portada__mancha--3"></span>
-        <span class="portada__punto portada__punto--1"></span>
         <span class="portada__punto portada__punto--2"></span>
         <span class="portada__punto portada__punto--3"></span>
       </div>
@@ -49,10 +47,6 @@ export function renderBienvenida() {
           <p class="portada__colabora">
             En colaboración con
             <span class="portada__logo-cr"><img src="${LOGO_CRUZ_ROJA}" alt="Cruz Roja" width="401" height="104" /></span>
-          </p>
-          <p class="portada__apoyo">
-            Descubre qué necesita cada centro de acopio de la Cruz Roja en Cali
-            y lleva tu donación a donde de verdad sirve.
           </p>
           <div class="portada__acciones">
             <a class="boton-principal" href="#/entrar" data-siguiente>
@@ -67,7 +61,7 @@ export function renderBienvenida() {
         <div class="portada__escena" aria-hidden="true">
           <span class="portada__sol"></span>
           <div class="portada__isla"></div>
-          <div class="portada__gato gato3d" data-gato3d-diferido data-pose="saluda" data-encuadre="completo"></div>
+          <div class="portada__gato gato3d" data-gato3d-diferido data-pose="saluda" data-encuadre="completo" data-luz="isla"></div>
         </div>
       </div>
 
@@ -114,7 +108,7 @@ export function renderBienvenida() {
           gato.setAttribute('data-gato3d', '');
           montarGatos(contenedor.querySelector('.portada__escena'));
         }
-        import('./inicio3d.js?v=20261028c')
+        import('./inicio3d.js?v=20261029e')
           .then(({ montarIsla }) => {
             if (!salir) liberarIsla = montarIsla(contenedor.querySelector('.portada__isla'));
           })
@@ -201,7 +195,9 @@ export function renderEntrar() {
             <h1>¿Cómo quieres entrar a CaliDa?</h1>
             <div class="perfiles__tarjetas">
               <article class="tarjeta-entrada tarjeta-entrada--hover tarjeta-entrada--donador" data-perfil="donador">
-                <div class="tarjeta-ilustracion" aria-hidden="true">${renderPaisaje()}</div>
+                <div class="tarjeta-ilustracion tarjeta-ilustracion--foto" aria-hidden="true">
+                  <img src="assets/entrar/donador.jpg" alt="" width="1300" height="500" loading="eager" />
+                </div>
                 <h2>Quiero ayudar</h2>
                 <p>Mira qué necesita cada centro de acopio, en qué zona está y cómo llegar. No necesitas registrarte.</p>
                 <a class="boton-principal boton-ancho" href="${RUTA_DONANTE}">
@@ -210,7 +206,9 @@ export function renderEntrar() {
               </article>
 
               <article class="tarjeta-entrada tarjeta-entrada--hover" data-perfil="admin">
-                <div class="tarjeta-ilustracion tarjeta-ilustracion--admin" aria-hidden="true">${renderPaisaje({ centro: 'cajas' })}</div>
+                <div class="tarjeta-ilustracion tarjeta-ilustracion--admin tarjeta-ilustracion--foto" aria-hidden="true">
+                  <img src="assets/entrar/admin.jpg" alt="" width="1300" height="500" loading="eager" />
+                </div>
                 <h2>Administro un centro</h2>
                 <p>Actualiza lo que necesita tu centro y registra donaciones y despachos.</p>
                 <a class="boton-contorno boton-ancho" href="${destinoAdmin}">

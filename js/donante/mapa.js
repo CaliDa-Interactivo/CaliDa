@@ -89,12 +89,6 @@ export function render({ subcategoriaId }) {
     ),
   ].join('');
 
-  const iconoPin = `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-      <path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21Z" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-      <circle cx="12" cy="9.8" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/>
-    </svg>`;
-
   const itemsLista = necesitan
     .map((centro) => {
       const urgente = estadoDeNivel(centro.insumos[subcategoriaId]) === 'urgente';
@@ -119,23 +113,20 @@ export function render({ subcategoriaId }) {
 
   return {
     html: `
-      <section class="vista vista-mapa3d">
+      <section class="vista vista-mapa3d vista-mapa-completo">
         <h1 class="visually-hidden">Centros que necesitan ${nombreSub}</h1>
+
+        <!-- Mapa a pantalla completa (oct 2026): encima van el encabezado,
+             las zonas (columna arriba a la izquierda) y el gato con su
+             mensaje (esquina inferior derecha). -->
+        <div class="mapa-envoltura mapa-pantalla">
         <header class="mapa3d__encabezado">
           <a class="boton-atras" href="${volverAtras}">← Volver</a>
           <p class="mapa__indicador">${categoria.nombre} › ${subcategoria.nombre}</p>
           ${renderBotonInicio()}
-          <a class="boton boton--secundario boton-estanteria" href="#/donante/estanteria">
-            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-              <rect x="4" y="3" width="16" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
-              <path d="M4 9h16M4 15h16M12 3v6" fill="none" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            Ir a la estantería
-          </a>
+          <a class="boton boton--secundario boton-estanteria" href="#/donante/estanteria">Ir a la estantería</a>
         </header>
-
-        <div class="mapa-envoltura">
-        <!-- El gato se asoma al lado del mapa, saliendo del borde de la pantalla -->
+        ${total ? `<nav class="mapa3d__zonas" aria-label="Elegir zona">${botonesZona}</nav>` : ''}
         <div class="mapa3d__gato gato-asoma gato-asoma--lado" aria-live="polite">
           ${renderGato(`Buscando centros que necesitan ${nombreSub}…`, { tamano: 'lado' })}
         </div>
@@ -167,14 +158,6 @@ export function render({ subcategoriaId }) {
         ${
           total
             ? `
-              <div class="mapa3d__barra">
-                <div class="mapa3d__ubicacion">
-                  <button type="button" class="boton boton--azul" data-mi-ubicacion>
-                    ${iconoPin}<span data-texto-ubicacion>Usar mi ubicación</span>
-                  </button>
-                </div>
-                <nav class="mapa3d__zonas" aria-label="Filtrar por zona">${botonesZona}</nav>
-              </div>
               <p class="mapa3d__ubicacion-estado" aria-live="polite"></p>
               <h2 class="mapa3d__titulo-lista">
                 Selecciona un centro de acopio que necesita ${nombreSub}
@@ -296,8 +279,8 @@ export function render({ subcategoriaId }) {
       cargarMiniaturas(contenedor); // casitas 3D en las tarjetas
 
       // --- Mi ubicación: distancia a cada centro y lista ordenada por cercanía.
+      // (Sin botón "Actualizar mi ubicación": se pide sola al entrar.)
       let miUbicacion = null;
-      const botonUbicacion = contenedor.querySelector('[data-mi-ubicacion]');
       const estadoUbicacion = contenedor.querySelector('.mapa3d__ubicacion-estado');
       const lista = contenedor.querySelector('.mapa3d__lista');
 
@@ -315,7 +298,6 @@ export function render({ subcategoriaId }) {
         const [a, b] = conDistancia;
         void b;
         textoCercanos = a ? `El más cercano a ti: <strong>${a.c.nombre}</strong> (${formatoKm(a.km)})` : '';
-        botonUbicacion.querySelector('[data-texto-ubicacion]').textContent = 'Actualizar mi ubicación';
         const dentroDelMapa = mapa?.marcarUsuario?.(ubicacion);
         estadoUbicacion.textContent =
           dentroDelMapa === 'borde'
@@ -324,22 +306,10 @@ export function render({ subcategoriaId }) {
         pintarGato();
       }
 
-      botonUbicacion?.addEventListener('click', async () => {
-        estadoUbicacion.textContent = 'Buscando tu ubicación…';
-        botonUbicacion.disabled = true;
-        try {
-          aplicarUbicacion(await obtenerUbicacion());
-        } catch (e) {
-          estadoUbicacion.textContent = e.message;
-        } finally {
-          botonUbicacion.disabled = false;
-        }
-      });
-
       // Si ya la compartió en esta sesión, se usa sin volver a preguntar;
       // si no, se pide al entrar al mapa (el navegador muestra su permiso).
       const guardada = ubicacionGuardada();
-      if (botonUbicacion) {
+      if (lista) {
         if (guardada) aplicarUbicacion(guardada);
         else
           obtenerUbicacion()
@@ -351,7 +321,7 @@ export function render({ subcategoriaId }) {
       }
 
       // Carga diferida del mapa 3D.
-      import('../mapa3d.js?v=20261028c')
+      import('../mapa3d.js?v=20261029e')
         .then(({ montarMapa3D }) => {
           if (destruido) return;
           const necesidades = Object.fromEntries(
@@ -365,6 +335,23 @@ export function render({ subcategoriaId }) {
             necesidades,
             zonaInicial: zonaActual,
             movimientoReducido,
+            // Lo que tapan los controles que van encima del mapa: el mapa
+            // encuadra la ciudad en el espacio que queda libre.
+            margenes: () => {
+              const r = mapaEl.getBoundingClientRect();
+              const encabezado = contenedor.querySelector('.mapa3d__encabezado')?.getBoundingClientRect();
+              const zonasNav = contenedor.querySelector('.mapa3d__zonas')?.getBoundingClientRect();
+              const gato = gatoEl.getBoundingClientRect();
+              const angosta = r.width < 700;
+              return {
+                arriba: encabezado ? encabezado.bottom - r.top + 12 : 0,
+                // En celular el gato se descuenta abajo (no al lado): si no,
+                // la ciudad queda muy angosta.
+                abajo: angosta && gato.height ? r.bottom - gato.top + 8 : 24,
+                izquierda: zonasNav ? zonasNav.right - r.left + 12 : 0,
+                derecha: !angosta && gato.width ? r.right - gato.left + 8 : 12,
+              };
+            },
             alClicCentro: (id) => {
               location.hash = `#/donante/ficha/${id}/${subcategoriaId}`;
             },

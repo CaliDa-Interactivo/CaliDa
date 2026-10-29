@@ -94,18 +94,30 @@ function mesa(ancho, fondo, alto) {
   return g;
 }
 
-// Isla flotante: césped arriba y tierra que se adelgaza hacia abajo.
+// Isla flotante: césped arriba y tierra que se adelgaza hacia abajo en
+// una sola pieza curva que termina limpia en punta (sin escalones).
 function isla() {
   const g = new THREE.Group();
   const cesped = new THREE.Mesh(new THREE.CylinderGeometry(2.05, 2.0, 0.22, 64), mate('#9CC78A'));
   cesped.position.y = -0.11;
   cesped.receiveShadow = true;
-  const tierra = new THREE.Mesh(new THREE.CylinderGeometry(1.95, 0.55, 1.5, 64, 1), mate('#A8623A'));
-  tierra.position.y = -0.95;
-  const roca = new THREE.Mesh(new THREE.ConeGeometry(0.55, 0.8, 32), mate('#8C4F2C'));
-  roca.position.y = -2.1;
-  roca.rotation.x = Math.PI;
-  g.add(cesped, tierra, roca);
+  const perfil = [
+    [1.97, 0],
+    [1.78, -0.3],
+    [1.42, -0.72],
+    [1.02, -1.18],
+    [0.64, -1.64],
+    [0.32, -2.04],
+    [0.09, -2.36],
+    [0, -2.48],
+  ]
+    // De abajo hacia arriba: así las caras miran hacia afuera (si no,
+    // three.js las oculta y la isla se ve cortada).
+    .reverse()
+    .map(([r, y]) => new THREE.Vector2(r, y));
+  const tierra = new THREE.Mesh(new THREE.LatheGeometry(perfil, 64), mate('#A8623A'));
+  tierra.position.y = -0.22;
+  g.add(cesped, tierra);
   return g;
 }
 
@@ -197,8 +209,11 @@ export function montarIsla(contenedor) {
     ['alimento-no-perecederos', 0.24, [0.17, EN_CAJA, -0.66]],
     ['ropa-hombre', 0.34, [0.57, EN_CAJA, -0.8]],
     ['ropa-mujer', 0.34, [0.8, EN_CAJA, -0.78]],
-    ['medicamentos-analgesicos', 0.26, [1.03, SOBRE_CAJA_C, 0.4]],
-    ['aseo-corporal', 0.24, [1.27, SOBRE_CAJA_C, 0.5]],
+    // Tarro y papel lado a lado sobre la tapa de la caja C (girada -0,5),
+    // sin meterse uno en el otro: el papel mide 0,35 de ancho y el tarro
+    // 0,17; van a 0,09 y a -0,185 del centro de la caja, a lo largo.
+    ['medicamentos-analgesicos', 0.22, [0.988, SOBRE_CAJA_C, 0.361]],
+    ['aseo-corporal', 0.2, [1.229, SOBRE_CAJA_C, 0.493]],
     ['alimento-bebe', 0.3, [0.85, SOBRE_MESA, -0.47]],
     ['aseo-bucal', 0.3, [1.65, SOBRE_MESA, -0.3]],
     // La bolsa de comida para animales, encima de la pila de cajas cerradas.
@@ -238,24 +253,29 @@ export function montarIsla(contenedor) {
       .catch(() => {});
   }
 
-  // Un leve vaivén de la isla (gira apenas), dibujado solo mientras se ve.
-  const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // La isla ya no gira sola: el gato (otro lienzo) no gira con ella y
+  // parecía resbalar sobre el césped en cada vaivén. Toda la escena flota
+  // junta con la animación CSS de .portada__escena. Solo se dibuja cuando
+  // cambia algo (modelos que cargan, tamaño).
   let visible = true;
   const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
   io.observe(contenedor);
-  const reloj = new THREE.Clock();
   function cuadro() {
-    id = requestAnimationFrame(cuadro);
-    if (!visible) return;
-    if (!reducido) mundo.rotation.y = -0.35 + Math.sin(reloj.getElapsedTime() * 0.35) * 0.06;
-    dibujar();
+    id = 0;
+    if (visible) dibujar();
   }
 
+  // El lienzo es más alto que la escena (CSS: .portada__isla baja un
+  // EXTRA_ABAJO más) para que quepa la punta de la isla. La parte de
+  // arriba se encuadra igual que antes (setViewOffset), así el gato, que
+  // va en otro lienzo, sigue parado en el mismo lugar del césped.
   const ajustar = () => {
     const w = contenedor.clientWidth || 300;
-    const h = contenedor.clientHeight || 300;
-    renderer.setSize(w, h, false);
+    const hLienzo = contenedor.clientHeight || 300;
+    const h = contenedor.parentElement?.clientHeight || hLienzo; // alto de la escena
+    renderer.setSize(w, hLienzo, false);
     camara.aspect = w / h;
+    camara.setViewOffset(w, h, 0, 0, w, hLienzo);
     camara.updateProjectionMatrix();
     dibujar();
   };

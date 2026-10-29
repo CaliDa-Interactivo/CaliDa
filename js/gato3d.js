@@ -102,16 +102,28 @@ async function montarUno(el) {
   canvas.setAttribute('aria-hidden', 'true');
 
   const escena = new THREE.Scene();
-  // Luz original del gato (clara y cálida): con el color nuevo se ve
-  // del mismo tono de la estantería, sin oscurecerse.
-  escena.add(new THREE.AmbientLight('#FFF4EA', 0.9));
-  escena.add(new THREE.HemisphereLight('#FFF8EE', '#E9B99A', 1.3));
-  const sol = new THREE.DirectionalLight('#FFF1E0', 1.7);
-  sol.position.set(1.5, 3, 4);
-  escena.add(sol);
-  const borde = new THREE.DirectionalLight('#FFD9B8', 1.1); // luz de contorno cálida
-  borde.position.set(-2.5, 2, -2);
-  escena.add(borde);
+  // data-luz="isla" (portada): las mismas luces de la isla 3D (inicio3d.js),
+  // con el sol desde el mismo lado visto desde la cámara, para que el gato
+  // y los objetos de la isla tengan la luz y la sombra hacia el mismo lado.
+  const luzIsla = el.dataset.luz === 'isla';
+  if (luzIsla) {
+    escena.add(new THREE.HemisphereLight('#FFF8EE', '#8FB7A0', 1.3));
+    escena.add(new THREE.AmbientLight('#FFFFFF', 0.45));
+    const sol = new THREE.DirectionalLight('#FFF1E0', 2.2);
+    sol.position.set(-4.6, 6, 2);
+    escena.add(sol);
+  } else {
+    // Luz original del gato (clara y cálida): con el color nuevo se ve
+    // del mismo tono de la estantería, sin oscurecerse.
+    escena.add(new THREE.AmbientLight('#FFF4EA', 0.9));
+    escena.add(new THREE.HemisphereLight('#FFF8EE', '#E9B99A', 1.3));
+    const sol = new THREE.DirectionalLight('#FFF1E0', 1.7);
+    sol.position.set(1.5, 3, 4);
+    escena.add(sol);
+    const borde = new THREE.DirectionalLight('#FFD9B8', 1.1); // luz de contorno cálida
+    borde.position.set(-2.5, 2, -2);
+    escena.add(borde);
+  }
 
   const camara = new THREE.PerspectiveCamera(26, 1, 0.05, 50);
   if (el.dataset.encuadre === 'medio') {
@@ -222,11 +234,9 @@ async function montarUno(el) {
     mallasBrazo.push({ malla: n, original: Float32Array.from(pos.array), zMax: zMax || 1 });
   });
   let anguloBrazo = 0;
-  let cuadroBrazo = 0;
   function doblarBrazo(angulo) {
     if (Math.abs(angulo - anguloBrazo) < 0.002) return;
     anguloBrazo = angulo;
-    cuadroBrazo++;
     for (const { malla, original, zMax } of mallasBrazo) {
       const pos = malla.geometry.attributes.position;
       const a = pos.array;
@@ -243,7 +253,9 @@ async function montarUno(el) {
         a[i + 2] = y * sn + z * c;
       }
       pos.needsUpdate = true;
-      if (cuadroBrazo % 2 === 0) malla.geometry.computeVertexNormals();
+      // Normales en cada cuadro: si se saltaba uno, la luz del brazo
+      // "brincaba" al saludar.
+      malla.geometry.computeVertexNormals();
     }
   }
 
@@ -263,6 +275,9 @@ async function montarUno(el) {
   );
   sombra.rotation.x = -Math.PI / 2;
   sombra.position.y = 0.002;
+  // Con la luz de la isla (desde la izquierda) la sombra cae a la derecha
+  // y un poco atrás, como la de las cajas y las mesas.
+  if (luzIsla) sombra.position.set(0.16, 0.002, -0.06);
   if (el.dataset.encuadre !== 'medio') escena.add(sombra);
 
   el.appendChild(canvas);

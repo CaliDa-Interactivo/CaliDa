@@ -13,7 +13,6 @@
 // ============================================================
 
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { cargarGLB, MODELO_CASA, estilizarCasa } from './cargar-glb.js';
 
@@ -150,13 +149,6 @@ const ALTO_ZONA = 0.5;
 const BISEL = 0.1;
 const Y_SUPERFICIE = ALTO_ZONA + 2 * BISEL; // donde se apoyan las casitas
 
-const CAMARA_GENERAL = {
-  objetivo: new THREE.Vector3(0, 0, 0.6),
-  desplazamiento: new THREE.Vector3(0, 15.5, 13), // (el encuadre real se calcula solo)
-};
-const DESPLAZAMIENTO_ENFOQUE = new THREE.Vector3(0, 8.5, 7.2);
-const LIMITE_PAN = { x: 6.5, z: 8.5 };
-
 // --- Utilidades geométricas -------------------------------------------
 
 function puntoEnPoligono(x, z, puntos) {
@@ -249,8 +241,14 @@ export function montarMapa3D(opciones) {
   renderer.domElement.classList.add('mapa3d__canvas');
 
   const escena = new THREE.Scene();
-  const camara = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
-  camara.position.copy(CAMARA_GENERAL.objetivo).add(CAMARA_GENERAL.desplazamiento);
+  // Vista cenital (oct 2026): cámara ortográfica que mira derecho hacia
+  // abajo, sin perspectiva, con el norte arriba. `vista` es lo que se ve
+  // (centro en el suelo y medio alto en unidades del mundo); se anima
+  // hacia `vistaObjetivo` al elegir una zona.
+  const camara = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 200);
+  camara.up.set(0, 0, -1);
+  const vista = { cx: 0, cz: 0, mitad: 10 };
+  let vistaObjetivo = null;
 
   escena.add(new THREE.HemisphereLight('#FFF6E8', '#C9B79C', 1.6));
   const sol = new THREE.DirectionalLight('#FFFFFF', 2.2);
@@ -263,43 +261,20 @@ export function montarMapa3D(opciones) {
   sol.shadow.camera.updateProjectionMatrix();
   escena.add(sol);
 
-  // --- Controles: pan con un dedo / clic izquierdo, zoom con rueda o pellizco
-  const controles = new OrbitControls(camara, renderer.domElement);
-  controles.target.copy(CAMARA_GENERAL.objetivo);
-  controles.enableDamping = true;
-  controles.dampingFactor = 0.08;
-  controles.screenSpacePanning = false; // el pan se desliza sobre el suelo
-  controles.minDistance = 1;
-  controles.maxDistance = 100;
-  controles.minPolarAngle = 0.45;
-  controles.maxPolarAngle = 1.05;
-  controles.minAzimuthAngle = -0.6;
-  controles.maxAzimuthAngle = 0.6;
-  controles.mouseButtons = {
-    LEFT: THREE.MOUSE.PAN,
-    MIDDLE: THREE.MOUSE.DOLLY,
-    RIGHT: THREE.MOUSE.ROTATE,
-  };
-  controles.touches = { ONE: THREE.TOUCH.PAN, TWO: THREE.TOUCH.DOLLY_ROTATE };
-  // El mapa es fijo: la cámara no se mueve (ni con gestos ni al elegir zona).
-  controles.enabled = false;
-  controles.update();
-
-  // Mantiene el mapa dentro de la pantalla mientras se arrastra.
-  const limitarPan = () => {
-    const t = controles.target;
-    const corregido = new THREE.Vector3(
-      THREE.MathUtils.clamp(t.x, -LIMITE_PAN.x, LIMITE_PAN.x),
-      t.y,
-      THREE.MathUtils.clamp(t.z, -LIMITE_PAN.z, LIMITE_PAN.z)
-    );
-    const delta = corregido.sub(t);
-    if (delta.lengthSq() > 0) {
-      t.add(delta);
-      camara.position.add(delta);
-    }
-  };
-  controles.addEventListener('change', limitarPan);
+  // El mapa no tiene gestos: la persona no arrastra ni acerca; la cámara
+  // solo se mueve sola al elegir una zona.
+  function aplicarVista() {
+    const { clientWidth: ancho, clientHeight: alto } = lienzo;
+    const aspecto = ancho && alto ? ancho / alto : 1;
+    camara.left = -vista.mitad * aspecto;
+    camara.right = vista.mitad * aspecto;
+    camara.top = vista.mitad;
+    camara.bottom = -vista.mitad;
+    camara.position.set(vista.cx, 40, vista.cz);
+    camara.lookAt(vista.cx, 0, vista.cz);
+    camara.updateProjectionMatrix();
+    camara.updateMatrixWorld(true);
+  }
 
   // --- Base, río y montañas (decoración) ---------------------------------
 
@@ -596,7 +571,6 @@ export function montarMapa3D(opciones) {
   let zonaSeleccionada = null;
   let centroResaltado = null;
   let zonaHover = null;
-  let animacionCamara = null; // { objetivo, posicion }
   let tiempo = 0;
 
   const colorAtenuado = new THREE.Color(COLORES.zonaAtenuada);
@@ -628,30 +602,24 @@ export function montarMapa3D(opciones) {
     }
   }
 
-  function enfocarCamara(zona) {
-    if (!zona) {
-      // Vista general: el mismo encuadre automático (mapa fijo).
-      aplicarEncuadre();
-      controles.update();
-      return;
-    }
-    const objetivo = zona
-      ? new THREE.Vector3(zonas.get(zona).centro.x, 0, zonas.get(zona).centro.z)
-      : CAMARA_GENERAL.objetivo.clone();
-    const posicion = objetivo.clone().add(zona ? desplazamientoEnfoque() : desplazamientoGeneral());
-    if (movimientoReducido) {
-      controles.target.copy(objetivo);
-      camara.position.copy(posicion);
-      controles.update();
+  // Lleva la cámara a la zona elegida (o a toda Cali), animada.
+  function enfocarCamara(zona, { animar = true } = {}) {
+    const objetivo = encuadreDe(zona);
+    if (!objetivo) return;
+    if (!animar || movimientoReducido) {
+      Object.assign(vista, objetivo);
+      vistaObjetivo = null;
+      aplicarVista();
     } else {
-      animacionCamara = { objetivo, posicion };
+      vistaObjetivo = objetivo;
     }
   }
 
   function seleccionarZona(zona) {
     const nueva = zona && zona === zonaSeleccionada ? null : zona;
     zonaSeleccionada = nueva;
-    aplicarObjetivos(); // se resalta la zona; la cámara queda fija
+    aplicarObjetivos();
+    enfocarCamara(nueva); // la cámara se acerca a la zona elegida
     alCambiarZona(nueva);
   }
 
@@ -663,18 +631,8 @@ export function montarMapa3D(opciones) {
   }
 
   function acercar(factor) {
-    animacionCamara = null;
-    const offset = camara.position.clone().sub(controles.target);
-    const distancia = THREE.MathUtils.clamp(offset.length() * factor, controles.minDistance, controles.maxDistance);
-    offset.setLength(distancia);
-    camara.position.copy(controles.target).add(offset);
-    controles.update();
+    vistaObjetivo = { ...(vistaObjetivo ?? vista), mitad: THREE.MathUtils.clamp(vista.mitad * factor, 1.5, 30) };
   }
-
-  // Si la persona toma el control, se cancela el viaje automático de cámara.
-  controles.addEventListener('start', () => {
-    animacionCamara = null;
-  });
 
   // --- Puntero: hover y clic (distinguiendo clic de arrastre) -------------
 
@@ -780,81 +738,39 @@ export function montarMapa3D(opciones) {
     const { clientWidth: ancho, clientHeight: alto } = lienzo;
     if (!ancho || !alto) return;
     renderer.setSize(ancho, alto, false);
-    camara.aspect = ancho / alto;
-    camara.updateProjectionMatrix();
-    if (typeof puntosCiudad !== 'undefined' && puntosCiudad.length) {
-      aplicarEncuadre();
-      controles.update();
-    }
+    // Al cambiar el tamaño se vuelve a encuadrar lo que se estaba viendo.
+    enfocarCamara(zonaSeleccionada, { animar: false });
   }
 
-  // En pantallas angostas (celular vertical) la cámara se aleja
-  // para que toda Cali quepa a lo ancho.
-  function factorDistancia() {
-    return THREE.MathUtils.clamp(1.25 / camara.aspect, 1, 1.85);
-  }
-  // Encuadre automático: la ciudad ocupa casi todo el recuadro. Primero
-  // se centra la ciudad en pantalla y luego la cámara se acerca hasta que
-  // toca los bordes (margen pequeño). Se repite 3 veces para afinar.
-  const ELEVACION = 0.5; // ~29°
-  const puntosCiudad = [...zonas.values()].flatMap((z) => z.puntos.map((p) => new THREE.Vector3(p.x, Y_SUPERFICIE, p.z)));
-  const vProy = new THREE.Vector3();
-  function direccionCamara() {
-    // Siempre desde el sur, con el norte arriba.
-    return new THREE.Vector3(0, Math.sin(ELEVACION), Math.cos(ELEVACION));
-  }
-  function limitesPantalla(objetivo, dir, d) {
-    camara.position.copy(objetivo).addScaledVector(dir, d);
-    camara.lookAt(objetivo);
-    camara.updateMatrixWorld(true);
-    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
-    for (const p of puntosCiudad) {
-      vProy.copy(p).project(camara);
-      x0 = Math.min(x0, vProy.x); x1 = Math.max(x1, vProy.x);
-      y0 = Math.min(y0, vProy.y); y1 = Math.max(y1, vProy.y);
+  // Encuadre cenital: la ciudad (o la zona elegida) llena el espacio libre
+  // de la pantalla, descontando lo que tapan los controles de encima
+  // (opciones.margenes() en píxeles: arriba, abajo, izquierda, derecha).
+  const RELLENO = { ciudad: 0.92, zona: 0.7 };
+  function encuadreDe(zona) {
+    const { clientWidth: ancho, clientHeight: alto } = lienzo;
+    if (!ancho || !alto) return null;
+    const puntos = zona && zonas.has(zona)
+      ? zonas.get(zona).puntos
+      : [...zonas.values()].flatMap((z) => z.puntos);
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+    for (const p of puntos) {
+      x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x);
+      z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z);
     }
-    return { x0, x1, y0, y1 };
-  }
-  function encuadrarCiudad() {
-    const dir = direccionCamara();
-    const objetivo = CAMARA_GENERAL.objetivo.clone();
-    let d = 20;
-    for (let vuelta = 0; vuelta < 3; vuelta++) {
-      // 1) distancia más cercana a la que la ciudad cabe (márgen 3 %)
-      let cerca = 2;
-      let lejos = 80;
-      for (let i = 0; i < 24; i++) {
-        const medio = (cerca + lejos) / 2;
-        const l = limitesPantalla(objetivo, dir, medio);
-        if (Math.max(-l.x0, l.x1, -l.y0, l.y1) <= 0.8) lejos = medio; // ~80 %: con aire alrededor
-        else cerca = medio;
-      }
-      d = lejos;
-      // 2) centrar: mover el objetivo según el desfase en pantalla
-      const l = limitesPantalla(objetivo, dir, d);
-      const mx = (l.x0 + l.x1) / 2;
-      const my = (l.y0 + l.y1) / 2;
-      const altoMundo = 2 * d * Math.tan(THREE.MathUtils.degToRad(camara.fov / 2));
-      const derecha = new THREE.Vector3().setFromMatrixColumn(camara.matrixWorld, 0).setY(0).normalize();
-      const adelante = dir.clone().setY(0).normalize().negate(); // hacia donde mira, sobre el suelo
-      objetivo.addScaledVector(derecha, mx * altoMundo * camara.aspect / 2);
-      objetivo.addScaledVector(adelante, (my * altoMundo) / 2 / Math.sin(ELEVACION));
-    }
-    return { objetivo, posicion: objetivo.clone().addScaledVector(dir, d) };
-  }
-  function aplicarEncuadre() {
-    const { objetivo, posicion } = encuadrarCiudad();
-    controles.target.copy(objetivo);
-    camara.position.copy(posicion);
-    camara.lookAt(objetivo);
-  }
-  function desplazamientoGeneral() {
-    const { objetivo, posicion } = encuadrarCiudad();
-    controles.target.copy(objetivo);
-    return posicion.sub(objetivo);
-  }
-  function desplazamientoEnfoque() {
-    return DESPLAZAMIENTO_ENFOQUE.clone().multiplyScalar(Math.min(factorDistancia(), 1.4));
+    const m = { arriba: 0, abajo: 0, izquierda: 0, derecha: 0, ...(opciones.margenes?.() ?? {}) };
+    const libreAncho = Math.max(ancho - m.izquierda - m.derecha, ancho * 0.4);
+    const libreAlto = Math.max(alto - m.arriba - m.abajo, alto * 0.4);
+    const relleno = zona ? RELLENO.zona : RELLENO.ciudad;
+    // unidades del mundo por píxel
+    const s = Math.max((x1 - x0) / libreAncho, (z1 - z0) / libreAlto) / relleno;
+    // El centro del espacio libre, en píxeles respecto al centro del lienzo.
+    const dx = m.izquierda + libreAncho / 2 - ancho / 2;
+    const dy = m.arriba + libreAlto / 2 - alto / 2;
+    return {
+      cx: (x0 + x1) / 2 - dx * s,
+      cz: (z0 + z1) / 2 - dy * s, // en pantalla, abajo es +z (sur)
+      mitad: (alto * s) / 2,
+    };
   }
   const observador = new ResizeObserver(ajustarTamano);
   observador.observe(lienzo);
@@ -1023,26 +939,29 @@ export function montarMapa3D(opciones) {
       }
     }
 
-    if (animacionCamara) {
+    if (vistaObjetivo) {
       const kc = suavizar(4, dt);
-      controles.target.lerp(animacionCamara.objetivo, kc);
-      camara.position.lerp(animacionCamara.posicion, kc);
-      if (camara.position.distanceTo(animacionCamara.posicion) < 0.02) animacionCamara = null;
+      vista.cx += (vistaObjetivo.cx - vista.cx) * kc;
+      vista.cz += (vistaObjetivo.cz - vista.cz) * kc;
+      vista.mitad += (vistaObjetivo.mitad - vista.mitad) * kc;
+      if (
+        Math.abs(vistaObjetivo.cx - vista.cx) + Math.abs(vistaObjetivo.cz - vista.cz) +
+          Math.abs(vistaObjetivo.mitad - vista.mitad) < 0.005
+      ) {
+        Object.assign(vista, vistaObjetivo);
+        vistaObjetivo = null;
+      }
     }
 
-    controles.update();
+    aplicarVista();
     actualizarEtiquetas();
     renderer.render(escena, camara);
   }
 
-  // Encuadre inicial (ya con el tamaño real del contenedor).
-  aplicarEncuadre();
-  if (zonaInicial && zonas.has(zonaInicial)) {
-    zonaSeleccionada = zonaInicial;
-    const z = zonas.get(zonaInicial).centro;
-    void z; // la cámara queda en la vista general (mapa fijo)
-  }
-  controles.update();
+  // Encuadre inicial (ya con el tamaño real del contenedor): si se vuelve
+  // de la ficha con una zona elegida, el mapa abre enfocado en ella.
+  if (zonaInicial && zonas.has(zonaInicial)) zonaSeleccionada = zonaInicial;
+  enfocarCamara(zonaSeleccionada, { animar: false });
   aplicarObjetivos();
   animar();
 
@@ -1055,7 +974,6 @@ export function montarMapa3D(opciones) {
     canvas.removeEventListener('pointerleave', alSalirPuntero);
     canvas.removeEventListener('pointerdown', alPresionar);
     canvas.removeEventListener('pointerup', alSoltar);
-    controles.dispose();
     desechables.forEach((d) => d.dispose());
     renderer.dispose();
     canvas.remove();

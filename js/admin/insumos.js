@@ -9,10 +9,9 @@
 import { estadoDeNivel, ETIQUETA_ESTADO, NIVEL_MAX, EJEMPLOS_NECESIDADES } from '../data.js';
 import { actualizarNivelInsumo, actualizarNecesidades, getCentroAdminActual } from '../store.js';
 import { renderRepisaNivel, cargarMiniaturas } from '../ilustraciones.js';
-import { renderGato } from '../gato.js';
 import { montarGatos } from '../gatos.js';
 import { activarZoomEstanteria, renderCapaZoom, renderCabeceraZoom } from '../zoom-estanteria.js';
-import { renderEscena3D, montarVistaEstanteria3D } from '../estanteria-vista.js';
+import { renderEscena3D, montarVistaEstanteria3D } from '../estanteria-vista.js?v=20261029e';
 import {
   ESTADOS,
   conSesion,
@@ -56,29 +55,33 @@ function renderCantidades(categoria) {
     .join('');
 
   // Dos pasos en pantallas distintas: 1) cantidad de 0 a 5; 2) palabras
-  // exactas de lo que necesitan. El gato explica cada paso.
+  // exactas de lo que necesitan. Arriba, una frase explica cada paso (sin
+  // el gato) y los botones del paso van en la esquina superior derecha.
   return `
     ${renderCabeceraZoom(categoria.nombre, '')}
     <div class="pasos-insumo" data-paso="1">
-      <p class="pasos-insumo__indicador">
-        <span class="solo-paso-1">Paso 1 de 2 · ¿Cuánto hay?</span>
-        <span class="solo-paso-2">Paso 2 de 2 · ¿Qué le falta?</span>
-      </p>
-      <div class="pasos-insumo__gato solo-paso-1">
-        ${renderGato('Cuéntame cuánto hay de cada cosa en tu centro: 0 es que no queda nada y 5 es que está lleno.')}
+      <div class="pasos-insumo__barra">
+        <p class="pasos-insumo__indicador">
+          <span class="solo-paso-1">Paso 1 de 2 · ¿Cuánto hay?</span>
+          <span class="solo-paso-2">Paso 2 de 2 · ¿Qué le falta?</span>
+        </p>
+        <div class="admin-acciones pasos-insumo__botones">
+          <button class="boton boton--secundario solo-paso-2" type="button" data-paso-atras>← Cantidades</button>
+          <button class="boton boton--grande solo-paso-1" type="button" data-paso-siguiente>Siguiente →</button>
+          <button class="boton boton--grande solo-paso-2" type="button" data-guardar disabled>Guardar</button>
+        </div>
       </div>
-      <div class="pasos-insumo__gato solo-paso-2">
-        ${renderGato('¡Muy bien! Ahora escríbeme las palabras exactas de lo que le falta a tu centro.')}
-      </div>
+      <ul class="pasos-insumo__significado solo-paso-1" aria-label="Qué significa cada estado">
+        <li><span class="punto-estado punto-estado--urgente"></span><strong>Urgente (0):</strong> no queda nada.</li>
+        <li><span class="punto-estado punto-estado--desabastecido"></span><strong>Desabastecido (1–2):</strong> queda muy poco.</li>
+        <li><span class="punto-estado punto-estado--medio"></span><strong>Provisionado (3–4):</strong> alcanza por ahora.</li>
+        <li><span class="punto-estado punto-estado--abastecido"></span><strong>Abastecido (5):</strong> está lleno.</li>
+      </ul>
+      <p class="pasos-insumo__explicacion solo-paso-2">Escribe las palabras exactas de lo que le falta a tu centro.</p>
       <div class="mueble mueble--cerca">
         <div class="mueble__cuerpo secciones-insumo">${secciones}</div>
       </div>
-      <div class="admin-acciones">
-        <p class="admin-acciones__aviso" aria-live="polite"></p>
-        <button class="boton boton--secundario solo-paso-2" type="button" data-paso-atras>← Cantidades</button>
-        <button class="boton boton--grande solo-paso-1" type="button" data-paso-siguiente>Siguiente →</button>
-        <button class="boton boton--grande solo-paso-2" type="button" data-guardar disabled>Guardar</button>
-      </div>
+      <p class="admin-acciones__aviso" aria-live="polite"></p>
     </div>`;
 }
 

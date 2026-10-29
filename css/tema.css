@@ -4496,3 +4496,546 @@ body .escena3d .escena3d__ayuda.escena3d__ayuda--arriba:not(#ayuda) {
   height: 100vh;
   height: 100dvh;
 }
+
+/* ===================================================================
+   AJUSTES (oct 2026, 14): márgenes parejos, botones de navegación solo
+   con ícono, portada más limpia, mapa a pantalla completa (cenital) y
+   admin a todo el ancho.
+   =================================================================== */
+
+/* --- Márgenes iguales en los cuatro bordes, en todas las pantallas --- */
+:root {
+  --margen-arriba: 24px;
+  --margen-abajo: 24px;
+  --margen-lado: 24px;
+  --tam-nav: 56px; /* botones de navegación (círculo) */
+  --tam-nav-icono: 30px;
+}
+@media (max-width: 600px) {
+  :root {
+    --margen-arriba: 16px;
+    --margen-abajo: 16px;
+    --margen-lado: 16px;
+    --tam-nav: 48px;
+    --tam-nav-icono: 26px;
+  }
+}
+#app > .vista:not(.vista-3d) {
+  padding-left: var(--margen-lado) !important;
+  padding-right: var(--margen-lado) !important;
+}
+
+/* --- Botones de navegación: círculo 3D del mismo tamaño, solo ícono --- */
+#app .boton-nav {
+  display: inline-grid !important;
+  place-items: center;
+  flex: 0 0 auto;
+  width: var(--tam-nav) !important;
+  height: var(--tam-nav) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  border: none !important;
+  border-radius: 50% !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  background: var(--brillo-arriba), var(--relleno-marfil) !important;
+  box-shadow: var(--relieve-claro), 0 5px 12px rgba(1, 30, 65, 0.14), 0 1px 2px rgba(1, 30, 65, 0.1) !important;
+  position: relative;
+}
+#app .boton-nav svg {
+  display: block;
+  width: var(--tam-nav-icono) !important;
+  height: var(--tam-nav-icono) !important;
+}
+html[data-rol="donante"] #app .boton-nav { color: #8A3B12 !important; }
+html[data-rol="admin"] #app .boton-nav { color: #12406E !important; }
+html[data-rol="inicio"] #app .boton-nav { color: #011E41 !important; }
+#app .boton-nav:hover { filter: brightness(1.03); }
+#app .boton-nav:active { transform: translateY(1px); }
+#app .boton-nav:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+/* La barra de pantalla principal / menú solo envuelve al círculo */
+#app .barra-inicio {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* --- Portada: sin el texto entre logos y Siguiente, con más aire --- */
+.vista.portada .portada__apoyo,
+.portada__punto--1 {
+  display: none !important;
+}
+.vista.portada .portada__colabora {
+  margin-bottom: 0 !important;
+}
+.vista.portada .portada__acciones {
+  margin-top: 56px;
+}
+@media (max-width: 600px) {
+  .vista.portada .portada__acciones {
+    margin-top: 40px;
+  }
+}
+
+/* --- Mapa a pantalla completa (vista cenital) --- */
+#app > .vista.vista-mapa-completo {
+  max-width: none !important;
+  width: 100% !important;
+  padding: 0 !important;
+}
+#app .vista-mapa-completo .mapa-pantalla {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  min-height: 420px;
+  margin: 0 !important;
+  max-width: none !important;
+  grid-template-columns: none !important;
+  grid-template-rows: none !important;
+}
+#app .vista-mapa-completo .mapa-pantalla > .mapa3d:not(#mapa) {
+  position: absolute !important;
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  max-height: none !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  aspect-ratio: auto !important;
+}
+#app .vista-mapa-completo .mapa3d__lienzo,
+#app .vista-mapa-completo .mapa3d__canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+/* Encabezado encima del mapa: Volver, ruta (texto sin caja), inicio y
+   estantería, con el margen de siempre */
+#app .vista-mapa-completo .mapa3d__encabezado {
+  position: absolute !important;
+  top: var(--margen-arriba);
+  left: var(--margen-lado);
+  right: var(--margen-lado);
+  z-index: 20;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  gap: 12px !important;
+  margin: 0 !important;
+  pointer-events: none;
+}
+#app .vista-mapa-completo .mapa3d__encabezado > * {
+  pointer-events: auto;
+}
+#app .vista-mapa-completo .mapa3d__encabezado .barra-inicio {
+  margin: 0 0 0 auto !important;
+  position: static !important;
+}
+/* Ruta Categoría › Producto: solo texto, sin caja */
+#app .vista-mapa-completo .mapa__indicador,
+#app .vista-columnas .mapa__indicador {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  color: #5A2A0C !important;
+  font-size: 22px !important;
+  font-weight: 900 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+#app .vista-mapa-completo .mapa__indicador {
+  text-shadow: 0 1px 0 rgba(255, 248, 237, 0.85), 0 0 12px rgba(255, 248, 237, 0.7);
+}
+@media (max-width: 600px) {
+  #app .vista-mapa-completo .mapa__indicador {
+    font-size: 16px !important;
+  }
+}
+/* Zonas en columna, arriba a la izquierda (debajo del encabezado) */
+#app .vista-mapa-completo .mapa3d__zonas {
+  position: absolute !important;
+  top: calc(var(--margen-arriba) + var(--tam-nav) + 16px);
+  left: var(--margen-lado);
+  z-index: 20;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch;
+  gap: 8px !important;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+#app .vista-mapa-completo .mapa3d__zonas .chip-zona {
+  justify-content: space-between;
+  min-width: 150px;
+  margin: 0 !important;
+  border-radius: 999px !important;
+}
+@media (max-width: 600px) {
+  #app .vista-mapa-completo .mapa3d__zonas .chip-zona {
+    min-width: 0;
+    min-height: 36px !important;
+    padding: 0 12px !important;
+    font-size: 13px !important;
+  }
+}
+/* Gato con su globo en la esquina inferior derecha, encima del mapa */
+#app .vista-mapa-completo .mapa3d__gato {
+  position: absolute !important;
+  right: var(--margen-lado) !important;
+  bottom: var(--margen-abajo) !important;
+  left: auto !important;
+  top: auto !important;
+  z-index: 20;
+  width: min(300px, 38vw) !important;
+  height: auto !important;
+  margin: 0 !important;
+  transform: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end;
+  pointer-events: none;
+}
+#app .vista-mapa-completo .mapa3d__gato .gato-guia {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  gap: 4px !important;
+  width: 100% !important;
+  height: auto !important;
+}
+#app .vista-mapa-completo .mapa3d__gato .gato-guia__globo {
+  order: -1 !important;
+  position: static !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  transform: none !important;
+  pointer-events: auto;
+}
+#app .vista-mapa-completo .mapa3d__gato :is(.gato-guia__imagen, .gato3d):not(#gato-mapa) {
+  flex: 0 0 auto !important;
+  width: min(170px, 22vw) !important;
+  height: auto !important;
+  max-height: none !important;
+  aspect-ratio: 240 / 300;
+  transform: none !important;
+  margin: 0 8px 0 0 !important;
+}
+@media (max-width: 600px) {
+  #app .vista-mapa-completo .mapa3d__gato {
+    width: min(220px, 58vw) !important;
+  }
+  #app .vista-mapa-completo .mapa3d__gato :is(.gato-guia__imagen, .gato3d):not(#gato-mapa) {
+    width: 96px !important;
+  }
+  #app .vista-mapa-completo .mapa3d__gato .gato-guia__globo p {
+    font-size: 12px !important;
+  }
+}
+/* Leyenda abajo a la izquierda (el gato también explica los colores) */
+#app .vista-mapa-completo .mapa3d__leyenda {
+  position: absolute !important;
+  left: var(--margen-lado) !important;
+  bottom: var(--margen-abajo) !important;
+  top: auto !important;
+  right: auto !important;
+  z-index: 20;
+  margin: 0 !important;
+}
+/* Lista de centros debajo del mapa, con los mismos márgenes */
+#app .vista-mapa-completo > :not(.mapa-pantalla):not(h1) {
+  margin-left: var(--margen-lado) !important;
+  margin-right: var(--margen-lado) !important;
+}
+#app .vista-mapa-completo > .mapa3d__ubicacion-estado:empty {
+  display: none;
+}
+#app .vista-mapa-completo > :is(.mapa3d__ubicacion-estado, .mapa3d__titulo-lista) {
+  margin-top: var(--margen-abajo) !important;
+}
+#app .vista-mapa-completo > :last-child {
+  margin-bottom: var(--margen-abajo) !important;
+}
+
+/* Mapa: el gato con alto explícito (otra regla anulaba la proporción) y
+   las zonas sin elegir como pastillas crema 3D. */
+#app .vista-mapa-completo .mapa3d__gato :is(.gato-guia__imagen, .gato3d):not(#gato-mapa) {
+  height: calc(min(170px, 22vw) * 1.25) !important;
+}
+@media (max-width: 600px) {
+  #app .vista-mapa-completo .mapa3d__gato :is(.gato-guia__imagen, .gato3d):not(#gato-mapa) {
+    height: 120px !important;
+  }
+}
+#app .vista-mapa-completo .mapa3d__zonas .chip-zona:not([aria-pressed="true"]):not(.chip-zona--urgente) {
+  background: var(--brillo-arriba), var(--relleno-marfil) !important;
+  color: #8A3B12 !important;
+}
+#app .vista-mapa-completo .mapa3d__zonas .chip-zona {
+  box-shadow: var(--relieve-claro), 0 4px 10px rgba(1, 30, 65, 0.14), 0 1px 2px rgba(1, 30, 65, 0.1) !important;
+}
+
+/* Márgenes iguales en todas las pantallas: la vista usa todo el ancho
+   (menos el margen) y el encabezado con los botones de navegación queda
+   siempre arriba, al mismo margen; el contenido se centra en lo que sobra. */
+#app > .vista:not(.vista-3d):not(.portada):not(.vista-mapa-completo) {
+  max-width: none !important;
+  width: 100% !important;
+  justify-content: flex-start !important;
+}
+#app > .vista.vista-columnas > .mapa-envoltura,
+#app > .vista.vista-columnas > .pantalla-panel {
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+#app > .vista :is(.mapa3d__encabezado, .pantalla-entrada > .encabezado) {
+  margin-top: 0 !important;
+}
+
+/* Elige tu perfil: las tarjetas muestran capturas de la app (primer plano
+   del mapa para el donador; mesas con cajas para el admin). */
+.tarjeta-ilustracion--foto {
+  overflow: hidden;
+  padding: 0 !important;
+  background: none !important;
+}
+.tarjeta-ilustracion--foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Elegir perfil, login y registro: "Volver" en la esquina de arriba a la
+   izquierda (mismo lugar que en el mapa y la ficha), en la fila de los
+   logos; el logo de la Cruz Roja se corre a su derecha. */
+#app > .vista.pantalla-entrada:not(.portada) {
+  position: relative;
+}
+#app > .vista.pantalla-entrada > .boton-atras.boton-nav {
+  position: absolute !important;
+  top: var(--margen-arriba) !important;
+  left: var(--margen-lado) !important;
+  z-index: 5;
+}
+#app > .vista.pantalla-entrada > .encabezado-logos {
+  min-height: var(--tam-nav);
+  margin-top: 0 !important;
+  padding-left: calc(var(--tam-nav) + 16px) !important;
+  align-items: center;
+}
+/* Tarjetas de perfil más grandes, con la captura protagonista */
+.perfiles .tarjeta-ilustracion--foto {
+  height: clamp(150px, 30vh, 300px) !important;
+}
+/* Elegir perfil: el contenido se centra en el alto que queda libre */
+#app > .vista.pantalla-entrada > .perfiles {
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+
+/* Portada: el lienzo de la isla baja más que la escena para que se vea
+   la punta completa (ver inicio3d.js, ajustar()). */
+.vista.portada .portada__isla {
+  inset: 0 0 auto 0 !important;
+  height: 145% !important;
+  pointer-events: none;
+}
+
+/* --- Admin: paneles a todo el espacio disponible --- */
+/* Estado del centro (zoom de la estantería): el panel ocupa toda la
+   pantalla menos el margen, y su contenido llena el alto. */
+#app .vista-admin .zoom-capa__panel {
+  position: fixed !important;
+  inset: var(--margen-arriba) var(--margen-lado) var(--margen-abajo) !important;
+  width: auto !important;
+  max-width: none !important;
+  height: auto !important;
+  max-height: none !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column;
+  overflow: auto;
+}
+#app .vista-admin .zoom-capa__panel > .pasos-insumo {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+#app .vista-admin .pasos-insumo > .mueble {
+  flex: 1 1 auto;
+  display: flex;
+  min-height: 0;
+}
+#app .vista-admin .pasos-insumo > .mueble > .mueble__cuerpo {
+  flex: 1 1 auto;
+}
+/* Paso y botón "Siguiente" en una barra: el paso a la izquierda y los
+   botones en la esquina superior derecha */
+.pasos-insumo__barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 12px;
+  padding: 0 !important;
+  background: none !important;
+}
+.pasos-insumo__barra .pasos-insumo__indicador {
+  margin: 0 !important;
+}
+#app .pasos-insumo__barra .pasos-insumo__botones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: 0 0 0 auto !important;
+  padding: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  position: static !important;
+}
+/* Qué significa cada estado: una línea de texto clara (sin el gato) */
+.pasos-insumo__significado {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 0 0 16px !important;
+  padding: 0 !important;
+  list-style: none;
+  font-size: 14px;
+  color: #12406E;
+}
+.pasos-insumo__significado li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.pasos-insumo__significado .punto-estado {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.punto-estado--urgente { background: #CC0100; }
+.punto-estado--desabastecido { background: #F4C66E; }
+.punto-estado--medio { background: #86B5A9; }
+.punto-estado--abastecido { background: #426D8C; }
+.pasos-insumo__explicacion {
+  margin: 0 0 16px !important;
+  font-size: 14px;
+  color: #12406E;
+}
+.pasos-insumo .admin-acciones__aviso:empty {
+  display: none;
+}
+
+/* Registrar donación y despacho: el formulario usa todo el ancho */
+#app .vista-admin :is(.vista-formulario-admin, .formulario-admin, .admin-formulario, form) {
+  max-width: none !important;
+}
+#app > .vista.vista-admin:not(.vista-3d) > :not(.barra-inicio) {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* El panel de estado empieza debajo de la fila de navegación (no tapa el
+   botón del menú) y "Siguiente" / "Guardar" van en su esquina superior
+   derecha. */
+#app .vista-admin .zoom-capa__panel {
+  top: calc(var(--margen-arriba) + var(--tam-nav) + 12px) !important;
+}
+#app .vista-admin .zoom-capa__panel .pasos-insumo__barra {
+  position: static;
+}
+#app .vista-admin .zoom-capa__panel .pasos-insumo__botones {
+  position: absolute !important;
+  top: 24px;
+  right: 24px;
+  z-index: 3;
+}
+@media (max-width: 600px) {
+  #app .vista-admin .zoom-capa__panel .pasos-insumo__botones {
+    top: 16px;
+    right: 16px;
+  }
+}
+#app .vista-admin .zoom-capa__panel .pasos-insumo__botones {
+  bottom: auto !important;
+  left: auto !important;
+  height: auto !important;
+}
+#app .vista-admin .zoom-capa__panel .pasos-insumo__botones {
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  width: auto !important;
+}
+
+/* Estanterías 3D (donante y admin): el encabezado va de borde a borde con
+   el mismo margen, así "Volver" queda en la misma esquina que en las
+   demás pantallas. */
+#app .vista-3d .escena3d__arriba {
+  padding-left: var(--margen-lado) !important;
+  padding-right: var(--margen-lado) !important;
+}
+#app .vista-3d .escena3d__arriba > * {
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* "Pantalla principal" / "Menú" suelto al comienzo de la vista: siempre en
+   la esquina superior derecha, a la altura del "Volver". */
+#app > .vista:not(.vista-3d) {
+  position: relative;
+}
+#app > .vista:not(.vista-admin) > .barra-inicio {
+  position: absolute !important;
+  top: var(--margen-arriba) !important;
+  right: var(--margen-lado) !important;
+  margin: 0 !important;
+  z-index: 30;
+}
+
+/* Mapa en celular: zonas más compactas */
+@media (max-width: 600px) {
+  #app .vista-mapa-completo .mapa3d__zonas .chip-zona:not(#zona) {
+    min-width: 0 !important;
+    min-height: 34px !important;
+    height: 34px !important;
+    padding: 0 10px !important;
+    gap: 6px !important;
+    font-size: 13px !important;
+  }
+  #app .vista-mapa-completo .mapa3d__zonas {
+    gap: 6px !important;
+  }
+}
+@media (max-width: 600px) {
+  .perfiles .tarjeta-ilustracion--foto {
+    height: 150px !important;
+  }
+}
