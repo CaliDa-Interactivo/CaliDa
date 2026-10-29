@@ -64,7 +64,7 @@ export function render() {
     html: `
       <section class="vista pantalla-entrada vista-registro">
         ${renderEncabezado()}
-        <a class="enlace-volver" href="#/admin/login">← Volver</a>
+        <a class="boton-atras enlace-volver" href="#/admin/login">← Volver</a>
 
         <div class="login-admin">
           <div class="tarjeta-entrada registro-tarjeta">

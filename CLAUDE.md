@@ -282,3 +282,13 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   con huella PBKDF2 y sal propia (`registrar()` en `js/auth.js`); no se repiten correos.
   Versión actual de módulos y CSS: `?v=20261029b` (registro.js importa `store.js?v=` por
   `crearCentro`; store.js no guarda estado en memoria, así que dos copias no molestan).
+
+## Ajustes de oct 2026 (13) — todos los botones en 3D
+- **Regla:** todo botón lleva la misma luz y sombra mate (`--brillo-arriba` + `--relleno-*` +
+  `--relieve(-claro)` + sombra `0 5px 12px rgba(1,30,65,.14), 0 1px 2px rgba(1,30,65,.1)`).
+  Los "← Volver" usan la clase **`boton-atras`** junto a `enlace-volver` (login y registro no la
+  tenían). "Saltar" de la intro: pastilla crema 3D con texto #011E41. Zonas del registro:
+  crema 3D; la elegida con el relleno principal del rol.
+- La intro mide el alto de la ventana (`#app .intro { height: 100dvh }`): la animación de
+  entrada de la vista la estiraba al alto de la página y "Saltar" quedaba fuera de la pantalla.
+  Versión actual: `?v=20261029c`.

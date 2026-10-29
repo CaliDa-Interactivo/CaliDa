@@ -4450,3 +4450,49 @@ body .escena3d .escena3d__ayuda.escena3d__ayuda--arriba:not(#ayuda) {
     font-size: 0.9rem;
   }
 }
+
+/* ============================================================
+   Todos los botones con la misma luz y sombra 3D (mate): "Saltar"
+   de la intro y las zonas del registro, como los demás botones.
+   ============================================================ */
+#app .intro__saltar {
+  background: var(--brillo-arriba), var(--relleno-marfil);
+  color: #011E41;
+  box-shadow: var(--relieve-claro), 0 5px 12px rgba(1, 30, 65, 0.14), 0 1px 2px rgba(1, 30, 65, 0.1);
+}
+
+#app .intro__saltar:hover {
+  filter: brightness(1.03);
+}
+
+#app .intro__saltar:active {
+  transform: translateY(1px);
+  box-shadow: var(--relieve-claro), 0 2px 5px rgba(1, 30, 65, 0.14);
+}
+
+#app .intro__saltar:focus-visible {
+  outline-color: #011E41;
+}
+
+.registro-zona span {
+  background: var(--brillo-arriba), var(--relleno-marfil);
+  box-shadow: var(--relieve-claro), 0 4px 10px rgba(1, 30, 65, 0.12), 0 1px 2px rgba(1, 30, 65, 0.1);
+}
+
+.registro-zona input:checked + span {
+  background: var(--brillo-arriba), var(--relleno-rojo);
+  color: #FFF6E6;
+  box-shadow: var(--relieve), 0 4px 10px rgba(1, 30, 65, 0.14), 0 1px 2px rgba(1, 30, 65, 0.1);
+}
+
+.registro-zona input[aria-invalid="true"] + span {
+  box-shadow: var(--relieve-claro), inset 0 0 0 2px var(--rojo-profundo), 0 4px 10px rgba(1, 30, 65, 0.12);
+}
+
+/* La intro mide lo mismo que la ventana (la animación de entrada de la
+   vista la hacía tan alta como la página y "Saltar" quedaba fuera). */
+#app .intro {
+  bottom: auto;
+  height: 100vh;
+  height: 100dvh;
+}

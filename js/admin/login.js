@@ -34,7 +34,7 @@ export function render() {
     html: `
       <section class="vista pantalla-entrada">
         ${renderEncabezado()}
-        <a class="enlace-volver" href="#/entrar">← Volver</a>
+        <a class="boton-atras enlace-volver" href="#/entrar">← Volver</a>
 
         <div class="login-admin">
           <div class="login-dividido">
