@@ -5,7 +5,6 @@
 // ============================================================
 
 import { logout } from '../store.js';
-import { MINIATURAS } from '../cache-miniaturas.js';
 import { conSesion, renderEncabezado } from './comun.js';
 import { renderGato } from '../gato.js';
 
@@ -33,10 +32,13 @@ const OPCIONES = [
   },
 ];
 
-// Si la "foto" 3D ya está hecha se usa; si no, el emoji mientras carga.
+// Íconos 3D mates guardados como imágenes (assets/iconos): se ven siempre,
+// sin tener que dibujarlos en 3D al abrir el menú. El de insumos es la caja
+// con la cruz roja del archivo del equipo (cajas.glb).
+const VERSION_ICONOS = '20261030d';
+export const ICONO_MENU = (clave) => `assets/iconos/menu-${clave}.png?v=${VERSION_ICONOS}`;
 function icono(o) {
-  const foto = MINIATURAS.get(`menu-${o.clave}`);
-  return foto ? `<img src="${foto}" alt="" width="72" height="72" />` : o.icono;
+  return `<img src="${ICONO_MENU(o.clave)}" alt="" width="256" height="256" />`;
 }
 
 export const render = conSesion((_params, centro) => ({
@@ -75,18 +77,5 @@ export const render = conSesion((_params, centro) => ({
       location.hash = '#/entrar';
     });
 
-    // Íconos 3D (si three.js no carga, se quedan los emojis).
-    import('../miniaturas3d.js')
-      .then(({ generarIconoMenu }) =>
-        Promise.all(
-          OPCIONES.map((o) =>
-            generarIconoMenu(o.clave).then((foto) => {
-              const el = contenedor.querySelector(`[data-icono-menu="${o.clave}"]`);
-              if (foto && el) el.innerHTML = `<img src="${foto}" alt="" width="72" height="72" />`;
-            })
-          )
-        )
-      )
-      .catch(() => {});
   },
 }));

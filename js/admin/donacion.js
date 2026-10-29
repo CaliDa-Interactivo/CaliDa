@@ -10,7 +10,7 @@
 import { registrarDonacion, getCentroAdminActual, getPrerregistrosVigentes } from '../store.js';
 import { obtenerSubcategoria, obtenerCategoriaPorSubcategoria } from '../data.js';
 import { activarZoomEstanteria, renderCapaZoom, renderCabeceraZoom } from '../zoom-estanteria.js';
-import { renderEscena3D, montarVistaEstanteria3D } from '../estanteria-vista.js?v=20261030c';
+import { renderEscena3D, montarVistaEstanteria3D } from '../estanteria-vista.js?v=20261030d';
 import { ilustracion, productoPrincipal, iconoProducto } from '../ilustraciones.js';
 import {
   conSesion,

@@ -5460,3 +5460,106 @@ html[data-rol="inicio"] #app .boton-nav { color: #011E41 !important; }
     --margen-mapa: 16px;
   }
 }
+
+/* Elige tu perfil (oct 2026, 19): sin logos; más aire entre la pregunta y
+   las tarjetas; el gato con los pies a la altura de la línea de abajo de
+   los botones (las tarjetas tienen 22 px de relleno abajo). */
+.vista-perfiles .perfiles {
+  align-items: end !important;
+}
+.vista-perfiles .perfiles h1 {
+  margin-bottom: 56px !important;
+}
+@media (min-width: 900px) {
+  .vista-perfiles .perfiles > .mascota {
+    align-self: end !important;
+    margin-bottom: 22px !important;
+  }
+}
+#app > .vista.vista-perfiles > .perfiles {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+/* La imagen del admin se apoya abajo: el borde de la mesa queda en el
+   borde de abajo de la foto. */
+.tarjeta-ilustracion--admin.tarjeta-ilustracion--foto img {
+  object-position: center bottom;
+}
+/* Mapa: zonas y gato con más margen al borde (el mismo a cada lado) */
+:root {
+  --margen-mapa: 104px;
+}
+@media (max-width: 600px) {
+  :root {
+    --margen-mapa: 16px;
+  }
+}
+
+/* Ficha y pre-registro (oct 2026, 19): la ruta "Producto › Centro" va
+   centrada en la pantalla, a la misma altura que el botón de volver, con
+   espacio a los lados (como en el mapa). */
+#app .vista-columnas .mapa3d__encabezado {
+  position: relative;
+  min-height: var(--tam-nav);
+  align-items: center !important;
+}
+#app .vista-columnas .mapa3d__encabezado .mapa__indicador {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  max-width: calc(100% - 4 * var(--tam-nav) - 96px);
+  text-align: center;
+  font-size: 22px !important;
+}
+#app .vista-columnas .mapa3d__encabezado .barra-inicio {
+  margin-left: auto !important;
+}
+/* Pre-registro: "Hacer pre-registro" con el mismo espacio arriba (hasta
+   el cuadro) y abajo (hasta el borde). */
+#app > .vista.vista-prerregistro {
+  padding-bottom: 0 !important;
+}
+#app > .vista.vista-prerregistro > .mapa-envoltura {
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
+}
+#app > .vista.vista-prerregistro > .mapa3d__barra {
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+@media (max-width: 600px) {
+  #app .vista-columnas .mapa3d__encabezado .mapa__indicador {
+    font-size: 15px !important;
+  }
+}
+
+/* Menú del admin (oct 2026, 19): los íconos llenan su recuadro; el gato
+   queda a la misma distancia del borde derecho que los botones del
+   izquierdo (las dos columnas, del mismo ancho, con el mismo margen). */
+.vista-menu-admin .menu-admin__opcion .menu-admin__icono img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+}
+.vista-funcion-despacho .formulario__icono img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+@media (min-width: 901px) {
+  .vista-menu-admin .menu-admin__gato {
+    justify-content: flex-end !important;
+  }
+}
+/* Los botones de solo ícono siempre redondos (no se encogen en la fila) */
+#app .pasos-insumo__botones .boton-icono:not(#x) {
+  flex: 0 0 var(--tam-nav) !important;
+  width: var(--tam-nav) !important;
+  min-width: var(--tam-nav) !important;
+  height: var(--tam-nav) !important;
+  min-height: var(--tam-nav) !important;
+  aspect-ratio: 1;
+  padding: 0 !important;
+}

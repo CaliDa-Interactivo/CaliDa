@@ -4,7 +4,7 @@
 //   #/entrar  Pantalla 2 · Elige tu perfil
 // ============================================================
 
-import { renderEncabezado, LOGO_CRUZ_ROJA } from './encabezado.js';
+import { LOGO_CRUZ_ROJA } from './encabezado.js';
 import { renderMascota, decir } from './mascota.js';
 import { isLoggedIn } from './store.js';
 import { montarGatos } from './gatos.js';
@@ -189,8 +189,8 @@ export function renderEntrar() {
 
   return {
     html: `
-      <section class="vista pantalla-entrada">
-        ${renderEncabezado()}
+      <section class="vista pantalla-entrada vista-perfiles">
+        <!-- Sin logos en esta pantalla (oct 2026) -->
         <a class="boton-atras enlace-volver" href="#/">← Volver</a>
 
         <div class="perfiles">
@@ -199,7 +199,7 @@ export function renderEntrar() {
             <div class="perfiles__tarjetas">
               <article class="tarjeta-entrada tarjeta-entrada--hover tarjeta-entrada--donador" data-perfil="donador">
                 <div class="tarjeta-ilustracion tarjeta-ilustracion--foto" aria-hidden="true">
-                  <img src="assets/entrar/donador.jpg?v=20261030c" alt="" width="1300" height="500" loading="eager" />
+                  <img src="assets/entrar/donador.jpg?v=20261030d" alt="" width="1300" height="620" loading="eager" />
                 </div>
                 <h2>Quiero ayudar</h2>
                 <p>Mira qué necesita cada centro de acopio, en qué zona está y cómo llegar. No necesitas registrarte.</p>
@@ -210,7 +210,7 @@ export function renderEntrar() {
 
               <article class="tarjeta-entrada tarjeta-entrada--hover" data-perfil="admin">
                 <div class="tarjeta-ilustracion tarjeta-ilustracion--admin tarjeta-ilustracion--foto" aria-hidden="true">
-                  <img src="assets/entrar/admin.jpg?v=20261030c" alt="" width="1300" height="500" loading="eager" />
+                  <img src="assets/entrar/admin.jpg?v=20261030d" alt="" width="1300" height="620" loading="eager" />
                 </div>
                 <h2>Administro un centro</h2>
                 <p>Actualiza lo que necesita tu centro y registra donaciones y despachos.</p>

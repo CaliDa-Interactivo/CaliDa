@@ -174,16 +174,28 @@ const ICONOS_MENU = {
   },
 };
 
+// Ícono de "Gestionar insumos": la caja cerrada con la cruz roja del
+// archivo del equipo (cajas.blend → cajas.glb, "Caja_Base").
+async function cajaDelEquipo() {
+  const { scene } = await cargarGLB(new GLTFLoader(), 'assets/modelos/cajas.glb');
+  const caja = scene.getObjectByName('Caja_Base').clone(true);
+  caja.position.set(0, 0, 0);
+  const g = new THREE.Group();
+  g.add(caja);
+  g.rotation.set(0.32, -0.55, 0);
+  return g;
+}
+
 /** "Foto" de un ícono del menú del administrador ('insumos', 'donacion', 'despacho'). */
 export function generarIconoMenu(clave) {
   const id = `menu-${clave}`;
   if (MINIATURAS.has(id)) return Promise.resolve(MINIATURAS.get(id));
   if (pendientes.has(id)) return pendientes.get(id);
   const tarea = Promise.resolve()
-    .then(() => {
+    .then(async () => {
       motor ??= crearMotor();
       const raiz = new THREE.Group();
-      raiz.add(ICONOS_MENU[clave]());
+      raiz.add(clave === 'insumos' ? await cajaDelEquipo().catch(() => ICONOS_MENU.insumos()) : ICONOS_MENU[clave]());
       return fotografiar(id, raiz);
     })
     .catch((e) => {

@@ -39,8 +39,8 @@ export function render({ centroId, subcategoriaId }) {
     html: `
       <section class="vista vista-prerregistro vista-columnas">
         <header class="mapa3d__encabezado">
-          <!-- "Volver" lleva a la estantería completa, con todas las categorías -->
-          <a class="boton-atras" href="#/donante/estanteria">← Volver</a>
+          <!-- "Volver" regresa al mapa de esa subcategoría (oct 2026) -->
+          <a class="boton-atras" href="#/donante/mapa/${subcategoriaId}">← Volver</a>
           <p class="mapa__indicador">${subcategoria.nombre} › ${centro.nombre}</p>
           ${renderBotonInicio()}
         </header>

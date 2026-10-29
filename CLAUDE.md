@@ -416,3 +416,22 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   cordillera completa (Cali y los cerros se ven mucho más grandes; solo entra el tramo del río
   junto a la ciudad y los tres lugares); gato y zonas a `--margen-mapa` 72 px del borde.
 - Versión actual: `?v=20261030c`.
+
+## Ajustes de oct 2026 (19)
+- **Elige tu perfil:** sin logos; 56 px entre la pregunta y las tarjetas; el gato con los pies a
+  la altura de la línea de abajo de los botones; el bloque centrado en el alto.
+- **Imágenes de las tarjetas** (1300 × 620, proporción de la tarjeta): donador sin casas cortadas;
+  admin con la cámara derecha y baja, el borde de la mesa en el borde de abajo de la foto
+  (`object-position: bottom`), la camisa y el analgésico sobre la mesa (no encima de las cajas).
+- **Estantería:** el mueble y el gato más hacia el centro (`margen` 1,14 en `encuadreGeneral`,
+  `FRACCION_LADO` 0,33); mismo margen a cada lado.
+- **Mapa:** zonas y gato a `--margen-mapa` 104 px del borde (el mismo a los dos lados).
+- **Pre-registro:** "Volver" regresa al mapa de la subcategoría; la ruta "Producto › Centro"
+  centrada en la pantalla y a la altura del botón de volver (también en la ficha); "Hacer
+  pre-registro" con el mismo espacio arriba (hasta el cuadro) y abajo (hasta el borde).
+- **Admin:** íconos del menú y del "Despacho de la semana" como imágenes fijas
+  (`assets/iconos/menu-*.png`, generadas con `generarIconoMenu`; la de insumos usa `Caja_Base`
+  de `cajas.glb`), llenan su recuadro; el gato del menú queda al mismo margen del borde derecho
+  que los botones del izquierdo. "Volver a las cantidades" siempre redondo.
+- Servidor local de pruebas: `.claude/servidor.mjs` (Node, sin caché; el de Python cortaba
+  `tema.css`). Versión actual: `?v=20261030d`.

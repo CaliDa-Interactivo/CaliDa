@@ -9,7 +9,6 @@
 import { registrarDespacho, getCentroAdminActual } from '../store.js';
 import { generarCorreosDespacho } from '../email.js';
 import { MUNICIPIOS_VALLE } from '../data.js';
-import { MINIATURAS } from '../cache-miniaturas.js';
 import {
   conSesion,
   renderEncabezado,
@@ -30,9 +29,7 @@ export const render = conSesion((_params, centro) => {
         ${renderEncabezado({ atras: '#/admin/menu', titulo: 'Registro salida de donaciones', centro })}
         <form class="tarjeta formulario" novalidate>
           <p class="formulario__categoria">
-            <span class="formulario__icono" data-icono-despacho aria-hidden="true">${
-              MINIATURAS.get('menu-despacho') ? `<img src="${MINIATURAS.get('menu-despacho')}" alt="" width="88" height="88" />` : '🚚'
-            }</span>
+            <span class="formulario__icono" aria-hidden="true"><img src="assets/iconos/menu-despacho.png?v=20261030d" alt="" width="88" height="88" /></span>
             Despacho de la semana
           </p>
 
@@ -65,13 +62,7 @@ export const render = conSesion((_params, centro) => {
     `,
     init(contenedor) {
       // Camión 3D (el mismo ícono del menú)
-      import('../miniaturas3d.js')
-        .then(({ generarIconoMenu }) => generarIconoMenu('despacho'))
-        .then((foto) => {
-          const el = contenedor.querySelector('[data-icono-despacho]');
-          if (foto && el) el.innerHTML = `<img src="${foto}" alt="" width="88" height="88" />`;
-        })
-        .catch(() => {});
+      // (el camión es una imagen fija: assets/iconos/menu-despacho.png)
 
       const form = contenedor.querySelector('form');
       const { fecha, placa, destino } = form;

@@ -403,7 +403,8 @@ export function montarEstanteria3D(o) {
     // El mueble mide ~6.15 × 5.43: casi sin margen, para que se vea grande.
     // Sin margen: el mueble llena el espacio libre de la pantalla.
     // Un poco más lejos y más abajo: se ve entera la placa de Construcción.
-    return encuadrar(CENTRO_MUEBLE.clone().add(new THREE.Vector3(0, -0.15, 0)), 6.5, 6.0, { margen: 1.04, elevacion: 0 });
+    // (margen 1,14: el mueble y el gato quedan más hacia el centro)
+    return encuadrar(CENTRO_MUEBLE.clone().add(new THREE.Vector3(0, -0.15, 0)), 6.5, 6.0, { margen: 1.14, elevacion: 0 });
   }
 
   // De cerca: la cámara queda fija mostrando todo el compartimiento,

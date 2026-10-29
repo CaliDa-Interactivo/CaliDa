@@ -13,7 +13,7 @@ import { CATEGORIAS, coincideBusqueda } from './data.js';
 // compartimiento…" debajo de la pregunta (donante); no se repite abajo.
 export const TEXTO_AYUDA_ESTANTERIA = 'Toca un compartimiento para ver sus productos';
 // Parte del ancho que se deja a la derecha para el gato (vista general).
-const FRACCION_LADO = 0.36;
+const FRACCION_LADO = 0.33;
 
 // `lado`: HTML que va a la derecha del mueble (p. ej. el gato que pregunta);
 // el 3D corre el mueble a la izquierda para dejarle ese espacio.
@@ -49,7 +49,7 @@ export function montarVistaEstanteria3D(contenedor, opciones) {
     opciones.alFallar?.();
   };
 
-  import('./estanteria3d.js?v=20261030c')
+  import('./estanteria3d.js?v=20261030d')
     .then(({ montarEstanteria3D }) => {
       if (destruido) return;
       api = montarEstanteria3D({
