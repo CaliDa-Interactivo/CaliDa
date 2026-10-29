@@ -383,7 +383,7 @@ export function montarMapa3D(opciones) {
     const curva = new THREE.CatmullRomCurve3(centro, false, 'centripetal');
     for (let i = 0; i <= 24; i++) {
       const p = curva.getPointAt(i / 24);
-      if (Math.abs(p.z) < 10) puntosRio.push({ x: p.x, z: p.z, y: 0 });
+      if (Math.abs(p.z) < 7.5) puntosRio.push({ x: p.x, z: p.z, y: 0 }); // solo el tramo junto a la ciudad
     }
     const anchoEn = (u) => 0.85 + 0.15 * Math.sin(u * Math.PI * 5 + 0.7); // varía despacio
     const cinta = (ancho, y, color, { desde = 0, hasta = 1 } = {}) => {
@@ -1152,12 +1152,9 @@ export function montarMapa3D(opciones) {
         noTocable(cerros);
         escena.add(cerros);
         cerros.updateMatrixWorld(true);
-        // Toda la cordillera entra en el encuadre de "Toda Cali": el mapa
-        // completo (cerros, ciudad y río) queda centrado.
-        const cajaCerros = new THREE.Box3().setFromObject(cerros);
-        for (const x of [cajaCerros.min.x, cajaCerros.max.x]) {
-          for (const z of [cajaCerros.min.z, cajaCerros.max.z]) puntosLugares.push({ x, z, y: 0 });
-        }
+        // (La cordillera completa ya no entra en el encuadre: así Cali y
+        // los cerros se ven mucho más grandes; los cerros siguen hacia el
+        // occidente por fuera de la pantalla.)
 
         // Cada lugar, sobre el cerro (o sobre una lomita si cae en plano).
         for (const [id, grupo] of Object.entries(lugares)) {

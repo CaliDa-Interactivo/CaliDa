@@ -111,7 +111,7 @@ export function renderBienvenida() {
           gato.setAttribute('data-gato3d', '');
           montarGatos(contenedor.querySelector('.portada__escena'));
         }
-        import('./inicio3d.js?v=20261030a')
+        import('./inicio3d.js?v=20261030c')
           .then(({ montarIsla }) => {
             if (!salir) liberarIsla = montarIsla(contenedor.querySelector('.portada__isla'));
           })
@@ -199,7 +199,7 @@ export function renderEntrar() {
             <div class="perfiles__tarjetas">
               <article class="tarjeta-entrada tarjeta-entrada--hover tarjeta-entrada--donador" data-perfil="donador">
                 <div class="tarjeta-ilustracion tarjeta-ilustracion--foto" aria-hidden="true">
-                  <img src="assets/entrar/donador.jpg" alt="" width="1300" height="500" loading="eager" />
+                  <img src="assets/entrar/donador.jpg?v=20261030c" alt="" width="1300" height="500" loading="eager" />
                 </div>
                 <h2>Quiero ayudar</h2>
                 <p>Mira qué necesita cada centro de acopio, en qué zona está y cómo llegar. No necesitas registrarte.</p>
@@ -210,7 +210,7 @@ export function renderEntrar() {
 
               <article class="tarjeta-entrada tarjeta-entrada--hover" data-perfil="admin">
                 <div class="tarjeta-ilustracion tarjeta-ilustracion--admin tarjeta-ilustracion--foto" aria-hidden="true">
-                  <img src="assets/entrar/admin.jpg?v=20261030b" alt="" width="1300" height="500" loading="eager" />
+                  <img src="assets/entrar/admin.jpg?v=20261030c" alt="" width="1300" height="500" loading="eager" />
                 </div>
                 <h2>Administro un centro</h2>
                 <p>Actualiza lo que necesita tu centro y registra donaciones y despachos.</p>

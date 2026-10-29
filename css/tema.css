@@ -5428,3 +5428,35 @@ html[data-rol="inicio"] #app .boton-nav { color: #011E41 !important; }
   right: var(--margen-mapa) !important;
   bottom: var(--margen-mapa) !important;
 }
+
+/* Portada: los logos y "Siguiente" quedan a la misma distancia del borde
+   izquierdo que la plataforma del gato del borde derecho (--margen-isla lo
+   mide inicio3d.js). */
+@media (min-width: 761px) {
+  .vista.portada .portada__texto {
+    /* el bloque tiene zoom 1,25: el margen también se escala */
+    margin-left: calc((var(--margen-isla, 24px) - var(--margen-lado)) / 1.25) !important;
+    transition: margin-left 300ms ease;
+  }
+}
+/* Estantería: el gato un poco más pequeño */
+@media (min-width: 761px) {
+  .escena3d__lado {
+    width: 24vw !important;
+    max-width: 380px;
+  }
+}
+
+/* Mapa (oct 2026, 18): sin el aviso de la ubicación encima del mensaje del
+   pie; el gato y las zonas un poco más hacia el centro. */
+.vista-mapa-completo .mapa3d__pie .mapa3d__ubicacion-estado {
+  display: none !important;
+}
+:root {
+  --margen-mapa: 72px;
+}
+@media (max-width: 600px) {
+  :root {
+    --margen-mapa: 16px;
+  }
+}

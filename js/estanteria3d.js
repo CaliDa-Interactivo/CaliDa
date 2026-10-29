@@ -69,7 +69,7 @@ const yTabla = (c) => (c.frente ? c.y0 / 2 : c.y0 - 0.108);
 
 const CENTRO_MUEBLE = new THREE.Vector3(0, 2.7, 0);
 // Caja del mueble completo (frente), para saber dónde queda en pantalla.
-const MUEBLE = { x0: -3.075, x1: 3.075, y0: 0, y1: 5.412, z: 0.856 };
+const MUEBLE = { x0: -3.075, x1: 3.075, y0: 0, y1: 5.412, yInteriorArriba: 5.079, z: 0.856 };
 
 // --- Utilidades -----------------------------------------------------------
 
@@ -311,16 +311,18 @@ export function montarEstanteria3D(o) {
   // Luz pareja (la de antes, oct 2026: con una sola luz frontal los
   // productos se veían oscuros): mucha luz ambiente y un sol suave, para
   // que los productos se vean del mismo material mate que el resto.
-  escena.add(new THREE.AmbientLight('#FFFFFF', 0.8));
-  escena.add(new THREE.HemisphereLight('#FFFFFF', '#F1E2CF', 1.2));
-  const sol = new THREE.DirectionalLight('#FFFFFF', 1.25);
+  // (oct 2026: un poco menos intensas que antes, sin cambiar sus
+  // proporciones, para que no se pierdan el color ni la textura.)
+  escena.add(new THREE.AmbientLight('#FFFFFF', 0.66));
+  escena.add(new THREE.HemisphereLight('#FFFFFF', '#F1E2CF', 1.0));
+  const sol = new THREE.DirectionalLight('#FFFFFF', 1.1);
   sol.position.set(-4, 9, 8);
   sol.castShadow = true;
   sol.shadow.mapSize.set(1024, 1024);
   Object.assign(sol.shadow.camera, { left: -6, right: 6, top: 7, bottom: -2, near: 1, far: 30 });
   sol.shadow.camera.updateProjectionMatrix();
   escena.add(sol);
-  const relleno = new THREE.DirectionalLight('#FFFFFF', 0.6);
+  const relleno = new THREE.DirectionalLight('#FFFFFF', 0.5);
   relleno.position.set(0, 2, 10);
   escena.add(relleno);
 
@@ -931,7 +933,9 @@ export function montarEstanteria3D(o) {
     if (!alMoverMueble || !mueblePuesto) return;
     const a = aPantalla(MUEBLE.x0, MUEBLE.y1, MUEBLE.z);
     const b = aPantalla(MUEBLE.x1, MUEBLE.y0, MUEBLE.z);
-    const rect = { left: a.x, top: a.y, right: b.x, bottom: b.y, ancho: lienzo.clientWidth, alto: lienzo.clientHeight };
+    // topInterior: borde interno de la tabla de arriba del mueble.
+    const topInterior = aPantalla(MUEBLE.x0, MUEBLE.yInteriorArriba, MUEBLE.z).y;
+    const rect = { left: a.x, top: a.y, topInterior, right: b.x, bottom: b.y, ancho: lienzo.clientWidth, alto: lienzo.clientHeight };
     const clave = [rect.left, rect.top, rect.right, rect.bottom, rect.ancho].map(Math.round).join(',');
     if (clave === ultimoRect) return;
     ultimoRect = clave;

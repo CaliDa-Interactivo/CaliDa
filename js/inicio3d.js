@@ -308,7 +308,33 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
     camara.setViewOffset(w, h, 0, 0, w, hLienzo);
     camara.updateProjectionMatrix();
     dibujar();
+    medirMargenIsla();
   };
+
+  // Distancia entre el borde derecho de la plataforma (el césped) y el borde
+  // derecho de la ventana: la portada la usa como margen izquierdo de los
+  // logos y del botón (--margen-isla), para que los dos lados queden iguales.
+  function medirMargenIsla() {
+    const portada = contenedor.closest('.portada');
+    if (!portada || vistaCamara) return;
+    mundo.updateMatrixWorld(true);
+    camara.updateMatrixWorld(true);
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width) return;
+    const p = new THREE.Vector3();
+    let maxX = -Infinity;
+    for (let i = 0; i < 96; i++) {
+      const a = (i / 96) * Math.PI * 2;
+      p.set(Math.cos(a) * 2.05, 0, Math.sin(a) * 2.05).applyMatrix4(mundo.matrixWorld).project(camara);
+      maxX = Math.max(maxX, rect.left + (p.x * 0.5 + 0.5) * rect.width);
+    }
+    const margen = Math.max(16, Math.round(document.documentElement.clientWidth - maxX));
+    portada.style.setProperty('--margen-isla', `${margen}px`);
+  }
+  window.addEventListener('resize', medirMargenIsla);
+  // La escena entra deslizándose: se vuelve a medir cuando termina.
+  const escenaPortada = contenedor.closest('.portada__escena');
+  escenaPortada?.addEventListener('animationend', medirMargenIsla);
   const observador = new ResizeObserver(ajustar);
   observador.observe(contenedor);
   ajustar();
@@ -319,6 +345,8 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
     cancelAnimationFrame(id);
     observador.disconnect();
     io.disconnect();
+    window.removeEventListener('resize', medirMargenIsla);
+    escenaPortada?.removeEventListener('animationend', medirMargenIsla);
     escena.traverse((n) => {
       if (n.isMesh) {
         n.geometry.dispose();

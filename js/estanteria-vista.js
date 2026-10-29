@@ -49,7 +49,7 @@ export function montarVistaEstanteria3D(contenedor, opciones) {
     opciones.alFallar?.();
   };
 
-  import('./estanteria3d.js?v=20261030b')
+  import('./estanteria3d.js?v=20261030c')
     .then(({ montarEstanteria3D }) => {
       if (destruido) return;
       api = montarEstanteria3D({
@@ -73,8 +73,10 @@ export function montarVistaEstanteria3D(contenedor, opciones) {
             lado?.style.removeProperty('right');
             return;
           }
-          lado.style.top = `${Math.round(rect.top)}px`;
-          lado.style.height = `${Math.round(rect.bottom - rect.top)}px`;
+          // El globo empieza a la altura del borde interno de arriba del
+          // mueble y el gato termina a la altura de su base.
+          lado.style.top = `${Math.round(rect.topInterior)}px`;
+          lado.style.height = `${Math.round(rect.bottom - rect.topInterior)}px`;
           lado.style.right = `${Math.max(16, Math.round(rect.left))}px`;
         },
         capaEtiquetas: escena.querySelector('.escena3d__etiquetas'),

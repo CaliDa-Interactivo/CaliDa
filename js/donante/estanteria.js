@@ -13,7 +13,7 @@
 import { CATEGORIAS } from '../data.js';
 import { ilustracion, productoPrincipal, iconoProducto } from '../ilustraciones.js';
 import { activarZoomEstanteria, renderCapaZoom, renderCabeceraZoom } from '../zoom-estanteria.js';
-import { renderEscena3D, montarVistaEstanteria3D, TEXTO_AYUDA_ESTANTERIA } from '../estanteria-vista.js?v=20261030b';
+import { renderEscena3D, montarVistaEstanteria3D, TEXTO_AYUDA_ESTANTERIA } from '../estanteria-vista.js?v=20261030c';
 import { renderGato } from '../gato.js';
 
 function renderRepisa(categoria) {

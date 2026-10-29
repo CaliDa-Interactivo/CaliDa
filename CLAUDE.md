@@ -400,3 +400,19 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   zonas y el gato; zonas y gato a `--margen-mapa` (44 px) del borde; deja libre el mensaje del pie.
   El río Cauca tiene meandros, playa de arena, orilla, reflejos, bancos de arena y arbolitos.
 - Versión actual: `?v=20261030b`.
+
+## Ajustes de oct 2026 (18)
+- **Portada:** logos y "Siguiente" a la misma distancia del borde izquierdo que la plataforma
+  del gato del borde derecho: `inicio3d.js` mide el borde del césped en pantalla
+  (`medirMargenIsla`, también al terminar la entrada y al cambiar el tamaño) y pone
+  `--margen-isla` en la portada; `.portada__texto` lo usa (dividido entre 1,25 por su `zoom`).
+- **Elige tu perfil:** composiciones nuevas en primer plano, hechas con los modelos del proyecto:
+  `donador.jpg` = las casas diseñadas (rojas y amarillas) con los cerros, las Tres Cruces y el
+  Cristo Rey detrás; `admin.jpg` = una mesa larga con las cajas y productos de la estantería.
+- **Estantería:** gato un poco más pequeño (24vw); su globo empieza a la altura del borde
+  interno de la tabla de arriba del mueble (`topInterior`, y = 5,079). Luces un poco menos
+  intensas (ambiente 0,66, hemisferio 1, sol 1,1, relleno 0,5) con las mismas proporciones.
+- **Mapa:** sin el aviso de ubicación encima del mensaje del pie; "Toda Cali" ya no encuadra la
+  cordillera completa (Cali y los cerros se ven mucho más grandes; solo entra el tramo del río
+  junto a la ciudad y los tres lugares); gato y zonas a `--margen-mapa` 72 px del borde.
+- Versión actual: `?v=20261030c`.
