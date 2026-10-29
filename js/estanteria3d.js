@@ -68,6 +68,8 @@ const frenteDe = (c) => c.frente ?? FRENTE_Z;
 const yTabla = (c) => (c.frente ? c.y0 / 2 : c.y0 - 0.108);
 
 const CENTRO_MUEBLE = new THREE.Vector3(0, 2.7, 0);
+// Caja del mueble completo (frente), para saber dónde queda en pantalla.
+const MUEBLE = { x0: -3.075, x1: 3.075, y0: 0, y1: 5.412, z: 0.856 };
 
 // --- Utilidades -----------------------------------------------------------
 
@@ -108,11 +110,13 @@ function texturaLuzFondo() {
   lienzo.width = lienzo.height = 256;
   const ctx = lienzo.getContext('2d');
   const grad = ctx.createRadialGradient(128, 128, 8, 128, 128, 128);
-  // Sutil y difusa: poca intensidad y un degradado largo.
-  grad.addColorStop(0, 'rgba(255, 238, 200, 0.32)');
-  grad.addColorStop(0.35, 'rgba(255, 226, 175, 0.22)');
-  grad.addColorStop(0.7, 'rgba(255, 214, 150, 0.08)');
-  grad.addColorStop(1, 'rgba(255, 205, 140, 0)');
+  // Muy difusa: poca intensidad y un degradado larguísimo (casi sin
+  // centro marcado), como una luz que se filtra desde el fondo.
+  grad.addColorStop(0, 'rgba(255, 238, 205, 0.2)');
+  grad.addColorStop(0.25, 'rgba(255, 232, 195, 0.17)');
+  grad.addColorStop(0.5, 'rgba(255, 224, 180, 0.11)');
+  grad.addColorStop(0.75, 'rgba(255, 216, 165, 0.05)');
+  grad.addColorStop(1, 'rgba(255, 210, 160, 0)');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 256, 256);
   texturaLuz = new THREE.CanvasTexture(lienzo);
@@ -284,11 +288,13 @@ export function montarEstanteria3D(o) {
     alCargar = () => {},
     margenSuperior = null, // () => px que tapa el encabezado flotante
     margenDerecho = null, // () => px que ocupa algo a la derecha (el gato)
+    alMoverMueble = null, // (rect en pantalla del mueble) => void
   } = o;
 
   const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const desechables = [];
   const registrar = (x) => (desechables.push(x), x);
+  let mueblePuesto = false; // ya cargó estanteria.glb
 
   // --- Escena ---
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -379,12 +385,12 @@ export function montarEstanteria3D(o) {
     const dAlto = alto / (1 - frac) / 2 / tan;
     const dAncho = ancho / (1 - fracDer) / 2 / (tan * camara.aspect);
     const d = Math.max(dAlto, dAncho) * margen;
-    // Sube el objetivo para que la caja quede centrada en el área libre, y
-    // lo corre a la derecha si algo ocupa ese lado (el mueble queda a la
-    // izquierda, centrado en lo que queda).
+    // Sube el objetivo para que la caja quede centrada en el área libre.
+    // Si algo ocupa la derecha (el gato), la cámara NO se corre (el mueble
+    // se vería de lado): se corre la imagen con setViewOffset (ver
+    // aplicarCorrimiento), así el mueble queda a la izquierda y de frente.
     const desplazamiento = 2 * d * tan * (frac / 2);
-    const corrimiento = 2 * d * tan * camara.aspect * (fracDer / 2);
-    const objetivo = centro.clone().add(new THREE.Vector3(corrimiento, desplazamiento, 0));
+    const objetivo = centro.clone().add(new THREE.Vector3(0, desplazamiento, 0));
     return {
       objetivo,
       posicion: objetivo.clone().add(new THREE.Vector3(0, elevacion, d)),
@@ -395,7 +401,7 @@ export function montarEstanteria3D(o) {
     // El mueble mide ~6.15 × 5.43: casi sin margen, para que se vea grande.
     // Sin margen: el mueble llena el espacio libre de la pantalla.
     // Un poco más lejos y más abajo: se ve entera la placa de Construcción.
-    return encuadrar(CENTRO_MUEBLE.clone().add(new THREE.Vector3(0, -0.15, 0)), 6.5, 6.0, { margen: 1.04, elevacion: 0.2 });
+    return encuadrar(CENTRO_MUEBLE.clone().add(new THREE.Vector3(0, -0.15, 0)), 6.5, 6.0, { margen: 1.04, elevacion: 0 });
   }
 
   // De cerca: la cámara queda fija mostrando todo el compartimiento,
@@ -403,7 +409,7 @@ export function montarEstanteria3D(o) {
   function encuadreCompartimiento(cat) {
     const c = COMPARTIMIENTOS[cat];
     const centro = new THREE.Vector3((c.x0 + c.x1) / 2, (c.y0 + c.y1) / 2 - 0.12, FRENTE_Z - 0.3);
-    return encuadrar(centro, (c.x1 - c.x0) * 1.06, (c.y1 - c.y0) * 1.45, { margen: 1.0, elevacion: 0.1 });
+    return encuadrar(centro, (c.x1 - c.x0) * 1.06, (c.y1 - c.y0) * 1.45, { margen: 1.0, elevacion: 0 });
   }
 
   let vuelo = null; // { objetivo, posicion, alTerminar }
@@ -443,7 +449,15 @@ export function montarEstanteria3D(o) {
     // Hover: una luz que se enciende desde el fondo del compartimiento
     // (en vez de pintar un plano encima).
     const luzFondo = new THREE.Mesh(
-      registrar(new THREE.PlaneGeometry((c.x1 - c.x0) * 0.98, (c.y1 - c.y0) * 0.98)),
+      // Más grande que el hueco: el borde del degradado queda detrás de la
+      // madera y la luz no tiene un límite marcado (pero sin salirse del
+      // mueble, o se vería el brillo por fuera).
+      registrar(
+        new THREE.PlaneGeometry(
+          Math.min((c.x1 - c.x0) * 1.25, 2 * Math.min((c.x0 + c.x1) / 2 - MUEBLE.x0, MUEBLE.x1 - (c.x0 + c.x1) / 2) - 0.1),
+          Math.min((c.y1 - c.y0) * 1.35, 2 * Math.min((c.y0 + c.y1) / 2 - MUEBLE.y0, MUEBLE.y1 - (c.y0 + c.y1) / 2) - 0.1)
+        )
+      ),
       registrar(
         new THREE.MeshBasicMaterial({
           map: texturaLuzFondo(),
@@ -610,6 +624,7 @@ export function montarEstanteria3D(o) {
       }
     });
     // (el modelo nuevo ya viene de frente: no se gira)
+    mueblePuesto = true;
     escena.add(mueble);
 
     // Sombra suave en el suelo, alrededor de la base del mueble (le da
@@ -811,6 +826,17 @@ export function montarEstanteria3D(o) {
   document.addEventListener('keydown', alTeclado);
 
   // --- Tamaño ---
+  // Corrimiento de la imagen hacia la izquierda (fracción del ancho), para
+  // dejar libre la derecha sin girar el mueble. Se anima con la cámara.
+  let corrimientoVista = 0;
+  function aplicarCorrimiento(objetivo, k) {
+    corrimientoVista += (objetivo - corrimientoVista) * k;
+    const { clientWidth: w, clientHeight: h } = lienzo;
+    if (!w || !h) return;
+    if (Math.abs(corrimientoVista) < 0.0005) camara.clearViewOffset();
+    else camara.setViewOffset(w, h, corrimientoVista * w, 0, w, h);
+  }
+
   function ajustar() {
     const { clientWidth: w, clientHeight: h } = lienzo;
     if (!w || !h) return;
@@ -887,8 +913,29 @@ export function montarEstanteria3D(o) {
     }
 
     controles.update();
+    // La imagen se corre a la izquierda solo en la vista general (en un
+    // compartimiento el gato se esconde y se usa todo el ancho).
+    const anchoLienzo = lienzo.clientWidth || 1;
+    const objetivoCorrimiento = abierta ? 0 : Math.min(0.5, (margenDerecho?.() ?? 0) / anchoLienzo) / 2;
+    aplicarCorrimiento(objetivoCorrimiento, reducido ? 1 : suavizar(8, dt));
+    camara.updateProjectionMatrix();
+    avisarRectMueble();
     actualizarEtiquetas();
     renderer.render(escena, camara);
+  }
+
+  // Dónde queda el mueble en la pantalla (para poner al gato del mismo alto
+  // y con el mismo margen al borde): solo avisa si cambió.
+  let ultimoRect = '';
+  function avisarRectMueble() {
+    if (!alMoverMueble || !mueblePuesto) return;
+    const a = aPantalla(MUEBLE.x0, MUEBLE.y1, MUEBLE.z);
+    const b = aPantalla(MUEBLE.x1, MUEBLE.y0, MUEBLE.z);
+    const rect = { left: a.x, top: a.y, right: b.x, bottom: b.y, ancho: lienzo.clientWidth, alto: lienzo.clientHeight };
+    const clave = [rect.left, rect.top, rect.right, rect.bottom, rect.ancho].map(Math.round).join(',');
+    if (clave === ultimoRect) return;
+    ultimoRect = clave;
+    alMoverMueble(rect);
   }
 
   // Encuadre inicial (y otra vez en el siguiente cuadro, cuando el

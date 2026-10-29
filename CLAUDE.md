@@ -384,3 +384,19 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   solo un ícono; Registrar donación y despacho miden justo el alto de la ventana (sin scroll); el
   panel de estado del centro tiene el mismo tamaño que esas tarjetas (arriba a 116 px del margen).
 - Versión actual: `?v=20261030a`.
+
+## Ajustes de oct 2026 (17)
+- Nubes de la intro suavizadas (subdivisión + sombreado suave al renderizarlas en Blender).
+- `assets/entrar/admin.jpg`: primer plano de la mesa con el tetero y, a la izquierda, la bolsa de
+  comida para animales (cámara `montarIsla(..., { camara: { posicion: [-0.32, 1.36, 1.3],
+  mira: [0.08, 0.84, -0.58], fov: 28 } })`).
+- **Estantería del donante, de frente:** la cámara está centrada y a la altura del mueble (sin
+  elevación); para dejar a la derecha el gato se corre la **imagen** (`setViewOffset`,
+  `aplicarCorrimiento`), no la cámara. `FRACCION_LADO` (0,36) en `estanteria-vista.js`. El 3D avisa
+  dónde queda el mueble (`alMoverMueble`) y el gato con su globo toma su mismo alto y el mismo
+  margen al borde derecho que el mueble al izquierdo. Al acercarse a un compartimiento el gato se
+  esconde y se usa todo el ancho. La luz del hover es muy difusa (degradado largo y suave).
+- **Mapa:** "Toda Cali" encuadra el mapa completo (cordillera, ciudad y río) centrado entre las
+  zonas y el gato; zonas y gato a `--margen-mapa` (44 px) del borde; deja libre el mensaje del pie.
+  El río Cauca tiene meandros, playa de arena, orilla, reflejos, bancos de arena y arbolitos.
+- Versión actual: `?v=20261030b`.

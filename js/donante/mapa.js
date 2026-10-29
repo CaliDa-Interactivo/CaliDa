@@ -310,7 +310,7 @@ export function render({ subcategoriaId }) {
       }
 
       // Carga diferida del mapa 3D.
-      import('../mapa3d.js?v=20261030a')
+      import('../mapa3d.js?v=20261030b')
         .then(({ montarMapa3D }) => {
           if (destruido) return;
           const necesidades = Object.fromEntries(
@@ -331,12 +331,15 @@ export function render({ subcategoriaId }) {
               const encabezado = contenedor.querySelector('.mapa3d__encabezado')?.getBoundingClientRect();
               const zonasNav = contenedor.querySelector('.mapa3d__zonas')?.getBoundingClientRect();
               const gato = gatoEl.getBoundingClientRect();
+              const pie = contenedor.querySelector('.mapa3d__pie')?.getBoundingClientRect();
               const angosta = r.width < 700;
               return {
                 arriba: encabezado ? encabezado.bottom - r.top + 12 : 0,
                 // En celular el gato se descuenta abajo (no al lado): si no,
                 // la ciudad queda muy angosta.
-                abajo: angosta && gato.height ? r.bottom - gato.top + 8 : 24,
+                abajo: angosta && gato.height
+                  ? r.bottom - gato.top + 8
+                  : pie?.height ? r.bottom - pie.top + 12 : 24, // deja libre el mensaje del pie
                 izquierda: zonasNav ? zonasNav.right - r.left + 12 : 0,
                 derecha: !angosta && gato.width ? r.right - gato.left + 8 : 12,
               };

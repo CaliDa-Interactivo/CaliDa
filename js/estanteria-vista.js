@@ -12,6 +12,8 @@ import { CATEGORIAS, coincideBusqueda } from './data.js';
 // `ayudaArriba`: el encabezado ya trae el mensaje "Toca un
 // compartimiento…" debajo de la pregunta (donante); no se repite abajo.
 export const TEXTO_AYUDA_ESTANTERIA = 'Toca un compartimiento para ver sus productos';
+// Parte del ancho que se deja a la derecha para el gato (vista general).
+const FRACCION_LADO = 0.36;
 
 // `lado`: HTML que va a la derecha del mueble (p. ej. el gato que pregunta);
 // el 3D corre el mueble a la izquierda para dejarle ese espacio.
@@ -47,16 +49,33 @@ export function montarVistaEstanteria3D(contenedor, opciones) {
     opciones.alFallar?.();
   };
 
-  import('./estanteria3d.js?v=20261030a')
+  import('./estanteria3d.js?v=20261030b')
     .then(({ montarEstanteria3D }) => {
       if (destruido) return;
       api = montarEstanteria3D({
         ...opciones,
         lienzo: escena.querySelector('.escena3d__lienzo'),
         margenSuperior: () => escena.querySelector('.escena3d__arriba')?.offsetHeight * 0.85 || 0,
+        // Con el gato al lado, el mueble se encuadra en el 64 % izquierdo de
+        // la pantalla (en celular el gato va arriba: no se reserva nada).
         margenDerecho: () => {
           const lado = escena.querySelector('.escena3d__lado');
-          return lado && lado.offsetWidth ? escena.getBoundingClientRect().right - lado.getBoundingClientRect().left : 0;
+          if (!lado || escena.dataset.cerca === 'si' || escena.clientWidth < 760) return 0;
+          return escena.clientWidth * FRACCION_LADO;
+        },
+        // El gato (con su globo) mide lo mismo que el mueble y queda al mismo
+        // margen del borde derecho que el mueble del izquierdo.
+        alMoverMueble: (rect) => {
+          const lado = escena.querySelector('.escena3d__lado');
+          if (!lado || rect.ancho < 760) {
+            lado?.style.removeProperty('top');
+            lado?.style.removeProperty('height');
+            lado?.style.removeProperty('right');
+            return;
+          }
+          lado.style.top = `${Math.round(rect.top)}px`;
+          lado.style.height = `${Math.round(rect.bottom - rect.top)}px`;
+          lado.style.right = `${Math.max(16, Math.round(rect.left))}px`;
         },
         capaEtiquetas: escena.querySelector('.escena3d__etiquetas'),
         alCambiarCategoria: (cat) => {

@@ -5370,3 +5370,61 @@ html[data-rol="inicio"] #app .boton-nav { color: #011E41 !important; }
 #app .vista-menu-admin .menu-admin__gato .gato-guia__globo:not(#globo) {
   padding: 16px 24px !important;
 }
+
+/* Estantería (oct 2026, 17): el gato y su globo miden lo mismo que el
+   mueble (estanteria-vista.js pone top, alto y margen derecho); al
+   acercarse a un compartimiento el gato se esconde. */
+@media (min-width: 761px) {
+  .escena3d__lado {
+    bottom: auto !important;
+    width: 27vw !important;
+    max-width: 420px;
+    justify-content: space-between !important;
+    transition: opacity 300ms ease, visibility 300ms;
+  }
+  .escena3d__lado .estanteria__gato,
+  .escena3d__lado .estanteria__gato .gato-guia {
+    height: 100%;
+  }
+  .estanteria__gato .gato-guia {
+    justify-content: space-between !important;
+  }
+  #app .estanteria__gato :is(.gato-guia__imagen, .gato3d):not(#gato-estanteria) {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+  }
+  .estanteria__gato .gato-guia__globo p {
+    padding: 6px 4px;
+  }
+  .estanteria__pregunta {
+    font-size: clamp(26px, 2.8vw, 40px) !important;
+  }
+  .estanteria__ayuda {
+    font-size: 15px !important;
+  }
+}
+.escena3d[data-cerca="si"] .escena3d__lado {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Mapa (oct 2026, 17): el gato y las zonas más despegados del borde, con
+   el mismo margen a cada lado (el mapa se centra entre ellos). */
+:root {
+  --margen-mapa: 44px;
+}
+@media (max-width: 600px) {
+  :root {
+    --margen-mapa: 16px;
+  }
+}
+#app .vista-mapa-completo .mapa3d__zonas {
+  left: var(--margen-mapa) !important;
+}
+#app .vista-mapa-completo .mapa3d__gato {
+  right: var(--margen-mapa) !important;
+  bottom: var(--margen-mapa) !important;
+}

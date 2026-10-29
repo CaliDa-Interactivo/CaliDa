@@ -336,8 +336,11 @@ export function montarMapa3D(opciones) {
   // --- Río Cauca -----------------------------------------------------------
   // Corre de sur a norte por el oriente de la ciudad (Navarro, Juanchito,
   // Paso del Comercio): baja desde Jamundí (suroccidente), bordea Cali por
-  // fuera de las zonas y sigue hacia Yumbo (noroccidente). Cinta azul mate
-  // con la orilla un poco más oscura.
+  // fuera de las zonas y sigue hacia Yumbo (noroccidente). Detalles, todo
+  // mate como el resto del mapa: meandros suaves, playa de arena en las
+  // orillas, agua con borde más oscuro, reflejos claros al centro, bancos
+  // de arena en las curvas y arbolitos en las orillas.
+  const puntosRio = []; // entran en el encuadre de "Toda Cali"
   {
     // x más al oriente de las zonas a la altura z (para no pisar la ciudad)
     const bordeOriente = (z) => {
@@ -360,36 +363,98 @@ export function montarMapa3D(opciones) {
     ].map(([lng, lat]) => {
       const p = proyectar([lng, lat]);
       const borde = bordeOriente(p.z);
-      return new THREE.Vector3(Number.isFinite(borde) ? Math.max(p.x, borde + 0.65) : p.x, 0, p.z);
+      return new THREE.Vector3(Number.isFinite(borde) ? Math.max(p.x, borde + 0.75) : p.x, 0, p.z);
     });
-    const curva = new THREE.CatmullRomCurve3(curso, false, 'centripetal');
-    const cinta = (ancho, y, color) => {
-      const n = 220;
+    const base = new THREE.CatmullRomCurve3(curso, false, 'centripetal');
+    // Meandros: una onda suave hacia los lados, sin acercarse a la ciudad.
+    const n = 320;
+    const centro = [];
+    for (let i = 0; i <= n; i++) {
+      const u = i / n;
+      const p = base.getPointAt(u);
+      const tg = base.getTangentAt(u);
+      const lado = new THREE.Vector3(-tg.z, 0, tg.x).normalize();
+      const onda = Math.sin(u * Math.PI * 9) * 0.22 + Math.sin(u * Math.PI * 23 + 1.3) * 0.06;
+      const q = p.clone().addScaledVector(lado, onda);
+      const borde = bordeOriente(q.z);
+      if (Number.isFinite(borde)) q.x = Math.max(q.x, borde + 0.55);
+      centro.push(q);
+    }
+    const curva = new THREE.CatmullRomCurve3(centro, false, 'centripetal');
+    for (let i = 0; i <= 24; i++) {
+      const p = curva.getPointAt(i / 24);
+      if (Math.abs(p.z) < 10) puntosRio.push({ x: p.x, z: p.z, y: 0 });
+    }
+    const anchoEn = (u) => 0.85 + 0.15 * Math.sin(u * Math.PI * 5 + 0.7); // varía despacio
+    const cinta = (ancho, y, color, { desde = 0, hasta = 1 } = {}) => {
+      const m = 260;
       const pos = [];
       const idx = [];
-      for (let i = 0; i <= n; i++) {
-        const u = i / n;
+      for (let i = 0; i <= m; i++) {
+        const u = desde + ((hasta - desde) * i) / m;
         const p = curva.getPointAt(u);
         const tg = curva.getTangentAt(u);
         const nx = -tg.z;
         const nz = tg.x;
         const l = Math.hypot(nx, nz) || 1;
-        // un poco más angosto en las puntas
-        const a = (ancho / 2) * (0.75 + 0.25 * Math.sin(Math.PI * Math.min(1, u * 1.2)));
+        // más angosto en las puntas y con ancho que cambia a lo largo
+        const a = (ancho / 2) * anchoEn(u) * (0.7 + 0.3 * Math.sin(Math.PI * Math.min(1, u * 1.15)));
         pos.push(p.x + (nx / l) * a, y, p.z + (nz / l) * a, p.x - (nx / l) * a, y, p.z - (nz / l) * a);
-        if (i < n) idx.push(2 * i, 2 * i + 2, 2 * i + 1, 2 * i + 1, 2 * i + 2, 2 * i + 3);
+        if (i < m) idx.push(2 * i, 2 * i + 2, 2 * i + 1, 2 * i + 1, 2 * i + 2, 2 * i + 3);
       }
       const geo = registrar(new THREE.BufferGeometry());
       geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
       geo.setIndex(idx);
       geo.computeVertexNormals();
-      const malla = new THREE.Mesh(geo, registrar(new THREE.MeshStandardMaterial({ color, roughness: 0.7, side: THREE.DoubleSide })));
+      const malla = new THREE.Mesh(geo, registrar(new THREE.MeshStandardMaterial({ color, roughness: 0.85, side: THREE.DoubleSide })));
       malla.receiveShadow = true;
       malla.raycast = () => {};
       escena.add(malla);
     };
-    cinta(0.62, 0.01, '#6FA6C2'); // orilla
-    cinta(0.42, 0.018, '#93C6DC'); // agua
+    cinta(0.98, 0.006, '#E4D3A8'); // playa de arena
+    cinta(0.66, 0.012, '#6FA6C2'); // orilla del agua
+    cinta(0.48, 0.018, '#93C6DC'); // agua
+    // reflejos claros, en tramos
+    for (const [d, h] of [[0.06, 0.13], [0.2, 0.27], [0.34, 0.4], [0.5, 0.57], [0.66, 0.72], [0.8, 0.87]]) {
+      cinta(0.09, 0.024, '#C4E3F0', { desde: d, hasta: h });
+    }
+
+    // Bancos de arena en algunas curvas (óvalos aplanados a un lado).
+    const matArena = registrar(new THREE.MeshStandardMaterial({ color: '#E8D8AE', roughness: 0.95 }));
+    const geoBanco = registrar(new THREE.SphereGeometry(1, 20, 8));
+    for (const u of [0.17, 0.43, 0.61, 0.78]) {
+      const p = curva.getPointAt(u);
+      const tg = curva.getTangentAt(u);
+      const lado = new THREE.Vector3(-tg.z, 0, tg.x).normalize();
+      const banco = new THREE.Mesh(geoBanco, matArena);
+      banco.scale.set(0.09, 0.012, 0.32);
+      banco.position.copy(p).addScaledVector(lado, 0.1 * (u > 0.5 ? 1 : -1)).setY(0.022);
+      banco.rotation.y = Math.atan2(tg.x, tg.z);
+      banco.raycast = () => {};
+      escena.add(banco);
+    }
+
+    // Arbolitos en las orillas (copas redondas, como los del cerro).
+    const matsArbol = ['#468550', '#5E9A56', '#7AA255'].map((c) => registrar(new THREE.MeshStandardMaterial({ color: c, roughness: 0.9 })));
+    const geoCopa = registrar(new THREE.SphereGeometry(1, 14, 10));
+    const aleatorioRio = crearAleatorio(20261030);
+    for (let i = 0; i < 26; i++) {
+      const u = 0.04 + (i / 26) * 0.92 + (aleatorioRio() - 0.5) * 0.02;
+      const p = curva.getPointAt(u);
+      const tg = curva.getTangentAt(u);
+      const lado = new THREE.Vector3(-tg.z, 0, tg.x).normalize();
+      const s = i % 2 ? 1 : -1;
+      const q = p.clone().addScaledVector(lado, s * (0.62 + aleatorioRio() * 0.25));
+      const borde = bordeOriente(q.z);
+      if (Number.isFinite(borde) && q.x < borde + 0.25) continue; // no sobre la ciudad
+      const r = 0.12 + aleatorioRio() * 0.08;
+      const copa = new THREE.Mesh(geoCopa, matsArbol[i % matsArbol.length]);
+      copa.scale.set(r, r * 0.85, r);
+      copa.position.set(q.x, r * 0.8, q.z);
+      copa.castShadow = true;
+      copa.raycast = () => {};
+      escena.add(copa);
+    }
   }
 
   // --- Geografía de Cali (escena_mapa.blend del equipo) -------------------
@@ -778,7 +843,7 @@ export function montarMapa3D(opciones) {
     if (!ancho || !alto) return null;
     // Toda Cali incluye las cimas de la torre, las cruces y el Cristo Rey
     // (en pantallas angostas solo la ciudad: si no, queda muy pequeña).
-    const conLugares = ancho >= alto ? puntosLugares : [];
+    const conLugares = ancho >= alto ? [...puntosLugares, ...puntosRio] : [];
     const puntos = zona && zonas.has(zona)
       ? zonas.get(zona).puntos
       : [...[...zonas.values()].flatMap((z) => z.puntos), ...conLugares];
@@ -1087,6 +1152,12 @@ export function montarMapa3D(opciones) {
         noTocable(cerros);
         escena.add(cerros);
         cerros.updateMatrixWorld(true);
+        // Toda la cordillera entra en el encuadre de "Toda Cali": el mapa
+        // completo (cerros, ciudad y río) queda centrado.
+        const cajaCerros = new THREE.Box3().setFromObject(cerros);
+        for (const x of [cajaCerros.min.x, cajaCerros.max.x]) {
+          for (const z of [cajaCerros.min.z, cajaCerros.max.z]) puntosLugares.push({ x, z, y: 0 });
+        }
 
         // Cada lugar, sobre el cerro (o sobre una lomita si cae en plano).
         for (const [id, grupo] of Object.entries(lugares)) {
