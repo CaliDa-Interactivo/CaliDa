@@ -16,11 +16,11 @@ import { cargarMiniaturas } from './ilustraciones.js';
 import * as inicio from './inicio.js?v=20261028c';
 import * as estanteriaDonante from './donante/estanteria.js';
 import * as mapaDonante from './donante/mapa.js?v=20261028c';
-import * as fichaDonante from './donante/ficha.js?v=20261028c';
+import * as fichaDonante from './donante/ficha.js?v=20261029b';
 import * as prerregistroDonante from './donante/prerregistro.js?v=20261028c';
-import * as llegarDonante from './donante/llegar.js';
-import * as loginAdmin from './admin/login.js?v=20261029a';
-import * as registroAdmin from './admin/registro.js?v=20261029a';
+import * as llegarDonante from './donante/llegar.js?v=20261029b';
+import * as loginAdmin from './admin/login.js?v=20261029b';
+import * as registroAdmin from './admin/registro.js?v=20261029b';
 import * as bienvenidaAdmin from './admin/bienvenida.js';
 import * as menuAdmin from './admin/menu.js?v=20261028c';
 import * as insumosAdmin from './admin/insumos.js';
@@ -235,9 +235,9 @@ contenedor.addEventListener('click', (evento) => {
 
   const elementoComoLlegar = evento.target.closest('[data-como-llegar]');
   if (elementoComoLlegar) {
-    const [lat, lng] = elementoComoLlegar.dataset.comoLlegar.split(',');
+    // Destino: "lat,lng" o la dirección del centro ya codificada.
     window.open(
-      `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
+      `https://www.google.com/maps/dir/?api=1&destination=${elementoComoLlegar.dataset.comoLlegar}`,
       '_blank',
       'noopener'
     );

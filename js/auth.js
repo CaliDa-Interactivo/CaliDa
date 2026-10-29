@@ -47,6 +47,7 @@ const CUENTAS_PRUEBA = [
 ];
 
 const ITERACIONES = 100000;
+export const LARGO_MINIMO_CONTRASENA = 8;
 
 // Cuentas creadas con "Regístrate" (solo en este navegador).
 const CLAVE_CUENTAS = 'calida_cuentas_v1';
@@ -118,16 +119,20 @@ export async function login(correo, contrasena) {
 
 /**
  * Crea una cuenta de administrador ligada a un centro y abre su sesión.
- * @returns {Promise<{ok: boolean, motivo?: 'existe'}>}
+ * crearCentro() se llama solo si el correo está libre y devuelve el id
+ * del centro nuevo.
+ * @returns {Promise<{ok: boolean, motivo?: 'existe'|'corta', centroId?: string}>}
  */
-export async function registrar({ nombre, correo, centroId, contrasena }) {
+export async function registrar({ nombre, correo, contrasena, crearCentro }) {
   const correoNormal = normalizarCorreo(correo);
   if (todasLasCuentas().some((c) => c.correo === correoNormal)) {
     return { ok: false, motivo: 'existe' };
   }
+  if (contrasena.length < LARGO_MINIMO_CONTRASENA) return { ok: false, motivo: 'corta' };
 
   const sal = bytesABase64(crypto.getRandomValues(new Uint8Array(16)));
   const huella = await huellaDe(contrasena, sal);
+  const centroId = crearCentro();
   const cuentas = leerCuentasRegistradas();
   cuentas.push({ nombre: nombre.trim(), correo: correoNormal, centroId, sal, huella });
   localStorage.setItem(CLAVE_CUENTAS, JSON.stringify(cuentas));

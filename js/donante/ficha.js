@@ -130,6 +130,7 @@ export function render({ centroId, subcategoriaId }) {
             </div>
             <h1 class="ficha__nombre">${centro.nombre}</h1>
             <ul class="ficha-centro__chips">
+              ${centro.direccion ? `<li><strong>Dirección</strong> ${centro.direccion}</li>` : ''}
               <li><strong>Zona</strong> ${centro.zona}</li>
               <li><strong>Horario</strong> ${centro.horario}</li>
               <li><strong>Teléfono</strong> ${centro.telefono}</li>

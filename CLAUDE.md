@@ -269,8 +269,16 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 
 ## Ajustes de oct 2026 (12) — registro del administrador
 - En el login, debajo de "¿Olvidaste tu contraseña?", va "¿No tienes cuenta? **Regístrate**" →
-  `#/admin/registro` (`js/admin/registro.js`): nombre, correo, centro de acopio (lista de
-  centros), contraseña (mín. 8) y confirmación. Al crear la cuenta abre la sesión de ese centro.
+  `#/admin/registro` (`js/admin/registro.js`). El registro **crea un centro nuevo** con los datos
+  que ve el donante (el equipo no quiere lista desplegable para el centro):
+  - Tus datos: nombre completo y correo.
+  - Tu centro: nombre (escrito), dirección, zona (pastillas Norte…Sur), horario (abre / cierra),
+    teléfono (10 o 7 dígitos) y ubicación opcional ("Usar mi ubicación actual", solo si está en
+    Cali; si no, punto de la zona y "Cómo llegar" usa la dirección: `ubicacionExacta: false`).
+  - Contraseña: **mínimo 8 caracteres** (contador "Faltan N caracteres") y confirmación.
+- `crearCentro()` en `js/store.js` (insumos en 3 = Provisionado; aparece en el mapa cuando el
+  líder marca algo en 0–2). La ficha y "Todo listo" muestran la **Dirección** si el centro la tiene.
 - Las cuentas nuevas se guardan en `localStorage` (`calida_cuentas_v1`, solo en ese navegador)
-  con huella PBKDF2 y sal propia (`registrar()` en `js/auth.js`); no se repiten correos (tampoco
-  los de prueba). Versión actual de módulos y CSS: `?v=20261029a`.
+  con huella PBKDF2 y sal propia (`registrar()` en `js/auth.js`); no se repiten correos.
+  Versión actual de módulos y CSS: `?v=20261029b` (registro.js importa `store.js?v=` por
+  `crearCentro`; store.js no guarda estado en memoria, así que dos copias no molestan).

@@ -4306,3 +4306,147 @@ body .escena3d .escena3d__ayuda.escena3d__ayuda--arriba:not(#ayuda) {
 .vista-registro .login-admin form {
   gap: 0.75rem;
 }
+
+/* Registro: el formulario crea el centro (datos del mapa y la ficha).
+   Tarjeta ancha con los grupos en dos columnas en computador. */
+.vista-registro .login-admin .registro-tarjeta {
+  max-width: 860px;
+}
+
+.vista-registro .registro-tarjeta form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 900px) {
+  .vista-registro .registro-tarjeta form {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+  .vista-registro .registro-grupo:nth-of-type(2) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .vista-registro .registro-tarjeta form > .alerta-entrada,
+  .vista-registro .registro-tarjeta form > [type="submit"] {
+    grid-column: 1 / -1;
+  }
+}
+
+.registro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 1rem;
+  border: none;
+  border-radius: 20px;
+  background: #E3F0F9;
+  min-width: 0;
+}
+
+.registro-grupo legend {
+  float: left;
+  width: 100%;
+  margin-bottom: 0.25rem;
+  padding: 0;
+  font-weight: 900;
+  font-size: 18px;
+  color: #12406E;
+}
+
+.campo-entrada__titulo {
+  color: var(--azul-cruz-roja);
+  font-weight: 700;
+}
+
+.registro-fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.registro-zonas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.registro-zona {
+  position: relative;
+  cursor: pointer;
+}
+
+.registro-zona input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  cursor: pointer;
+}
+
+.registro-zona span {
+  display: inline-block;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  background: #FFFFFF;
+  color: #12406E;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: inset 0 -2px 0 rgba(18, 64, 110, 0.12);
+}
+
+.registro-zona input:checked + span {
+  background: #1F5490;
+  color: #FFF6E6;
+}
+
+.registro-zona input:focus-visible + span {
+  outline: 3px solid #1F5490;
+  outline-offset: 2px;
+}
+
+.registro-zona input[aria-invalid="true"] + span {
+  box-shadow: inset 0 0 0 2px var(--rojo-profundo);
+}
+
+.vista-registro .registro-ubicacion {
+  min-height: 44px;
+  border: none;
+  border-radius: 999px;
+  background: #FFF8EC;
+  color: #12406E;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.vista-registro .campo-entrada .campo__ayuda {
+  font-size: 12px;
+  color: #12406E !important;
+}
+
+.vista-registro .registro-contador--ok {
+  color: #1D6B3A !important;
+  font-weight: 700;
+}
+
+@media (min-width: 900px) {
+  /* El espacio sobrante va a la fila de la contraseña, no entre grupos. */
+  .vista-registro .registro-tarjeta form {
+    grid-template-rows: auto 1fr;
+  }
+}
+
+/* Horario en celular: las dos horas caben en su columna. */
+.registro-fila .campo-entrada,
+.registro-fila input {
+  min-width: 0;
+}
+
+@media (max-width: 480px) {
+  .registro-fila input[type="time"] {
+    padding-left: 0.6rem;
+    padding-right: 0.4rem;
+    font-size: 0.9rem;
+  }
+}

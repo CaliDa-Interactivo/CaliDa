@@ -87,6 +87,40 @@ export function getCentro(id) {
   return leerStore().centros.find((centro) => centro.id === id) ?? null;
 }
 
+// Centro nuevo creado por un líder al registrarse (admin/registro.js).
+// Empieza "Provisionado" (3) en todo: el líder actualiza sus insumos
+// después, y solo entonces aparece en el mapa lo que le falte.
+export function crearCentro({ nombre, direccion, zona, horario, telefono, lat, lng, ubicacionExacta }) {
+  const store = leerStore();
+  const limpiar = (texto) => String(texto).replace(/[<>]/g, '').trim();
+  const base = limpiar(nombre)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') || 'centro';
+  let id = `centro-${base}`;
+  for (let n = 2; store.centros.some((c) => c.id === id); n++) id = `centro-${base}-${n}`;
+
+  const centro = {
+    id,
+    nombre: limpiar(nombre),
+    direccion: limpiar(direccion),
+    zona,
+    foto: 'assets/icons/centro-placeholder.svg',
+    horario: limpiar(horario),
+    telefono: limpiar(telefono),
+    lat,
+    lng,
+    ubicacionExacta,
+    insumos: Object.fromEntries(SUBCATEGORIA_IDS.map((sub) => [sub, 3])),
+    necesidades: {},
+  };
+  store.centros.push(centro);
+  guardarStore(store);
+  return centro;
+}
+
 // Centros que necesitan la subcategoría (cantidad de 0 a 2):
 // lo que muestra el mapa del donante (D4).
 export function getCentrosPorSubcategoria(subcategoriaId) {

@@ -4,7 +4,7 @@
 // ============================================================
 
 import { isLoggedIn } from '../store.js';
-import { login } from '../auth.js?v=20261029a';
+import { login } from '../auth.js?v=20261029b';
 import { renderEncabezado } from '../encabezado.js';
 import { renderMascota, decir } from '../mascota.js';
 import { renderPaisaje } from '../paisaje.js';

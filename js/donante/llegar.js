@@ -33,6 +33,7 @@ export function render({ centroId, subcategoriaId }) {
         </div>
 
         <ul class="llegar__datos">
+          ${centro.direccion ? `<li><strong>Dirección:</strong> ${centro.direccion}</li>` : ''}
           <li><strong>Zona:</strong> ${centro.zona}</li>
           <li><strong>Horario:</strong> ${centro.horario}</li>
           <li><strong>Teléfono:</strong> ${centro.telefono}</li>
@@ -42,7 +43,9 @@ export function render({ centroId, subcategoriaId }) {
         ${renderGato('Te espero en el centro. ¡Buen viaje!')}
 
         <div class="llegar__acciones">
-          <button class="boton boton--grande" type="button" data-como-llegar="${centro.lat},${centro.lng}">
+          <button class="boton boton--grande" type="button" data-como-llegar="${centro.ubicacionExacta === false && centro.direccion
+            ? encodeURIComponent(`${centro.direccion}, Cali, Valle del Cauca`)
+            : `${centro.lat},${centro.lng}`}">
             📍 Cómo llegar
           </button>
           <button class="boton boton--secundario boton--grande" type="button" data-navegar="${mapa}">
