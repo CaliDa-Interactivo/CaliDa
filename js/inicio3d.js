@@ -1,80 +1,21 @@
 // ============================================================
 // inicio3d.js — escena 3D de la pantalla principal: una isla
-// flotante con dos mesas de madera y cajas de cartón llenas de
-// donaciones (los mismos modelos de la estantería). El gato 3D va
+// flotante con mesas de madera y las cajas de cartón del equipo
+// (cajas.glb) llenas de donaciones (los mismos modelos de la estantería). El gato 3D va
 // encima, en su propio lienzo (gato3d.js), parado al frente.
 // Material mate, como el resto de la página.
 // ============================================================
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { cargarGLB } from './cargar-glb.js';
+import { cargarGLB, RUTA_MODELOS } from './cargar-glb.js';
 import { MODELOS_SUBCATEGORIA } from './estanteria3d.js';
 import { ajustarModelo } from './ajustes-modelos.js';
 
 const mate = (color) => new THREE.MeshStandardMaterial({ color, roughness: 0.85, metalness: 0 });
 
-// Caja de cartón abierta (paredes, solapas y una franja de cinta).
-function cajaCarton(ancho, alto, fondo, { cruz = false } = {}) {
-  const g = new THREE.Group();
-  const carton = mate('#C98A55');
-  const interior = mate('#9C6A3E');
-  const grosor = 0.03;
-  const pared = (w, h, d, x, y, z) => {
-    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), carton);
-    m.position.set(x, y, z);
-    m.castShadow = true;
-    m.receiveShadow = true;
-    g.add(m);
-  };
-  pared(ancho, grosor, fondo, 0, grosor / 2, 0); // piso
-  pared(ancho, alto, grosor, 0, alto / 2, fondo / 2); // frente
-  pared(ancho, alto, grosor, 0, alto / 2, -fondo / 2); // atrás
-  pared(grosor, alto, fondo, ancho / 2, alto / 2, 0);
-  pared(grosor, alto, fondo, -ancho / 2, alto / 2, 0);
-  const fondoCaja = new THREE.Mesh(new THREE.BoxGeometry(ancho * 0.94, 0.01, fondo * 0.94), interior);
-  fondoCaja.position.y = grosor + 0.005;
-  g.add(fondoCaja);
-  // Solapas abiertas hacia los lados
-  for (const lado of [-1, 1]) {
-    const solapa = new THREE.Mesh(new THREE.BoxGeometry(ancho * 0.96, grosor, fondo * 0.42), mate('#D9A06B'));
-    solapa.position.set(0, alto + 0.02, lado * (fondo / 2 + fondo * 0.17));
-    solapa.rotation.x = lado * 0.45;
-    solapa.castShadow = true;
-    g.add(solapa);
-  }
-  if (cruz) {
-    const etiqueta = new THREE.Mesh(new THREE.BoxGeometry(ancho * 0.36, alto * 0.42, 0.01), mate('#FFF8ED'));
-    etiqueta.position.set(0, alto * 0.48, fondo / 2 + 0.02);
-    g.add(etiqueta);
-    for (const [w, h] of [[0.035, 0.11], [0.11, 0.035]]) {
-      const barra = new THREE.Mesh(new THREE.BoxGeometry(w * ancho * 2.4, h * ancho * 2.4, 0.012), mate('#CC0100'));
-      barra.position.set(0, alto * 0.48, fondo / 2 + 0.028);
-      g.add(barra);
-    }
-  }
-  return g;
-}
-
-// Caja cerrada con cinta (para apilar en el piso).
-function cajaCerrada(ancho, alto, fondo, cruz = false) {
-  const g = new THREE.Group();
-  const caja = new THREE.Mesh(new THREE.BoxGeometry(ancho, alto, fondo), mate('#C98A55'));
-  caja.position.y = alto / 2;
-  caja.castShadow = true;
-  caja.receiveShadow = true;
-  const cinta = new THREE.Mesh(new THREE.BoxGeometry(ancho * 0.22, 0.012, fondo * 1.01), mate('#E8E1D5'));
-  cinta.position.y = alto + 0.006;
-  g.add(caja, cinta);
-  if (cruz) {
-    for (const [w, h] of [[0.05, 0.16], [0.16, 0.05]]) {
-      const barra = new THREE.Mesh(new THREE.BoxGeometry(w * ancho * 2, h * ancho * 2, 0.012), mate('#CC0100'));
-      barra.position.set(0, alto / 2, fondo / 2 + 0.008);
-      g.add(barra);
-    }
-  }
-  return g;
-}
+// Cajas de cartón del equipo (cajas.blend → cajas.glb).
+const MODELO_CAJAS = `${RUTA_MODELOS}cajas.glb`;
 
 // Mesa de madera (color de la estantería) con cuatro patas.
 function mesa(ancho, fondo, alto) {
@@ -167,59 +108,99 @@ export function montarIsla(contenedor) {
   mesaC.rotation.y = -0.5;
   mundo.add(mesaA, mesaB, mesaC);
 
-  // Cajas abiertas sobre las mesas y cajas cerradas apiladas en el piso
-  const cajaA = cajaCarton(0.62, 0.32, 0.45, { cruz: true });
-  cajaA.position.set(0.05, 0.655, -0.72);
-  const cajaB = cajaCarton(0.5, 0.28, 0.4);
-  cajaB.position.set(0.68, 0.655, -0.78);
-  // La caja del papel va cerrada; el papel y el analgésico van encima.
-  const cajaC = cajaCerrada(0.55, 0.3, 0.42, true);
-  cajaC.position.set(1.15, 0.655, 0.45);
-  cajaC.rotation.y = -0.5;
-  mundo.add(cajaA, cajaB, cajaC);
-  const pila = [
-    cajaCerrada(0.5, 0.36, 0.45, true),
-    cajaCerrada(0.42, 0.3, 0.4),
-    cajaCerrada(0.46, 0.32, 0.42, true),
-  ];
-  pila[0].position.set(-1.25, 0, -0.55);
-  pila[1].position.set(-1.25, 0.36, -0.55);
-  pila[1].rotation.y = 0.35;
-  pila[2].position.set(-0.7, 0, -1.2);
-  pila[2].rotation.y = -0.2;
-  mundo.add(...pila);
-
   let id = 0;
   let destruido = false;
   const dibujar = () => {
     if (!destruido) renderer.render(escena, camara);
   };
 
-  // Donaciones: los modelos de la estantería, asomándose de las cajas y
-  // sueltas sobre las mesas. Cada uno se apoya en algo: el fondo de una
-  // caja (y ≈ 0.685), el tablero de una mesa (y = 0.655) o la tapa de una
-  // caja cerrada.
+  // Cajas del equipo (assets/modelos/cajas.glb, de cajas.blend): abiertas
+  // sobre la mesa de atrás, una cerrada con el papel y el tarro encima, la
+  // pila de dos cajas cerradas (tal como viene en el archivo) y una caja
+  // abierta en el piso. Cada una se escala al ancho de la caja que reemplaza
+  // y las donaciones se apoyan según su alto real.
   const SOBRE_MESA = 0.655;
-  const EN_CAJA = 0.685;
-  const SOBRE_CAJA_C = 0.655 + 0.3 + 0.012;
-  const SOBRE_PILA = 0.36 + 0.3 + 0.012;
   const cargador = new GLTFLoader();
-  const productos = [
-    ['alimento-agua', 0.42, [-0.08, EN_CAJA, -0.72]],
-    ['alimento-no-perecederos', 0.24, [0.17, EN_CAJA, -0.66]],
-    ['ropa-hombre', 0.34, [0.57, EN_CAJA, -0.8]],
-    ['ropa-mujer', 0.34, [0.8, EN_CAJA, -0.78]],
+  const productos = (alto) => [
+    ['alimento-agua', 0.42, [-0.08, alto.enCaja, -0.72]],
+    ['alimento-no-perecederos', 0.24, [0.17, alto.enCaja, -0.66]],
+    ['ropa-hombre', 0.34, [0.57, alto.enCaja, -0.8]],
+    ['ropa-mujer', 0.34, [0.8, alto.enCaja, -0.78]],
     // Tarro y papel lado a lado sobre la tapa de la caja C (girada -0,5),
     // sin meterse uno en el otro: el papel mide 0,35 de ancho y el tarro
     // 0,17; van a 0,09 y a -0,185 del centro de la caja, a lo largo.
-    ['medicamentos-analgesicos', 0.22, [0.988, SOBRE_CAJA_C, 0.361]],
-    ['aseo-corporal', 0.2, [1.229, SOBRE_CAJA_C, 0.493]],
+    ['medicamentos-analgesicos', 0.22, [0.988, alto.sobreCajaC, 0.361]],
+    ['aseo-corporal', 0.2, [1.229, alto.sobreCajaC, 0.493]],
     ['alimento-bebe', 0.3, [0.85, SOBRE_MESA, -0.47]],
     ['aseo-bucal', 0.3, [1.65, SOBRE_MESA, -0.3]],
     // La bolsa de comida para animales, encima de la pila de cajas cerradas.
-    ['alimento-animal', 0.3, [-1.25, SOBRE_PILA, -0.55]],
+    ['alimento-animal', 0.3, [-1.25, alto.sobrePila, -0.55]],
   ];
-  for (const [sub, alto, [x, y, z]] of productos) {
+
+  // Copia de una o varias cajas del archivo (con sus posiciones relativas),
+  // escalada a `ancho`, apoyada en y = 0 y centrada en x/z.
+  function cajaDelModelo(modelo, nombres, ancho) {
+    const grupo = new THREE.Group();
+    for (const nombre of nombres) {
+      const nodo = modelo.getObjectByName(nombre);
+      if (nodo) grupo.add(nodo.clone(true));
+    }
+    grupo.updateMatrixWorld(true);
+    const caja = new THREE.Box3().setFromObject(grupo);
+    const tam = caja.getSize(new THREE.Vector3());
+    const centro = caja.getCenter(new THREE.Vector3());
+    grupo.children.forEach((h) => h.position.sub(new THREE.Vector3(centro.x, caja.min.y, centro.z)));
+    const escala = ancho / Math.max(tam.x, tam.z);
+    const envoltura = new THREE.Group();
+    envoltura.add(grupo);
+    grupo.scale.setScalar(escala);
+    envoltura.traverse((n) => {
+      if (!n.isMesh) return;
+      n.castShadow = true;
+      n.receiveShadow = true;
+      (Array.isArray(n.material) ? n.material : [n.material]).forEach((m) => {
+        m.roughness = 0.85;
+        m.metalness = 0;
+      });
+    });
+    envoltura.userData.alto = tam.y * escala;
+    return envoltura;
+  }
+
+  const listasCajas = cargarGLB(cargador, MODELO_CAJAS).then(({ scene: modelo }) => {
+    if (destruido) return null;
+    modelo.updateMatrixWorld(true);
+    const cajaA = cajaDelModelo(modelo, ['Caja_Botiquin'], 0.62);
+    cajaA.position.set(0.05, SOBRE_MESA, -0.72);
+    const cajaB = cajaDelModelo(modelo, ['Caja_Derecha'], 0.5);
+    cajaB.position.set(0.68, SOBRE_MESA, -0.78);
+    // La caja del papel va cerrada (la caja con la cruz); el papel y el
+    // tarro van encima.
+    const cajaC = cajaDelModelo(modelo, ['Caja_Base'], 0.55);
+    cajaC.position.set(1.15, SOBRE_MESA, 0.45);
+    cajaC.rotation.y = -0.5;
+    const pila = cajaDelModelo(modelo, ['Caja_Base', 'Caja_Arriba'], 0.5);
+    pila.position.set(-1.25, 0, -0.55);
+    pila.rotation.y = 0.2;
+    const cajaPiso = cajaDelModelo(modelo, ['Caja_Frontal'], 0.46);
+    cajaPiso.position.set(-0.7, 0, -1.2);
+    cajaPiso.rotation.y = -0.2;
+    mundo.add(cajaA, cajaB, cajaC, pila, cajaPiso);
+    dibujar();
+    return {
+      // el fondo de una caja abierta (el cartón tiene ~2 cm de grosor)
+      enCaja: SOBRE_MESA + 0.02,
+      sobreCajaC: SOBRE_MESA + cajaC.userData.alto,
+      sobrePila: pila.userData.alto,
+    };
+  });
+
+  // Donaciones: los modelos de la estantería, asomándose de las cajas y
+  // sueltas sobre las mesas. Cada uno se apoya en algo: el fondo de una
+  // caja, el tablero de una mesa o la tapa de una caja cerrada.
+  listasCajas.then((alturas) => {
+    if (!alturas || destruido) return;
+    for (const [sub, alto, [x, y, z]] of productos(alturas)) {
     const ruta = MODELOS_SUBCATEGORIA[sub];
     if (!ruta) continue;
     cargarGLB(cargador, ruta)
@@ -251,7 +232,8 @@ export function montarIsla(contenedor) {
         dibujar();
       })
       .catch(() => {});
-  }
+    }
+  });
 
   // La isla ya no gira sola: el gato (otro lienzo) no gira con ella y
   // parecía resbalar sobre el césped en cada vaivén. Toda la escena flota

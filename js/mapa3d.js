@@ -14,7 +14,12 @@
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { cargarGLB, MODELO_CASA, estilizarCasa } from './cargar-glb.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { cargarGLB, MODELO_CASA, estilizarCasa, RUTA_MODELOS } from './cargar-glb.js';
+
+// Escena del equipo (escena_mapa.blend), exportada con compresión Draco.
+const MODELO_CERROS = `${RUTA_MODELOS}cali_montanas.glb`;
+const MODELO_TORRE = `${RUTA_MODELOS}torre_cali.glb`;
 
 // --- Paleta del mapa (derivada de la paleta CaliDa) -----------------
 
@@ -228,6 +233,7 @@ export function montarMapa3D(opciones) {
     alResaltarCentro = () => {},
   } = opciones;
 
+  let destruido = false;
   const desechables = []; // geometrías y materiales a liberar en destruir()
   const registrar = (obj) => (desechables.push(obj), obj);
 
@@ -247,8 +253,12 @@ export function montarMapa3D(opciones) {
   // hacia `vistaObjetivo` al elegir una zona.
   const camara = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 200);
   camara.up.set(0, 0, -1);
+  // 0 sería cenital puro; con 20° el mapa se sigue leyendo desde arriba,
+  // pero se notan los detalles de los lugares en 3D.
+  const INCLINACION = THREE.MathUtils.degToRad(20);
   const vista = { cx: 0, cz: 0, mitad: 10 };
   let vistaObjetivo = null;
+  const puntosLugares = []; // cimas de torre, cruces y Cristo Rey: entran en el encuadre
 
   escena.add(new THREE.HemisphereLight('#FFF6E8', '#C9B79C', 1.6));
   const sol = new THREE.DirectionalLight('#FFFFFF', 2.2);
@@ -257,7 +267,7 @@ export function montarMapa3D(opciones) {
   sol.shadow.mapSize.set(2048, 2048);
   sol.shadow.radius = 6;
   sol.shadow.bias = -0.0005;
-  Object.assign(sol.shadow.camera, { left: -12, right: 12, top: 12, bottom: -12, near: 1, far: 50 });
+  Object.assign(sol.shadow.camera, { left: -20, right: 20, top: 20, bottom: -20, near: 1, far: 60 });
   sol.shadow.camera.updateProjectionMatrix();
   escena.add(sol);
 
@@ -270,7 +280,9 @@ export function montarMapa3D(opciones) {
     camara.right = vista.mitad * aspecto;
     camara.top = vista.mitad;
     camara.bottom = -vista.mitad;
-    camara.position.set(vista.cx, 40, vista.cz);
+    // Casi cenital: inclinada INCLINACION desde el sur, para que se vean
+    // los costados de la torre, las cruces y el Cristo Rey (sin perspectiva).
+    camara.position.set(vista.cx, 40 * Math.cos(INCLINACION), vista.cz + 40 * Math.sin(INCLINACION));
     camara.lookAt(vista.cx, 0, vista.cz);
     camara.updateProjectionMatrix();
     camara.updateMatrixWorld(true);
@@ -317,64 +329,10 @@ export function montarMapa3D(opciones) {
   escena.add(planoSombra);
 
 
-  // Farallones: montañas al occidente.
-  const aleatorio = crearAleatorio(20261009);
-  // Pino estilizado: tronco y tres copas apiladas (como la ilustración de referencia).
-  const geoTroncoPino = registrar(new THREE.CylinderGeometry(0.05, 0.07, 0.22, 6));
-  const geosCopa = [0.34, 0.27, 0.19].map((r, i) => registrar(new THREE.ConeGeometry(r, 0.42 - i * 0.05, 8)));
-  const matsPino = COLORES.pino.map((c) => registrar(new THREE.MeshStandardMaterial({ color: c, roughness: 0.85 })));
-  const matTroncoPino = registrar(new THREE.MeshStandardMaterial({ color: '#8A6A4B', roughness: 0.9 }));
-
-  function crearPino(escala, variante) {
-    const pino = new THREE.Group();
-    const tronco = new THREE.Mesh(geoTroncoPino, matTroncoPino);
-    tronco.position.y = 0.11;
-    pino.add(tronco);
-    geosCopa.forEach((g, i) => {
-      const copa = new THREE.Mesh(g, matsPino[(variante + i) % matsPino.length]);
-      copa.position.y = 0.36 + i * 0.22;
-      copa.castShadow = true;
-      pino.add(copa);
-    });
-    pino.scale.setScalar(escala);
-    return pino;
-  }
-
-  // Colinas suaves por capas alrededor de la ciudad (sin pisar las zonas).
-  const matsColina = COLORES.colina.map((c) => registrar(new THREE.MeshStandardMaterial({ color: c, roughness: 0.95 })));
-  const geoColina = registrar(new THREE.SphereGeometry(1, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2));
-  const todasLasZonas = Object.values(ZONAS_PLANO);
-  const libre = (x, z, margen) =>
-    todasLasZonas.every((pts) => !puntoEnPoligono(x, z, pts) && distanciaAlBorde(x, z, pts) > margen);
-
-  let colinas = 0;
-  for (let intento = 0; intento < 700 && colinas < 12; intento++) {
-    // Más colinas al occidente (cordillera); algunas al oriente.
-    const occidente = aleatorio() < 0.75;
-    const x = occidente ? -7.4 + aleatorio() * 5.6 : 4.2 + aleatorio() * 2.5;
-    const z = -8.4 + aleatorio() * 16.8;
-    const radio = 0.7 + aleatorio() * 0.9;
-    if (Math.abs(x) > 7.6 || !libre(x, z, radio * 0.75)) continue;
-    const colina = new THREE.Mesh(geoColina, matsColina[colinas % matsColina.length]);
-    colina.scale.set(radio, radio * (occidente ? 0.75 + aleatorio() * 0.5 : 0.45), radio * (0.8 + aleatorio() * 0.4));
-    colina.position.set(x, -0.02, z);
-    colina.castShadow = true;
-    colina.receiveShadow = true;
-    escena.add(colina);
-    // Unos pinos sobre la colina.
-    const n = aleatorio() < 0.5 ? 0 : 1; // pocos pinos: más espacio
-    for (let k = 0; k < n; k++) {
-      const a = aleatorio() * Math.PI * 2;
-      const d = radio * (0.2 + aleatorio() * 0.45);
-      const px = x + Math.cos(a) * d;
-      const pz = z + Math.sin(a) * d;
-      const altura = colina.scale.y * Math.sqrt(Math.max(0, 1 - (d / radio) ** 2)) - 0.05;
-      const pino = crearPino(0.8 + aleatorio() * 0.6, k);
-      pino.position.set(px, altura, pz);
-      escena.add(pino);
-    }
-    colinas++;
-  }
+  // --- Geografía de Cali (escena_mapa.blend del equipo) -------------------
+  // Cordillera occidental (Farallones) con el Cristo Rey y las Tres Cruces
+  // sobre los cerros, y la Torre de Cali en el centro de la ciudad. Ver
+  // cargarGeografia() más abajo.
 
   // --- Zonas -------------------------------------------------------------
 
@@ -749,13 +707,21 @@ export function montarMapa3D(opciones) {
   function encuadreDe(zona) {
     const { clientWidth: ancho, clientHeight: alto } = lienzo;
     if (!ancho || !alto) return null;
+    // Toda Cali incluye las cimas de la torre, las cruces y el Cristo Rey
+    // (en pantallas angostas solo la ciudad: si no, queda muy pequeña).
+    const conLugares = ancho >= alto ? puntosLugares : [];
     const puntos = zona && zonas.has(zona)
       ? zonas.get(zona).puntos
-      : [...zonas.values()].flatMap((z) => z.puntos);
+      : [...[...zonas.values()].flatMap((z) => z.puntos), ...conLugares];
+    // Con la cámara inclinada, la altura de un punto lo sube en pantalla:
+    // "v" es la posición vertical en pantalla (hacia arriba) en unidades.
+    const cos = Math.cos(INCLINACION);
+    const sen = Math.sin(INCLINACION);
     let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
     for (const p of puntos) {
+      const v = -p.z * cos + (p.y ?? Y_SUPERFICIE) * sen;
       x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x);
-      z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z);
+      z0 = Math.min(z0, v); z1 = Math.max(z1, v);
     }
     const m = { arriba: 0, abajo: 0, izquierda: 0, derecha: 0, ...(opciones.margenes?.() ?? {}) };
     const libreAncho = Math.max(ancho - m.izquierda - m.derecha, ancho * 0.4);
@@ -766,9 +732,12 @@ export function montarMapa3D(opciones) {
     // El centro del espacio libre, en píxeles respecto al centro del lienzo.
     const dx = m.izquierda + libreAncho / 2 - ancho / 2;
     const dy = m.arriba + libreAlto / 2 - alto / 2;
+    // Respecto al centro de la cámara (cx, 0, cz), un punto se ve a
+    // v + cz·cos; se elige cz para que el centro de [z0, z1] quede en el
+    // centro del espacio libre (dy píxeles más abajo que el del lienzo).
     return {
       cx: (x0 + x1) / 2 - dx * s,
-      cz: (z0 + z1) / 2 - dy * s, // en pantalla, abajo es +z (sur)
+      cz: (-dy * s - (z0 + z1) / 2) / cos,
       mitad: (alto * s) / 2,
     };
   }
@@ -939,6 +908,9 @@ export function montarMapa3D(opciones) {
       }
     }
 
+    // La torre está sobre la zona Centro: sube y baja con ella.
+    if (torre) torre.position.y = Y_SUPERFICIE + (zonas.get('Centro')?.malla.position.y ?? 0);
+
     if (vistaObjetivo) {
       const kc = suavizar(4, dt);
       vista.cx += (vistaObjetivo.cx - vista.cx) * kc;
@@ -958,6 +930,140 @@ export function montarMapa3D(opciones) {
     renderer.render(escena, camara);
   }
 
+  // --- Geografía (escena_mapa.blend del equipo) -----------------------------
+  // cali_montanas.glb: cerros, arbustos y árboles (los Farallones), y sobre
+  // ellos el Cristo Rey (con su plaza) y las Tres Cruces. torre_cali.glb: la
+  // Torre de Cali. En el archivo los cerros están "de frente"; aquí van a lo
+  // largo del borde occidental de la ciudad (espejados para que las Tres
+  // Cruces queden al norte del Cristo Rey, como en Cali). Los tres lugares
+  // se sacan del bloque y se ponen donde quedan en la realidad.
+  const ESCALA_CERROS = 0.38;
+  const ESCALA_LUGARES = 0.62; // más grandes que los cerros: que se vean los detalles
+  const ESCALA_TORRE = 0.45;
+  const LUGARES = {
+    tresCruces: { partes: ['Cruz_Izq', 'Cruz_Centro', 'Cruz_Der'], en: proyectar([-76.5486, 3.4706]) },
+    // El Cristo Rey real cae dentro de Occidente (barrios de ladera): se
+    // pone a su misma latitud, sobre los cerros al borde de la zona.
+    cristoRey: {
+      partes: ['Plaza_Muro', 'Plaza_Piso', 'Plaza_Baranda', 'Jardinera_Borde', 'Jardinera_Pasto', 'Pedestal', 'Pedestal_Tapa', 'Cristo_Rey'],
+      en: { x: -6.3, z: proyectar([-76.5652, 3.4357]).z },
+    },
+  };
+  // Torre de Cali: centro, junto al río, un poco al norte de la Plazoleta
+  // Jairo Varela (para no taparle la casita).
+  const LUGAR_TORRE = { x: -0.55, z: -4.2 };
+  let torre = null;
+
+  function noTocable(objeto) {
+    objeto.traverse((n) => {
+      if (!n.isMesh) return;
+      n.raycast = () => {};
+      n.castShadow = true;
+      n.receiveShadow = true;
+      (Array.isArray(n.material) ? n.material : [n.material]).forEach((m) => {
+        m.roughness = 0.9;
+        m.metalness = 0;
+      });
+    });
+  }
+
+  // Agrupa partes sueltas en un grupo centrado en x/z y apoyado en y = 0.
+  function agruparPartes(raiz, nombres, escala) {
+    const grupo = new THREE.Group();
+    const partes = nombres.map((n) => raiz.getObjectByName(n)).filter(Boolean);
+    const caja = new THREE.Box3();
+    partes.forEach((p) => caja.expandByObject(p));
+    const centro = caja.getCenter(new THREE.Vector3());
+    partes.forEach((p) => {
+      p.removeFromParent();
+      p.position.sub(new THREE.Vector3(centro.x, caja.min.y, centro.z));
+      grupo.add(p);
+    });
+    grupo.scale.setScalar(escala);
+    return grupo;
+  }
+
+  const rayoSuelo = new THREE.Raycaster();
+  function alturaDelTerreno(cerros, x, z) {
+    rayoSuelo.set(new THREE.Vector3(x, 60, z), new THREE.Vector3(0, -1, 0));
+    const golpe = rayoSuelo.intersectObject(cerros, true)[0];
+    return golpe ? golpe.point.y : 0;
+  }
+
+  function cargarGeografia() {
+    const cargador = new GLTFLoader();
+    cargador.setDRACOLoader(
+      new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/gltf/')
+    );
+
+    cargarGLB(cargador, MODELO_CERROS)
+      .then(({ scene: modelo }) => {
+        if (destruido) return;
+        modelo.updateMatrixWorld(true);
+        const lugares = Object.fromEntries(
+          Object.entries(LUGARES).map(([id, l]) => [id, agruparPartes(modelo, l.partes, ESCALA_LUGARES)])
+        );
+        // Bloque de cerros: (x, y, z) del archivo → occidente de la ciudad.
+        // x del mapa = s·z + c (el frente de los cerros en x ≈ -5,5),
+        // z del mapa = s·x + cz (espejado), y = s·y.
+        const s = ESCALA_CERROS;
+        const cerros = new THREE.Group();
+        cerros.add(...modelo.children);
+        cerros.matrixAutoUpdate = false;
+        cerros.matrix.set(0, 0, s, -5.5 - 7 * s, 0, s, 0, -0.02, s, 0, 0, 0.5, 0, 0, 0, 1);
+        noTocable(cerros);
+        escena.add(cerros);
+        cerros.updateMatrixWorld(true);
+
+        // Cada lugar, sobre el cerro (o sobre una lomita si cae en plano).
+        for (const [id, grupo] of Object.entries(lugares)) {
+          const { x, z } = LUGARES[id].en;
+          let y = alturaDelTerreno(cerros, x, z);
+          if (y < 0.3) {
+            const lomita = new THREE.Mesh(
+              registrar(new THREE.SphereGeometry(1, 32, 12, 0, Math.PI * 2, 0, Math.PI / 2)),
+              registrar(new THREE.MeshStandardMaterial({ color: '#6B9A59', roughness: 0.95 }))
+            );
+            lomita.scale.set(1.1, 0.6, 0.9);
+            lomita.position.set(x, -0.02, z);
+            noTocable(lomita);
+            escena.add(lomita);
+            y = 0.55;
+          }
+          grupo.position.set(x, y - 0.04, z);
+          noTocable(grupo);
+          escena.add(grupo);
+          // Arbustos o árboles del bloque que caen encima del lugar: se quitan.
+          const radio = new THREE.Box3().setFromObject(grupo).getSize(new THREE.Vector3()).length() / 2 + 0.3;
+          const p = new THREE.Vector3();
+          cerros.children.forEach((n) => {
+            if (!/^(Arbusto|Arbol)/.test(n.name)) return;
+            n.getWorldPosition(p);
+            if (Math.hypot(p.x - x, p.z - z) < radio) n.visible = false;
+          });
+          const caja = new THREE.Box3().setFromObject(grupo);
+          puntosLugares.push({ x, z, y: caja.max.y });
+        }
+        enfocarCamara(zonaSeleccionada, { animar: false });
+      })
+      .catch((e) => console.warn('No se pudieron cargar los cerros de Cali:', e));
+
+    cargarGLB(cargador, MODELO_TORRE)
+      .then(({ scene: modelo }) => {
+        if (destruido) return;
+        modelo.updateMatrixWorld(true);
+        torre = agruparPartes(modelo, modelo.children.map((n) => n.name), ESCALA_TORRE);
+        torre.position.set(LUGAR_TORRE.x, Y_SUPERFICIE, LUGAR_TORRE.z);
+        noTocable(torre);
+        escena.add(torre);
+        const caja = new THREE.Box3().setFromObject(torre);
+        puntosLugares.push({ x: LUGAR_TORRE.x, z: LUGAR_TORRE.z, y: caja.max.y });
+        enfocarCamara(zonaSeleccionada, { animar: false });
+      })
+      .catch((e) => console.warn('No se pudo cargar la Torre de Cali:', e));
+  }
+  cargarGeografia();
+
   // Encuadre inicial (ya con el tamaño real del contenedor): si se vuelve
   // de la ficha con una zona elegida, el mapa abre enfocado en ella.
   if (zonaInicial && zonas.has(zonaInicial)) zonaSeleccionada = zonaInicial;
@@ -968,6 +1074,7 @@ export function montarMapa3D(opciones) {
   // --- Limpieza (se llama al salir de la pantalla) ---------------------------
 
   function destruir() {
+    destruido = true;
     cancelAnimationFrame(idFrame);
     observador.disconnect();
     canvas.removeEventListener('pointermove', alMoverPuntero);

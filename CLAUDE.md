@@ -330,3 +330,30 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   Urgente (0), Desabastecido (1–2), Provisionado (3–4) y Abastecido (5). Registrar donación y
   despacho a todo el ancho.
 - Versión actual de CSS y módulos cambiados: `?v=20261029e`.
+
+## Ajustes de oct 2026 (15) — modelos nuevos del equipo (.blend → .glb)
+- Los `.blend` del equipo están en la raíz del proyecto (`estanteria.blend`, `cajas.blend`,
+  `escena_mapa.blend`; no se suben a GitHub). Se exportan con Blender 3.6 en modo consola
+  (`blender -b archivo.blend --python exportar.py -- <modo> <salida>`): los colores de ruido
+  procedural se cambian por un color plano (promedio de la rampa) y todo queda mate. Los del mapa
+  van con compresión **Draco** (el cargador de `mapa3d.js` usa `DRACOLoader` del CDN 0.160.0).
+- **Estantería:** `assets/modelos/estanteria.glb` sale de `estanteria.blend`, escalada ×2,114
+  (mismo tamaño que la anterior, 6,15 × 5,41) y ya de frente (no se gira). `COMPARTIMIENTOS`,
+  `FONDO_Z` (-0,567) y `FRENTE_Z` (0,8) medidos en el modelo; la tabla del piso es parte del marco
+  y sobresale (`frente: 0.86` en Construcción); placas y etiquetas van en `yTabla(c)`.
+- **Cajas de la isla (portada):** `assets/modelos/cajas.glb`; `cajaDelModelo()` en
+  `js/inicio3d.js` copia cada caja por nombre (`Caja_Botiquin`, `Caja_Derecha`, `Caja_Base`,
+  `Caja_Base`+`Caja_Arriba` apiladas, `Caja_Frontal`), la escala al ancho de la caja anterior y
+  apoya las donaciones según su alto real.
+- **Mapa con la geografía de Cali:** `assets/modelos/cali_montanas.glb` (cerros, arbustos,
+  árboles, Cristo Rey con su plaza y Tres Cruces; sin nubes ni los dos cerros de adelante) y
+  `assets/modelos/torre_cali.glb`. Los cerros (Farallones) van como bloque en el borde occidental,
+  espejados para que las Tres Cruces queden al norte del Cristo Rey. Los lugares se sacan del
+  bloque y van donde quedan en Cali (`proyectar([lng, lat])`): Tres Cruces en su sitio (sobre una
+  lomita), Cristo Rey a su latitud sobre los cerros al borde de Occidente (su sitio real cae dentro
+  de la zona), Torre de Cali en el norte de Centro, al lado de la Plazoleta Jairo Varela (sube y
+  baja con la zona). Arbustos que caían encima de un lugar se ocultan. Nada de esto se puede tocar.
+- La cámara del mapa sigue ortográfica pero **inclinada 20°** (`INCLINACION`) para que se vean los
+  costados de la torre, las cruces y el Cristo; el encuadre tiene en cuenta la altura de los
+  puntos. En computador "Toda Cali" incluye los tres lugares; en celular solo la ciudad.
+- Versión actual de los módulos cambiados: `?v=20261029f`.

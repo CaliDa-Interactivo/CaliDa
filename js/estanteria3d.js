@@ -46,20 +46,28 @@ export const MODELOS_SUBCATEGORIA = {
   'ropa-ninos': `${RUTA}overol.glb`,
 };
 
-// --- Compartimientos (medidos en estanteria.glb, ya girada de frente) ---
+// --- Compartimientos (medidos en estanteria.glb del equipo, oct 2026) ---
+// El modelo sale de estanteria.blend ya de frente, del mismo tamaño que
+// el mueble anterior (6,15 × 5,41) y apoyado en y = 0.
 // x: izquierda → derecha · y: de la tabla de abajo a la de arriba.
+// frente: borde de la tabla de abajo (donde se clavan placas y etiquetas);
+// la tabla de abajo del mueble es parte del marco y sobresale más.
 const COMPARTIMIENTOS = {
-  alimento: { x0: -2.57, x1: -0.312, y0: 3.625, y1: 4.997 },
-  aseo: { x0: 0.11, x1: 2.49, y0: 3.625, y1: 4.997 },
-  ropa: { x0: -2.57, x1: -0.312, y0: 1.989, y1: 3.374 },
-  medicamentos: { x0: 0.11, x1: 2.49, y0: 1.989, y1: 3.374 },
-  construccion: { x0: -2.57, x1: 2.49, y0: 0.076, y1: 1.738 },
+  alimento: { x0: -2.743, x1: -0.123, y0: 3.797, y1: 5.079 },
+  aseo: { x0: 0.123, x1: 2.743, y0: 3.797, y1: 5.079 },
+  ropa: { x0: -2.743, x1: -0.123, y0: 2.198, y1: 3.582 },
+  medicamentos: { x0: 0.123, x1: 2.743, y0: 2.198, y1: 3.582 },
+  construccion: { x0: -2.743, x1: 2.743, y0: 0.332, y1: 1.983, frente: 0.86 },
 };
-const FONDO_Z = -0.95; // panel trasero
-const FRENTE_Z = 1.38; // borde abierto
-const Z_PRODUCTOS = 0.15;
+const FONDO_Z = -0.567; // cara de adelante del fondo de tablas
+const FRENTE_Z = 0.8; // borde de las repisas
+const Z_PRODUCTOS = 0.12;
+const frenteDe = (c) => c.frente ?? FRENTE_Z;
+// Alto del centro de la tabla de abajo de cada compartimiento (placas y
+// etiquetas): las repisas miden 0,215; la tabla del piso, 0,332.
+const yTabla = (c) => (c.frente ? c.y0 / 2 : c.y0 - 0.108);
 
-const CENTRO_MUEBLE = new THREE.Vector3(-0.04, 2.55, 0);
+const CENTRO_MUEBLE = new THREE.Vector3(0, 2.7, 0);
 
 // --- Utilidades -----------------------------------------------------------
 
@@ -443,7 +451,7 @@ export function montarEstanteria3D(o) {
       placa3d.material.map = texturaPlaca(categoria.nombre, { proporcion: anchoPlaca / 0.25 }, registrar);
       placa3d.material.needsUpdate = true;
     });
-    placa3d.position.set((c.x0 + c.x1) / 2, c.y0 - 0.125, FRENTE_Z + 0.035);
+    placa3d.position.set((c.x0 + c.x1) / 2, yTabla(c), frenteDe(c) + 0.035);
     placa3d.userData.categoria = categoria.id;
     escena.add(placa3d);
 
@@ -588,7 +596,7 @@ export function montarEstanteria3D(o) {
         n.receiveShadow = true;
       }
     });
-    mueble.rotation.y = Math.PI; // la cara abierta mira hacia la cámara
+    // (el modelo nuevo ya viene de frente: no se gira)
     escena.add(mueble);
 
     // Sombra suave en el suelo, alrededor de la base del mueble (le da
@@ -665,7 +673,7 @@ export function montarEstanteria3D(o) {
           { extra: extraEtiqueta ? extraEtiqueta(sub.id) : '', estado: estado ?? null, fraccion: fraccionLetreros },
           registrar
         );
-        etiqueta3d.position.set(x, c.y0 - 0.125, FRENTE_Z + 0.04);
+        etiqueta3d.position.set(x, yTabla(c), frenteDe(c) + 0.04);
         etiqueta3d.visible = false;
         escena.add(etiqueta3d);
 
@@ -697,7 +705,7 @@ export function montarEstanteria3D(o) {
             cargarGLB(cargador, ruta)
               .then((gltf) => {
                 prepararMateriales(gltf.scene);
-                const encajado = encajar(gltf.scene, anchoMax, altoMax, 1.4);
+                const encajado = encajar(gltf.scene, anchoMax, altoMax, 1.2); // fondo útil del mueble: ~1,37
                 ajustarModelo(sub.id, encajado, THREE);
                 colocar(encajado);
               })
