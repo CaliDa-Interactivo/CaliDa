@@ -19,7 +19,8 @@ import * as mapaDonante from './donante/mapa.js?v=20261028c';
 import * as fichaDonante from './donante/ficha.js?v=20261028c';
 import * as prerregistroDonante from './donante/prerregistro.js?v=20261028c';
 import * as llegarDonante from './donante/llegar.js';
-import * as loginAdmin from './admin/login.js?v=20261028c';
+import * as loginAdmin from './admin/login.js?v=20261029a';
+import * as registroAdmin from './admin/registro.js?v=20261029a';
 import * as bienvenidaAdmin from './admin/bienvenida.js';
 import * as menuAdmin from './admin/menu.js?v=20261028c';
 import * as insumosAdmin from './admin/insumos.js';
@@ -44,6 +45,7 @@ const NIVELES = [
   [/^#\/$/, 0], // bienvenida
   [/^#\/entrar$/, 1], // elegir perfil
   [/^#\/admin\/login$/, 2],
+  [/^#\/admin\/registro$/, 2.5],
   [/^#\/admin\/bienvenida$/, 3],
   [/^#\/admin\/menu$/, 4],
   [/^#\/admin\/(insumos|donacion|despacho)$/, 5],
@@ -204,6 +206,7 @@ registrarRuta(
 // --- Rutas del administrador (A1–A6) --------------------------
 // Todas, salvo el login, exigen sesión (ver admin/comun.js).
 registrarRuta(/^#\/admin\/login$/, loginAdmin.render);
+registrarRuta(/^#\/admin\/registro$/, registroAdmin.render);
 registrarRuta(/^#\/admin\/bienvenida$/, bienvenidaAdmin.render);
 registrarRuta(/^#\/admin\/menu$/, menuAdmin.render);
 registrarRuta(/^#\/admin\/insumos$/, insumosAdmin.renderEstanteria);

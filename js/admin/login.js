@@ -4,7 +4,7 @@
 // ============================================================
 
 import { isLoggedIn } from '../store.js';
-import { login } from '../auth.js?v=20261028c';
+import { login } from '../auth.js?v=20261029a';
 import { renderEncabezado } from '../encabezado.js';
 import { renderMascota, decir } from '../mascota.js';
 import { renderPaisaje } from '../paisaje.js';
@@ -44,7 +44,7 @@ export function render() {
           </div>
           <div class="tarjeta-entrada">
             <h1>Entra a tu centro</h1>
-            <p>Usa el correo y la contraseña que te asignó la Cruz Roja.</p>
+            <p>Usa tu correo y tu contraseña.</p>
 
             <form novalidate>
               <div class="campo-entrada">
@@ -72,7 +72,10 @@ export function render() {
               ¿Olvidaste tu contraseña?
             </button>
             <p class="login-admin__ayuda" id="login-ayuda" hidden>
-              Las cuentas las crea la Cruz Roja. Escríbele a tu coordinador para restablecer tu contraseña.
+              Escríbele a tu coordinador de la Cruz Roja para restablecer tu contraseña.
+            </p>
+            <p class="login-admin__registro">
+              ¿No tienes cuenta? <a class="enlace-azul" href="#/admin/registro">Regístrate</a>
             </p>
           </div>
 

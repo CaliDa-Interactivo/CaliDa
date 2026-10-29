@@ -2,8 +2,9 @@
 // auth.js — autenticación del administrador (pantalla 3).
 //
 // Reglas:
-//  - NO existe registro público. Las cuentas las crea la Cruz Roja
-//    y cada una está ligada a un centro de acopio.
+//  - Cada cuenta está ligada a un centro de acopio. Además de las
+//    cuentas de prueba, un líder de centro puede registrarse
+//    (registrar(); se guardan en localStorage, clave CLAVE_CUENTAS).
 //  - Nunca se guardan contraseñas en texto plano: solo una huella
 //    PBKDF2-SHA256 (100 000 iteraciones, sal por cuenta).
 //
@@ -47,6 +48,26 @@ const CUENTAS_PRUEBA = [
 
 const ITERACIONES = 100000;
 
+// Cuentas creadas con "Regístrate" (solo en este navegador).
+const CLAVE_CUENTAS = 'calida_cuentas_v1';
+
+function leerCuentasRegistradas() {
+  try {
+    const lista = JSON.parse(localStorage.getItem(CLAVE_CUENTAS) || '[]');
+    return Array.isArray(lista) ? lista : [];
+  } catch {
+    return [];
+  }
+}
+
+function todasLasCuentas() {
+  return [...CUENTAS_PRUEBA, ...leerCuentasRegistradas()];
+}
+
+function normalizarCorreo(correo) {
+  return correo.trim().toLowerCase();
+}
+
 function base64ABytes(b64) {
   return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 }
@@ -85,7 +106,7 @@ function iguales(a, b) {
  * @returns {Promise<{ok: boolean, centroId?: string}>}
  */
 export async function login(correo, contrasena) {
-  const cuenta = CUENTAS_PRUEBA.find((c) => c.correo === correo.trim().toLowerCase());
+  const cuenta = todasLasCuentas().find((c) => c.correo === normalizarCorreo(correo));
   // Se calcula la huella aunque el correo no exista, para no revelar
   // por el tiempo de respuesta qué correos tienen cuenta.
   const huella = await huellaDe(contrasena, cuenta?.sal ?? CUENTAS_PRUEBA[0].sal);
@@ -93,4 +114,24 @@ export async function login(correo, contrasena) {
 
   iniciarSesion(cuenta.centroId);
   return { ok: true, centroId: cuenta.centroId };
+}
+
+/**
+ * Crea una cuenta de administrador ligada a un centro y abre su sesión.
+ * @returns {Promise<{ok: boolean, motivo?: 'existe'}>}
+ */
+export async function registrar({ nombre, correo, centroId, contrasena }) {
+  const correoNormal = normalizarCorreo(correo);
+  if (todasLasCuentas().some((c) => c.correo === correoNormal)) {
+    return { ok: false, motivo: 'existe' };
+  }
+
+  const sal = bytesABase64(crypto.getRandomValues(new Uint8Array(16)));
+  const huella = await huellaDe(contrasena, sal);
+  const cuentas = leerCuentasRegistradas();
+  cuentas.push({ nombre: nombre.trim(), correo: correoNormal, centroId, sal, huella });
+  localStorage.setItem(CLAVE_CUENTAS, JSON.stringify(cuentas));
+
+  iniciarSesion(centroId);
+  return { ok: true, centroId };
 }

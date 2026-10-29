@@ -4273,3 +4273,36 @@ body .escena3d .escena3d__ayuda.escena3d__ayuda--arriba:not(#ayuda) {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* ============================================================
+   Registro del administrador (oct 2026): enlace "Regístrate" en el
+   login y pantalla #/admin/registro con los mismos campos del login.
+   ============================================================ */
+.login-admin__registro {
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+  color: #12406E !important;
+}
+
+.login-admin__registro .enlace-azul {
+  font-weight: 700;
+  text-decoration: underline;
+  color: #1F5490;
+}
+
+.vista-registro .campo-entrada select.campo__select {
+  min-height: 48px;
+  width: 100%;
+  font-family: var(--fuente-texto);
+  font-size: 1rem;
+  color: var(--marron-carbon);
+}
+
+.vista-registro .campo-entrada .campo__ayuda {
+  font-size: 12px;
+}
+
+.vista-registro .login-admin form {
+  gap: 0.75rem;
+}

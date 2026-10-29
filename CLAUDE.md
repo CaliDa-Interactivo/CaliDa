@@ -266,3 +266,11 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Correos reales: **funcionan** (28 oct 2026). La plantilla `template_myd3yt5` ("Feedback
   Request" en el panel de EmailJS) tenía **To Email** = `{{asunto}}` (error 422); ahora
   To Email = `{{to_email}}`, Subject = `{{asunto}}`, contenido `{{{html}}}`.
+
+## Ajustes de oct 2026 (12) — registro del administrador
+- En el login, debajo de "¿Olvidaste tu contraseña?", va "¿No tienes cuenta? **Regístrate**" →
+  `#/admin/registro` (`js/admin/registro.js`): nombre, correo, centro de acopio (lista de
+  centros), contraseña (mín. 8) y confirmación. Al crear la cuenta abre la sesión de ese centro.
+- Las cuentas nuevas se guardan en `localStorage` (`calida_cuentas_v1`, solo en ese navegador)
+  con huella PBKDF2 y sal propia (`registrar()` en `js/auth.js`); no se repiten correos (tampoco
+  los de prueba). Versión actual de módulos y CSS: `?v=20261029a`.
