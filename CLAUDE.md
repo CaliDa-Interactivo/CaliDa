@@ -263,5 +263,6 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Menos lag al cargar: la isla 3D y el gato de la portada (`data-gato3d-diferido`) se montan
   después de la bajada de la cámara de la intro (o al saltarla), no al mismo tiempo que la intro.
   La isla usa `pixelRatio` máx. 1,5.
-- Correos reales: EmailJS responde 422 "The recipients address is corrupted" → falta arreglar la
-  plantilla en el panel de EmailJS (campo **To Email** = `{{to_email}}`). El código ya envía.
+- Correos reales: **funcionan** (28 oct 2026). La plantilla `template_myd3yt5` ("Feedback
+  Request" en el panel de EmailJS) tenía **To Email** = `{{asunto}}` (error 422); ahora
+  To Email = `{{to_email}}`, Subject = `{{asunto}}`, contenido `{{{html}}}`.
