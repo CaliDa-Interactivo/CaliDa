@@ -35,7 +35,7 @@ const OPCIONES = [
 // Íconos 3D mates guardados como imágenes (assets/iconos): se ven siempre,
 // sin tener que dibujarlos en 3D al abrir el menú. El de insumos es la caja
 // con la cruz roja del archivo del equipo (cajas.glb).
-const VERSION_ICONOS = '20261030d';
+const VERSION_ICONOS = '20261030g';
 export const ICONO_MENU = (clave) => `assets/iconos/menu-${clave}.png?v=${VERSION_ICONOS}`;
 function icono(o) {
   return `<img src="${ICONO_MENU(o.clave)}" alt="" width="256" height="256" />`;

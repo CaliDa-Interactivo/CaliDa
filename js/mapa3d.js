@@ -840,7 +840,7 @@ export function montarMapa3D(opciones) {
   // de la pantalla, descontando lo que tapan los controles de encima
   // (opciones.margenes() en píxeles: arriba, abajo, izquierda, derecha).
   const RELLENO = { ciudad: 0.99, zona: 0.74 };
-  const CORRIMIENTO_DERECHA_PX = 70;
+  const CORRIMIENTO_DERECHA_PX = 130;
   function encuadreDe(zona) {
     const { clientWidth: ancho, clientHeight: alto } = lienzo;
     if (!ancho || !alto) return null;

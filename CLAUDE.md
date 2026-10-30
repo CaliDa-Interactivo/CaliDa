@@ -470,3 +470,21 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - **Menú del admin:** el globo del gato empieza a la altura del primer botón y las patas llegan a
   la línea de abajo del último botón.
 - Versión actual: `?v=20261030f`.
+
+## Ajustes de oct 2026 (22)
+- **Portada quieta:** la isla con el gato ya no entra deslizándose ni flota, y la vista no se
+  desliza al llegar. Los logos y "Siguiente" se ocultan hasta que `inicio3d.js` mide
+  `--margen-isla` (clase `portada--margen-listo`, sin transición); el margen se guarda en
+  `localStorage` (`calida_margen_isla`) para que la próxima vez salgan de una en su lugar.
+- **Estanterías:** velo oscuro sobre la foto del fondo (`.escena3d::before`), cálido en donante y
+  azul en admin.
+- **Mapa:** sin la ubicación, "Toda Cali" se corre 130 px a la derecha (`CORRIMIENTO_DERECHA_PX`).
+- **Admin (estanterías):** título en blanco; título, nombre del centro e instrucción alineados en
+  la misma línea, al lado del botón de volver.
+- **Gestionar insumos (estado y descripción):** pantalla propia como Registrar donación y
+  despacho: el fondo de la capa del zoom es el azul sólido del admin, el título y el centro quedan
+  arriba y se ocultan la leyenda, el buscador y la estantería.
+- **Ícono de Registrar donación:** corazón inflado rojo coral con brillos suaves
+  (`assets/iconos/menu-donacion.png`, hecho con three.js: superficie implícita del corazón con
+  MarchingCubes y `MeshPhysicalMaterial`); `VERSION_ICONOS` en `js/admin/menu.js`.
+- Versión actual: `?v=20261030g`.

@@ -336,11 +336,13 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
     }
     const margen = Math.max(16, Math.round(document.documentElement.clientWidth - maxX));
     portada.style.setProperty('--margen-isla', `${margen}px`);
+    // Los logos se muestran ya en su lugar (y la próxima vez salen así de una).
+    portada.classList.add('portada--margen-listo');
+    try {
+      localStorage.setItem('calida_margen_isla', JSON.stringify({ ancho: innerWidth, alto: innerHeight, margen }));
+    } catch {}
   }
   window.addEventListener('resize', medirMargenIsla);
-  // La escena entra deslizándose: se vuelve a medir cuando termina.
-  const escenaPortada = contenedor.closest('.portada__escena');
-  escenaPortada?.addEventListener('animationend', medirMargenIsla);
   const observador = new ResizeObserver(ajustar);
   observador.observe(contenedor);
   ajustar();
@@ -352,7 +354,6 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
     observador.disconnect();
     io.disconnect();
     window.removeEventListener('resize', medirMargenIsla);
-    escenaPortada?.removeEventListener('animationend', medirMargenIsla);
     escena.traverse((n) => {
       if (n.isMesh) {
         n.geometry.dispose();

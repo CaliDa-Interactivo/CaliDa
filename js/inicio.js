@@ -102,6 +102,17 @@ export function renderBienvenida({ sinIntro = false } = {}) {
         img.decode?.().catch(() => {});
       }
       const portada = contenedor.querySelector('.portada');
+      // Margen de los logos medido la vez pasada con este tamaño de ventana
+      // (inicio3d.js): así salen de una vez en su lugar, sin moverse.
+      try {
+        const guardado = JSON.parse(localStorage.getItem('calida_margen_isla') ?? 'null');
+        if (guardado && guardado.ancho === innerWidth && guardado.alto === innerHeight) {
+          portada.style.setProperty('--margen-isla', `${guardado.margen}px`);
+          portada.classList.add('portada--margen-listo');
+        }
+      } catch {}
+      // Si el 3D no carga, los logos se muestran igual.
+      setTimeout(() => portada.classList.add('portada--margen-listo'), 4000);
       const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const saltarIntro = reducido || sinIntro;
       let temporizador = 0;
@@ -122,7 +133,7 @@ export function renderBienvenida({ sinIntro = false } = {}) {
           gato.setAttribute('data-gato3d', '');
           montarGatos(contenedor.querySelector('.portada__escena'));
         }
-        import('./inicio3d.js?v=20261030e')
+        import('./inicio3d.js?v=20261030g')
           .then(({ montarIsla }) => {
             if (!salir) liberarIsla = montarIsla(contenedor.querySelector('.portada__isla'));
           })
