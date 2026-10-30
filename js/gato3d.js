@@ -135,6 +135,10 @@ async function montarUno(el) {
     // Medio cuerpo: de la cintura a las orejas (para asomarse por un lado).
     camara.position.set(0, 0.8, 1.5);
     camara.lookAt(0, 0.74, 0);
+  } else if (el.dataset.pose === 'feliz') {
+    // Salta de alegría: más espacio arriba para que no se corten las orejas.
+    camara.position.set(0, 0.7, 2.95);
+    camara.lookAt(0, 0.58, 0);
   } else {
     camara.position.set(0, 0.62, 2.55);
     camara.lookAt(0, 0.5, 0);

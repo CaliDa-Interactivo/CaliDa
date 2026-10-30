@@ -85,10 +85,6 @@ export function render({ centroId, subcategoriaId }) {
         <strong>✓ Ya hiciste tu pre-registro.</strong> Lleva tu donación antes del ${horaVencimiento(pre)}
       </p>`
     : `
-      <button class="boton boton--grande" type="button"
-              data-navegar="#/donante/prerregistro/${centro.id}/${subcategoria.id}">
-        Pre-registrar mi donación
-      </button>
       <a class="boton boton--azul" href="${volverAtras}">Ver otros centros</a>
       <p class="ficha-centro__nota">Toma un minuto y avisa al centro que vas en camino.</p>`;
 
@@ -140,6 +136,12 @@ export function render({ centroId, subcategoriaId }) {
             ${renderEstadoGrande(nivel)}
             ${renderNivel(subcategoria, nivel)}
             ${renderNecesidades(getNecesidades(centro.id, subcategoria.id), subcategoria)}
+            ${pre ? '' : `
+            <!-- Justo debajo de lo que necesitan (oct 2026) -->
+            <button class="boton boton--grande ficha-centro__prerregistrar" type="button"
+                    data-navegar="#/donante/prerregistro/${centro.id}/${subcategoria.id}">
+              Pre-registrar mi donación
+            </button>`}
           </div>
         </div>
       </div>

@@ -11,20 +11,20 @@
 
 import { inicializarStore } from './store.js';
 import { agregarBotonInicio, botonesNavSoloIcono } from './boton-inicio.js?v=20261029e';
-import { montarGatos, limpiarGatos } from './gatos.js?v=20261030h';
+import { montarGatos, limpiarGatos } from './gatos.js?v=20261030i';
 import { cargarMiniaturas } from './ilustraciones.js';
-import * as inicio from './inicio.js?v=20261030h';
-import * as estanteriaDonante from './donante/estanteria.js?v=20261030h';
+import * as inicio from './inicio.js?v=20261030i';
+import * as estanteriaDonante from './donante/estanteria.js?v=20261030i';
 import * as mapaDonante from './donante/mapa.js?v=20261030h';
-import * as fichaDonante from './donante/ficha.js?v=20261029b';
-import * as prerregistroDonante from './donante/prerregistro.js?v=20261030h';
+import * as fichaDonante from './donante/ficha.js?v=20261030i';
+import * as prerregistroDonante from './donante/prerregistro.js?v=20261030i';
 import * as llegarDonante from './donante/llegar.js?v=20261029b';
 import * as loginAdmin from './admin/login.js?v=20261029c';
 import * as registroAdmin from './admin/registro.js?v=20261029c';
 import * as bienvenidaAdmin from './admin/bienvenida.js';
-import * as menuAdmin from './admin/menu.js?v=20261030h';
-import * as insumosAdmin from './admin/insumos.js?v=20261030h';
-import * as donacionAdmin from './admin/donacion.js?v=20261030h';
+import * as menuAdmin from './admin/menu.js?v=20261030i';
+import * as insumosAdmin from './admin/insumos.js?v=20261030i';
+import * as donacionAdmin from './admin/donacion.js?v=20261030i';
 import * as despachoAdmin from './admin/despacho.js?v=20261030d';
 import * as confirmacionAdmin from './admin/confirmacion.js';
 import * as bandejaCorreos from './correos.js';
@@ -67,6 +67,7 @@ function nivelDe(hash) {
 }
 
 let nivelAnterior = null;
+let numeroNavegacion = 0;
 let esPrimeraCarga = true;
 
 // Después de montar una vista: título de la pestaña y foco en el título
@@ -101,6 +102,7 @@ function encontrarRuta(hash) {
 }
 
 function navegar() {
+  numeroNavegacion++;
   const hash = location.hash || '#/';
   const encontrada = encontrarRuta(hash);
 
@@ -162,8 +164,20 @@ function navegar() {
   contenedor.classList.add('vista--entrando');
   // Transición especial pedida por la pantalla anterior (p. ej. "Siguiente"
   // de la portada: desvanecimiento). Vale solo para esta entrada.
+  // Al terminar se quita junto con la clase de entrada: si solo se quitaba
+  // la marca, la animación normal de entrada volvía a empezar desde cero y
+  // la pantalla aparecía, desaparecía y volvía a aparecer.
   if (contenedor.dataset.transicion) {
-    setTimeout(() => delete contenedor.dataset.transicion, 900);
+    const esta = numeroNavegacion;
+    const terminar = (evento) => {
+      if (evento && evento.target !== contenedor) return;
+      contenedor.removeEventListener('animationend', terminar);
+      if (esta !== numeroNavegacion) return; // ya se cambió de pantalla
+      contenedor.classList.remove('vista--entrando');
+      delete contenedor.dataset.transicion;
+    };
+    contenedor.addEventListener('animationend', terminar);
+    setTimeout(terminar, 1500);
   }
   window.scrollTo(0, 0);
   anunciarVista();

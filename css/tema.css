@@ -5809,3 +5809,24 @@ html[data-rol="admin"] #app .escena3d__lado .gato3d::before {
   position: relative;
   z-index: 1;
 }
+
+/* Ficha del centro: "Pre-registrar mi donación" justo debajo de lo que
+   necesitan; abajo, "Ver otros centros" y "Toma un minuto…" alineados a
+   la izquierda, con el borde izquierdo del recuadro de arriba. */
+#app .vista-ficha .ficha-centro__prerregistrar {
+  align-self: stretch;
+  width: 100%;
+  margin-top: 16px !important;
+  justify-content: center;
+}
+#app .vista-ficha .mapa3d__barra:not(#x) {
+  justify-content: flex-start !important;
+}
+#app .vista-ficha .mapa3d__barra .pantalla-acciones:not(#x) {
+  justify-content: flex-start !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+#app .vista-ficha .pantalla-acciones .ficha-centro__nota:not(#nota) {
+  text-align: left !important;
+}

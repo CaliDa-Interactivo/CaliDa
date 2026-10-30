@@ -508,3 +508,22 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   y del paso 1 a la estantería (ya no al menú).
 - `gatos.js` se importa con `?v=` en todos lados (una sola copia del módulo). Versión actual:
   `?v=20261030h`.
+
+## Ajustes de oct 2026 (24)
+- **Intro visible:** la bajada de la cámara espera a que el gato 3D de la intro esté listo y a que
+  pase el velo crema del inicio (mín. 0,9 s, máx. 4 s; `cuandoEsteLista()` en `js/inicio.js`).
+  Antes la bajada ocurría mientras la página cargaba y no se alcanzaba a ver.
+- **Sin parpadeo al entrar a Elige tu perfil:** al terminar el desvanecimiento, `main.js` quita
+  `data-transicion` junto con `vista--entrando` (si solo quitaba la marca, la animación normal de
+  entrada volvía a empezar y la pantalla aparecía, desaparecía y volvía).
+- **Sombras de la estantería oscuras y difusas, como la del gato:** cada producto lleva una sombra
+  pintada en el fondo de tablas (corrida a la derecha y abajo, luz de adelante a la izquierda) y otra
+  en la repisa (`sombraBajo()` en `estanteria3d.js`, tono `TONO_SOMBRA`). Las texturas de sombra
+  necesitan `colorSpace = SRGBColorSpace`: sin eso el café oscuro se aclaraba hasta no verse. Sin
+  la sombra recortada del mueble en el piso (solo la pintada); sombras 3D con PCF y radio 9.
+- **Isla:** la botella de agua (0,4 de alto) va en x = -0,05 para quedar dentro de la caja A.
+- **Ficha del centro:** "Pre-registrar mi donación" justo debajo de "Lo que necesitan" (mismo
+  ancho); abajo "Ver otros centros" y "Toma un minuto…" alineados al borde izquierdo del panel.
+- **Gato `feliz`:** cámara más lejos y más alta para que no se le corten las orejas al saltar
+  (confirmación del pre-registro).
+- Versión actual: `?v=20261030i`.

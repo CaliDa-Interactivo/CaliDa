@@ -76,6 +76,10 @@ const frenteDe = (c) => c.frente ?? FRENTE_Z;
 // etiquetas): las repisas miden 0,215; la tabla del piso, 0,332.
 const yTabla = (c) => (c.frente ? c.y0 / 2 : c.y0 - 0.108);
 
+const conColor = (t) => ((t.colorSpace = THREE.SRGBColorSpace), t);
+// Tono de las sombras pintadas (café oscuro, del mismo estilo que la del gato).
+const TONO_SOMBRA = '40, 18, 6';
+
 const CENTRO_MUEBLE = new THREE.Vector3(0, 2.7, 0);
 // Caja del mueble completo (frente), para saber dónde queda en pantalla.
 const MUEBLE = { x0: -3.075, x1: 3.075, y0: 0, y1: 5.412, yInteriorArriba: 5.079, z: 0.856 };
@@ -310,7 +314,8 @@ export function montarEstanteria3D(o) {
   rendererLibre = null;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  // PCF con radio: sombras más difusas (como la del gato).
+  renderer.shadowMap.type = THREE.PCFShadowMap;
   lienzo.appendChild(renderer.domElement);
   const canvas = renderer.domElement;
   canvas.classList.add('estanteria3d__canvas');
@@ -328,7 +333,9 @@ export function montarEstanteria3D(o) {
   const sol = new THREE.DirectionalLight('#FFFFFF', 1.1);
   sol.position.set(-4, 9, 8);
   sol.castShadow = true;
-  sol.shadow.mapSize.set(1024, 1024);
+  sol.shadow.mapSize.set(512, 512);
+  sol.shadow.radius = 9;
+  sol.shadow.blurSamples = 16;
   Object.assign(sol.shadow.camera, { left: -6, right: 6, top: 7, bottom: -2, near: 1, far: 30 });
   sol.shadow.camera.updateProjectionMatrix();
   escena.add(sol);
@@ -339,11 +346,14 @@ export function montarEstanteria3D(o) {
   // Piso suave para la sombra del mueble.
   const piso = new THREE.Mesh(
     registrar(new THREE.CircleGeometry(7, 48)),
-    registrar(new THREE.ShadowMaterial({ opacity: 0.18 }))
+    registrar(new THREE.ShadowMaterial({ opacity: 0.32 }))
   );
   piso.rotation.x = -Math.PI / 2;
   piso.position.y = -0.18;
   piso.receiveShadow = true;
+  // (oct 2026) Sin la sombra recortada del mueble en el piso: queda solo la
+  // sombra pintada, difusa como la del gato (ver sombraMueble).
+  piso.visible = false;
   escena.add(piso);
 
   // --- Controles (como el mapa) ---
@@ -613,6 +623,47 @@ export function montarEstanteria3D(o) {
     });
   }
 
+  // Sombra pintada bajo cada producto, oscura y difusa como la del gato
+  // (las sombras del 3D solas se veían muy claras sobre la madera).
+  let texturaSombra = null;
+  function sombraBajo(objeto, base) {
+    if (!texturaSombra) {
+      const c = document.createElement('canvas');
+      c.width = c.height = 128;
+      const ctx = c.getContext('2d');
+      const g = ctx.createRadialGradient(64, 64, 4, 64, 64, 62);
+      g.addColorStop(0, `rgba(${TONO_SOMBRA}, 0.62)`);
+      g.addColorStop(0.55, `rgba(${TONO_SOMBRA}, 0.42)`);
+      g.addColorStop(1, `rgba(${TONO_SOMBRA}, 0)`);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, 128, 128);
+      texturaSombra = registrar(new THREE.CanvasTexture(c));
+      texturaSombra.colorSpace = THREE.SRGBColorSpace; // si no, el café oscuro se aclara
+    }
+    objeto.updateMatrixWorld(true);
+    const caja = new THREE.Box3().setFromObject(objeto);
+    const tam = caja.getSize(new THREE.Vector3());
+    const sombra = new THREE.Mesh(
+      registrar(new THREE.PlaneGeometry(Math.max(tam.x * 1.35, 0.3), Math.max(tam.z * 1.6, 0.25))),
+      registrar(new THREE.MeshBasicMaterial({ map: texturaSombra, transparent: true, depthWrite: false }))
+    );
+    sombra.rotation.x = -Math.PI / 2;
+    // La luz viene de adelante a la izquierda: la sombra cae un poco atrás y a la derecha.
+    sombra.position.set((caja.min.x + caja.max.x) / 2 + 0.05, base.y + 0.02, (caja.min.z + caja.max.z) / 2 - 0.04);
+    sombra.raycast = () => {};
+    productosRaiz.add(sombra);
+
+    // De frente las repisas casi no se ven: la sombra que se nota es la del
+    // fondo de tablas, detrás del producto (un poco abajo y a la derecha).
+    const fondo = new THREE.Mesh(
+      registrar(new THREE.PlaneGeometry(Math.max(tam.x * 1.6, 0.34), tam.y * 1.3)),
+      registrar(new THREE.MeshBasicMaterial({ map: texturaSombra, transparent: true, depthWrite: false }))
+    );
+    fondo.position.set((caja.min.x + caja.max.x) / 2 + Math.max(tam.x * 0.42, 0.12), base.y + tam.y * 0.38, FONDO_Z + 0.032);
+    fondo.raycast = () => {};
+    productosRaiz.add(fondo);
+  }
+
   // Compila los shaders de un objeto en paralelo (sin trabar la página)
   // antes de ponerlo en la escena, con las luces de la escena.
   function compilar(objeto) {
@@ -655,15 +706,15 @@ export function montarEstanteria3D(o) {
     lienzoSombra.width = lienzoSombra.height = 256;
     const ctxS = lienzoSombra.getContext('2d');
     const degradado = ctxS.createRadialGradient(128, 128, 10, 128, 128, 128);
-    degradado.addColorStop(0, 'rgba(60, 30, 10, 0.55)');
-    degradado.addColorStop(0.55, 'rgba(60, 30, 10, 0.28)');
-    degradado.addColorStop(1, 'rgba(60, 30, 10, 0)');
+    degradado.addColorStop(0, `rgba(${TONO_SOMBRA}, 0.6)`);
+    degradado.addColorStop(0.5, `rgba(${TONO_SOMBRA}, 0.34)`);
+    degradado.addColorStop(1, `rgba(${TONO_SOMBRA}, 0)`);
     ctxS.fillStyle = degradado;
     ctxS.fillRect(0, 0, 256, 256);
     const sombraMueble = new THREE.Mesh(
       registrar(new THREE.PlaneGeometry((base.max.x - base.min.x) * 1.35, (base.max.z - base.min.z) * 2.6)),
       registrar(
-        new THREE.MeshBasicMaterial({ map: registrar(new THREE.CanvasTexture(lienzoSombra)), transparent: true, depthWrite: false })
+        new THREE.MeshBasicMaterial({ map: registrar(conColor(new THREE.CanvasTexture(lienzoSombra))), transparent: true, depthWrite: false })
       )
     );
     sombraMueble.rotation.x = -Math.PI / 2;
@@ -757,6 +808,7 @@ export function montarEstanteria3D(o) {
                 ajustarModelo(sub.id, encajado, THREE);
                 await compilar(encajado);
                 colocar(encajado);
+                sombraBajo(encajado, producto.base);
               })
               .catch((e) => {
                 console.warn(e);

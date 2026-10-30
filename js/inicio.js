@@ -7,7 +7,7 @@
 import { LOGO_CRUZ_ROJA } from './encabezado.js';
 import { renderMascota, decir } from './mascota.js';
 import { isLoggedIn } from './store.js';
-import { montarGatos } from './gatos.js?v=20261030h';
+import { montarGatos } from './gatos.js?v=20261030i';
 
 // Recorrido del donante: estantería → subcategorías → mapa → ficha.
 export const RUTA_DONANTE = '#/donante/estanteria';
@@ -133,7 +133,7 @@ export function renderBienvenida({ sinIntro = false } = {}) {
           gato.setAttribute('data-gato3d', '');
           montarGatos(contenedor.querySelector('.portada__escena'));
         }
-        import('./inicio3d.js?v=20261030g')
+        import('./inicio3d.js?v=20261030i')
           .then(({ montarIsla }) => {
             if (!salir) liberarIsla = montarIsla(contenedor.querySelector('.portada__isla'));
           })
@@ -152,12 +152,36 @@ export function renderBienvenida({ sinIntro = false } = {}) {
         }, 650);
       }
 
+      // La bajada de la cámara espera a que el gato 3D de la intro esté
+      // listo y la pantalla ya se vea (si no, la bajada ocurría mientras la
+      // página todavía cargaba o detrás del desvanecimiento inicial y no se
+      // alcanzaba a ver). Mientras tanto se ve el cielo quieto.
+      function cuandoEsteLista(listo) {
+        const gato = intro.querySelector('.intro__gato');
+        const inicio = performance.now();
+        const revisar = () => {
+          if (salir || intro.hidden) return;
+          const gatoListo = !gato || gato.matches('.gato3d--listo, .gato3d--sin3d');
+          const transcurrido = performance.now() - inicio;
+          // mínimo 900 ms (el velo crema del inicio dura 1,35 s), máximo 4 s
+          if ((gatoListo && transcurrido > 900) || transcurrido > 4000) {
+            requestAnimationFrame(() => requestAnimationFrame(listo));
+          } else setTimeout(revisar, 100);
+        };
+        revisar();
+      }
+
       function mostrarIntro() {
         if (reducido) return;
         intro.hidden = false;
         portada.classList.remove('portada--entrando');
         // reinicia la animación de la cámara
         intro.classList.remove('intro--andando');
+        cuandoEsteLista(arrancarIntro);
+      }
+
+      function arrancarIntro() {
+        if (salir || intro.hidden || intro.classList.contains('intro--saliendo')) return;
         void intro.offsetWidth;
         intro.classList.add('intro--andando');
         temporizador = setTimeout(terminarIntro, DURACION_INTRO);

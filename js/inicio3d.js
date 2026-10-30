@@ -160,7 +160,9 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
   const SOBRE_MESA = 0.655;
   const cargador = new GLTFLoader();
   const productos = (alto) => [
-    ['alimento-agua', 0.42, [-0.08, alto.enCaja, -0.72]],
+    // La botella (0,21 de ancho) queda dentro de las paredes de la caja A
+    // (interior de ±0,238 alrededor de x = 0,05); antes atravesaba la pared.
+    ['alimento-agua', 0.4, [-0.05, alto.enCaja, -0.72]],
     ['alimento-no-perecederos', 0.24, [0.17, alto.enCaja, -0.66]],
     ['ropa-hombre', 0.34, [0.57, alto.enCaja, -0.8]],
     ['ropa-mujer', 0.34, [0.8, alto.enCaja, -0.78]],
