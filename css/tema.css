@@ -6051,38 +6051,9 @@ html[data-rol="admin"] #app .escena3d__lado .gato3d::before {
   }
 }
 
-/* Pantallas grandes (más de 1800 px): el contenido queda en la parte
-   central de la pantalla, con un ancho máximo, en vez de estirarse de borde
-   a borde (ficha, pre-registro y su confirmación, "¡Todo listo…!",
-   formularios del admin, confirmaciones, bandeja, login y registro). Las
-   pantallas 3D a pantalla completa (estantería y mapa) siguen ocupando todo. */
-@media (min-width: 1800px) {
-  #app > .vista:is(.vista-columnas, .vista-formulario-admin, .vista-bandeja, .vista-confirmacion,
-    .vista-llegar, .vista-bienvenida, .vista-registro, .vista-menu-admin):not(#x),
-  #app > .vista.pantalla-entrada:not(.portada):not(.vista-perfiles):not(#x) {
-    max-width: 1600px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-  /* Panel de cantidades del admin: mismo ancho central */
-  #app .vista-admin .zoom-capa__panel:not(#x) {
-    left: max(var(--margen-lado), calc((calc(100 * var(--vw, 1vw)) - 1600px) / 2)) !important;
-    right: max(var(--margen-lado), calc((calc(100 * var(--vw, 1vw)) - 1600px) / 2)) !important;
-  }
-  /* Portada: los logos y la isla se acercan al centro */
-  #app .vista.portada .portada__contenido:not(#x) {
-    max-width: 1800px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    width: 100% !important;
-  }
-}
-@media (min-width: 1800px) {
-  /* El botón del menú (fijo) del admin queda en el borde del bloque central */
-  #app .vista-admin > .barra-inicio:not(#x) {
-    right: max(var(--margen-lado), calc((calc(100 * var(--vw, 1vw)) - 1600px) / 2 + var(--margen-lado))) !important;
-  }
-}
+/* (oct 2026, 32) Sin ancho máximo en pantallas grandes: ahora toda la
+   página se escala en proporción (js/escala.js), así que se ve igual que en
+   una pantalla de 1920 px, con el mismo margen a los cuatro lados. */
 
 /* Mensajes de confirmación ("¡Todo listo…!" y la confirmación del admin):
    en el centro de la pantalla, también en pantallas grandes. */

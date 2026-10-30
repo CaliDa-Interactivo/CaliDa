@@ -642,3 +642,12 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   con materiales sin programa); en pantallas de menos de 760 px el mueble se encuadra debajo de la
   fila del gato (antes el globo tapaba el borde de arriba).
 - Versión actual: `?v=20261030p` (CSS) / `?v=20261030r` (`main.js` y estanterías).
+
+## Ajustes de oct 2026 (32) — mismo margen en pantallas grandes
+- Se quitó el ancho máximo de 1600 px (y el de la portada) que se aplicaba desde 1800 px: con la
+  escala proporcional (`js/escala.js`) una pantalla grande se ve igual que una de 1920 px, con el
+  **mismo margen a los cuatro lados** (24 px de diseño, escalados) y el contenido ocupando el mismo
+  espacio proporcional. Medido a 1920 × 1080 y 4480 × 2520: izquierda = derecha = 24 en ficha,
+  pre-registro, formularios, Elige tu perfil y panel de insumos; las tarjetas centradas ("¡Todo
+  listo…!", bandeja) con el mismo espacio a cada lado.
+- Versión actual: CSS `?v=20261030s`.
