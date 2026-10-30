@@ -49,7 +49,7 @@ export function montarVistaEstanteria3D(contenedor, opciones) {
     opciones.alFallar?.();
   };
 
-  import('./estanteria3d.js?v=20261030d')
+  import('./estanteria3d.js?v=20261030f')
     .then(({ montarEstanteria3D }) => {
       if (destruido) return;
       api = montarEstanteria3D({
@@ -67,6 +67,7 @@ export function montarVistaEstanteria3D(contenedor, opciones) {
         // margen del borde derecho que el mueble del izquierdo.
         alMoverMueble: (rect) => {
           const lado = escena.querySelector('.escena3d__lado');
+          lado?.classList.add('escena3d__lado--puesto'); // ya sabe dónde va: se muestra
           if (!lado || rect.ancho < 760) {
             lado?.style.removeProperty('top');
             lado?.style.removeProperty('height');

@@ -432,8 +432,9 @@ export function montarGatos(raiz = document) {
   const enReposo = (f) => (window.requestIdleCallback ?? ((g) => setTimeout(g, 16)))(f, { timeout: 800 });
   pendientes.forEach((el, i) => {
     el.dataset.gato3dMontando = '1';
+    const armar = el.closest('.escena3d__lado') ? (f) => f() : enReposo;
     setTimeout(() =>
-      enReposo(() =>
+      armar(() =>
         montarUno(el)
           .catch((e) => {
             console.warn('Gato 3D no disponible; se usa el 2D.', e);
@@ -441,7 +442,8 @@ export function montarGatos(raiz = document) {
           })
           .finally(() => delete el.dataset.gato3dMontando)
       ),
-    320 + i * 150);
+    // En la estantería el gato sale de una vez en su lugar (sin esperar).
+    el.closest('.escena3d__lado') ? 0 : 320 + i * 150);
   });
 }
 

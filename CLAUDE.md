@@ -452,3 +452,21 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - **Menú del admin:** título, centro, tareas y gato en un bloque centrado de 1120 px (mismo
   margen a los dos lados); las tareas junto al gato (columna de 360 px).
 - Versión actual: `?v=20261030e`.
+
+## Ajustes de oct 2026 (21)
+- **Fondo de las estanterías** (donante y admin): imagen de una tienda con estanterías a los lados
+  (del equipo), desenfocada y teñida con la paleta de cada rol:
+  `assets/fondos/estanteria_donante.jpg` (cálida) y `estanteria_admin.jpg` (azul), con un velo
+  suave encima (`.escena3d::before`).
+- **Estantería sin animaciones de entrada:** la pantalla no se desliza, el corrimiento del mueble
+  se aplica de una vez y el gato de la estantería se arma sin esperar y se muestra cuando ya está
+  en su lugar (`escena3d__lado--puesto`).
+- **Portada:** los logos y "Siguiente" ya no entran deslizándose (la intro sigue).
+- **Elige tu perfil:** tarjetas más cuadradas (360 px de ancho, foto de 200 px); tarjetas + gato
+  centrados con el mismo margen a los lados; las fotos se precargan y decodifican desde la portada
+  (sin trabas al tocar "Siguiente").
+- **Mapa:** sin la ubicación, "Toda Cali" se corre 70 px a la derecha (`CORRIMIENTO_DERECHA_PX`).
+- **Ficha del centro:** los botones y "Toma un minuto…" con el mismo espacio arriba y abajo.
+- **Menú del admin:** el globo del gato empieza a la altura del primer botón y las patas llegan a
+  la línea de abajo del último botón.
+- Versión actual: `?v=20261030f`.

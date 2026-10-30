@@ -5587,3 +5587,114 @@ html[data-rol="inicio"] #app .boton-nav { color: #011E41 !important; }
     justify-content: center !important;
   }
 }
+
+/* ===================================================================
+   AJUSTES (oct 2026, 21)
+   =================================================================== */
+
+/* Estanterías: de fondo una tienda con estanterías a los lados (imagen
+   del equipo), con los colores de la paleta de cada rol y desenfocada,
+   para que la atención quede en la estantería 3D. */
+#app .vista-3d .escena3d:not(#x) {
+  background: url('../assets/fondos/estanteria_donante.jpg?v=20261030f') center 40% / cover no-repeat, #E9B87A !important;
+}
+html[data-rol="admin"] #app .vista-3d .escena3d:not(#x) {
+  background: url('../assets/fondos/estanteria_admin.jpg?v=20261030f') center 40% / cover no-repeat, #7DB8DC !important;
+}
+/* Un velo suave encima del fondo, para que no compita con el mueble */
+#app .vista-3d .escena3d::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 45% 50%, rgba(255, 246, 230, 0.18) 0%, rgba(255, 246, 230, 0.05) 55%, rgba(60, 30, 10, 0.12) 100%);
+}
+html[data-rol="admin"] #app .vista-3d .escena3d::before {
+  background: radial-gradient(ellipse at 50% 50%, rgba(240, 248, 255, 0.16) 0%, rgba(240, 248, 255, 0.04) 55%, rgba(10, 40, 80, 0.14) 100%);
+}
+#app .vista-3d .escena3d__lienzo {
+  z-index: 1; /* ya es absolute: queda encima del velo */
+}
+/* La franja de arriba (encabezado) ya no tapa el fondo con su degradado */
+#app .vista-3d .escena3d__arriba {
+  background: none !important;
+}
+/* Estantería: la pantalla aparece sin deslizarse (el mueble y el gato
+   salen ya en su posición final). */
+#app.vista--entrando:has(> .vista-3d) {
+  animation: none !important;
+}
+/* El gato de la estantería se muestra cuando ya está en su lugar */
+.escena3d__lado:not(.escena3d__lado--puesto) {
+  visibility: hidden;
+}
+
+/* Portada: los logos y "Siguiente" ya no entran deslizándose (la intro
+   sigue igual). */
+.vista.portada.portada--entrando .portada__texto {
+  animation: none !important;
+}
+
+/* Elige tu perfil: tarjetas más cuadradas y el bloque (tarjetas + gato)
+   centrado, con el mismo margen a la izquierda y a la derecha. */
+@media (min-width: 900px) {
+  #app .vista-perfiles .perfiles:not(#x) {
+    grid-template-columns: auto auto !important;
+    justify-content: center !important;
+    column-gap: 40px !important;
+  }
+  #app .vista-perfiles .perfiles__tarjetas:not(#x) {
+    grid-template-columns: repeat(2, minmax(0, 360px)) !important;
+    gap: 28px !important;
+  }
+  #app .vista-perfiles .tarjeta-ilustracion--foto:not(#x) {
+    height: 200px !important;
+  }
+}
+
+/* Ficha del centro: "Pre-registrar", "Ver otros centros" y "Toma un
+   minuto…" con el mismo espacio arriba (hasta el cuadro) y abajo (hasta
+   el borde), como en el pre-registro. */
+#app > .vista.vista-ficha {
+  padding-bottom: 0 !important;
+}
+#app > .vista.vista-ficha > .mapa-envoltura {
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
+}
+#app > .vista.vista-ficha > .mapa3d__barra {
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+
+/* Menú del admin: el globo del gato empieza a la altura del primer botón
+   y las patas del gato llegan a la línea de abajo del último botón. */
+@media (min-width: 901px) {
+  .vista-menu-admin .menu-admin__cuerpo {
+    align-items: stretch !important;
+  }
+  .vista-menu-admin .menu-admin__cuerpo > .menu-admin__gato {
+    margin-top: 1.25rem; /* lo mismo que baja la lista de tareas */
+    align-items: stretch !important;
+    justify-content: center !important;
+  }
+  .vista-menu-admin .menu-admin__gato .gato-guia {
+    height: 100% !important;
+    justify-content: space-between !important;
+  }
+  #app .vista-menu-admin .menu-admin__gato :is(.gato-guia__imagen, .gato3d):not(#gato-menu) {
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    width: 100% !important;
+  }
+}
+@media (min-width: 901px) {
+  /* el lienzo deja aire bajo las patas (sombra): se baja para que las
+     patas toquen la línea de abajo del último botón */
+  #app .vista-menu-admin .menu-admin__gato :is(.gato-guia__imagen, .gato3d):not(#gato-menu) {
+    transform: translateY(6%) !important;
+  }
+}

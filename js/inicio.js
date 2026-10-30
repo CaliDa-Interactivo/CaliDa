@@ -23,6 +23,7 @@ export const RUTA_DONANTE = '#/donante/estanteria';
 //    mesas, cajas llenas de donaciones y el gato; de fondo, un sol y
 //    formas suaves que flotan.
 
+const FOTOS_PERFILES = ['assets/entrar/donador.jpg?v=20261030e', 'assets/entrar/admin.jpg?v=20261030d'];
 const MENSAJE_PRINCIPAL = 'En una emergencia, ayudar también es saber dónde hace falta.';
 const MENSAJE_SEGUNDO = 'Aquí te mostraré a dónde llevar tus donaciones.';
 const DURACION_INTRO = 11400; // ms (bajada de cámara + dos mensajes)
@@ -93,6 +94,13 @@ export function renderBienvenida({ sinIntro = false } = {}) {
   `,
     init(contenedor) {
       const intro = contenedor.querySelector('[data-intro]');
+      // Las fotos de Elige tu perfil se cargan y decodifican desde ya, para
+      // que esa pantalla aparezca sin trabarse al tocar "Siguiente".
+      for (const src of FOTOS_PERFILES) {
+        const img = new Image();
+        img.src = src;
+        img.decode?.().catch(() => {});
+      }
       const portada = contenedor.querySelector('.portada');
       const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const saltarIntro = reducido || sinIntro;
@@ -207,7 +215,7 @@ export function renderEntrar() {
             <div class="perfiles__tarjetas">
               <article class="tarjeta-entrada tarjeta-entrada--hover tarjeta-entrada--donador" data-perfil="donador">
                 <div class="tarjeta-ilustracion tarjeta-ilustracion--foto" aria-hidden="true">
-                  <img src="assets/entrar/donador.jpg?v=20261030e" alt="" width="1300" height="620" loading="eager" />
+                  <img src="${FOTOS_PERFILES[0]}" alt="" width="1300" height="620" loading="eager" decoding="async" />
                 </div>
                 <h2>Quiero ayudar</h2>
                 <p>Mira qué necesita cada centro de acopio, en qué zona está y cómo llegar. No necesitas registrarte.</p>
@@ -218,7 +226,7 @@ export function renderEntrar() {
 
               <article class="tarjeta-entrada tarjeta-entrada--hover" data-perfil="admin">
                 <div class="tarjeta-ilustracion tarjeta-ilustracion--admin tarjeta-ilustracion--foto" aria-hidden="true">
-                  <img src="assets/entrar/admin.jpg?v=20261030d" alt="" width="1300" height="620" loading="eager" />
+                  <img src="${FOTOS_PERFILES[1]}" alt="" width="1300" height="620" loading="eager" decoding="async" />
                 </div>
                 <h2>Administro un centro</h2>
                 <p>Actualiza lo que necesita tu centro y registra donaciones y despachos.</p>

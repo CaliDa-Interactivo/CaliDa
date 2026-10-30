@@ -840,6 +840,7 @@ export function montarMapa3D(opciones) {
   // de la pantalla, descontando lo que tapan los controles de encima
   // (opciones.margenes() en píxeles: arriba, abajo, izquierda, derecha).
   const RELLENO = { ciudad: 0.99, zona: 0.74 };
+  const CORRIMIENTO_DERECHA_PX = 70;
   function encuadreDe(zona) {
     const { clientWidth: ancho, clientHeight: alto } = lienzo;
     if (!ancho || !alto) return null;
@@ -877,6 +878,9 @@ export function montarMapa3D(opciones) {
     // (opciones.objetivoUsuario() = x en píxeles), sin sacar la ciudad
     // de la pantalla.
     const objetivoPin = !zona && pinUsuario?.visible && !pinFuera ? opciones.objetivoUsuario?.() : null;
+    // Sin la ubicación, "Toda Cali" queda un poco corrida a la derecha
+    // (oct 2026, pedido del equipo).
+    if (!zona && !Number.isFinite(objetivoPin)) cx -= CORRIMIENTO_DERECHA_PX * s;
     if (Number.isFinite(objetivoPin)) {
       const deseado = pinUsuario.position.x - (objetivoPin - ancho / 2) * s;
       const minimo = x1 - (ancho / 2 - 12) * s; // el borde derecho de la ciudad sigue a la vista

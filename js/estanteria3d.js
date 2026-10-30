@@ -920,7 +920,8 @@ export function montarEstanteria3D(o) {
     // compartimiento el gato se esconde y se usa todo el ancho).
     const anchoLienzo = lienzo.clientWidth || 1;
     const objetivoCorrimiento = abierta ? 0 : Math.min(0.5, (margenDerecho?.() ?? 0) / anchoLienzo) / 2;
-    aplicarCorrimiento(objetivoCorrimiento, reducido ? 1 : suavizar(8, dt));
+    // Sin animación: el mueble aparece de una vez en su lugar (oct 2026).
+    aplicarCorrimiento(objetivoCorrimiento, 1);
     camara.updateProjectionMatrix();
     avisarRectMueble();
     actualizarEtiquetas();

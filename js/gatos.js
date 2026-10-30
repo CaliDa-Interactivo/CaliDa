@@ -4,7 +4,7 @@
 // ============================================================
 
 let modulo = null;
-const cargar = () => (modulo ??= import('./gato3d.js?v=20261030e'));
+const cargar = () => (modulo ??= import('./gato3d.js?v=20261030f'));
 
 export function montarGatos(raiz) {
   if (!raiz.querySelector('[data-gato3d]')) return;

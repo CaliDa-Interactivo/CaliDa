@@ -11,7 +11,7 @@ import { actualizarNivelInsumo, actualizarNecesidades, getCentroAdminActual } fr
 import { renderRepisaNivel, cargarMiniaturas } from '../ilustraciones.js';
 import { montarGatos } from '../gatos.js';
 import { activarZoomEstanteria, renderCapaZoom, renderCabeceraZoom } from '../zoom-estanteria.js';
-import { renderEscena3D, montarVistaEstanteria3D } from '../estanteria-vista.js?v=20261030d';
+import { renderEscena3D, montarVistaEstanteria3D } from '../estanteria-vista.js?v=20261030f';
 import {
   ESTADOS,
   conSesion,
