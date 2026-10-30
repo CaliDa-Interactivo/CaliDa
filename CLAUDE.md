@@ -620,3 +620,25 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   final de `css/tema.css` una regla obliga a Roboto en todo (campos, botones, `::before/::after`,
   textos SVG). Para jerarquía y contraste: solo grosor y tamaño.
 - Versión actual: `?v=20261030o`.
+
+## Ajustes de oct 2026 (31) — pantallas enormes (hasta 4480 × 2520)
+- **Escala proporcional:** `js/escala.js` (lo llama `main.js` al cargar y al cambiar el tamaño)
+  calcula un factor desde 1920 × 1080 (`max(1, min(ancho/1920, alto/1080))`: 2,33 en 4480 × 2520,
+  1,33 en 2560 × 1440, 1 en pantallas normales y celular) y lo pone como `zoom` en `<html>`: crecen
+  por igual recuadros, elementos y tipografía.
+- Con zoom el navegador multiplica también `vh`/`vw`; por eso **todo el CSS usa `var(--vh)`,
+  `var(--dvh)`, `var(--vw)`, `var(--vmin)`, `var(--vmax)`** (definidas en `base.css`, divididas por
+  `--z`). Al escribir CSS nuevo: no usar `100vh` directo, sino `calc(100 * var(--vh, 1vh))`.
+- En JS, con zoom: `getBoundingClientRect()` y `clientX` vienen escalados; `clientWidth`,
+  `offsetWidth` y los px de `style` no. Se corrigió en `donante/mapa.js` (`margenes()`),
+  `inicio3d.js` (`medirMargenIsla`), `estanteria3d.js` (`rectDe`) y `zoom-estanteria.js`
+  (`factorEscala()`). Los lienzos 3D usan `resolucion(máx)` (más píxeles con zoom, sin verse borrosos).
+- **Confirmaciones en el centro:** "¡Pre-registro listo!" con su contenido centrado en el recuadro;
+  la **bienvenida del admin** (estaba desarmada) ahora es un bloque centrado: texto a la izquierda y
+  el gato con su globo a la derecha (en celular, uno debajo del otro).
+- **Login del admin:** la imagen es la misma foto de la tarjeta del admin en Elige tu perfil
+  (`assets/entrar/admin.jpg`, apoyada abajo).
+- **Estantería:** `compilar()` propio en lugar de `renderer.compileAsync` (en three 0.160 se caía
+  con materiales sin programa); en pantallas de menos de 760 px el mueble se encuadra debajo de la
+  fila del gato (antes el globo tapaba el borde de arriba).
+- Versión actual: `?v=20261030p` (CSS) / `?v=20261030r` (`main.js` y estanterías).

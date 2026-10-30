@@ -22,6 +22,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { cargarGLB, MODELO_GATO } from './cargar-glb.js';
+import { resolucion } from './escala.js';
 
 const activos = new Set();
 // Renderizadores de gatos que ya salieron de pantalla, listos para usarse
@@ -96,7 +97,7 @@ async function montarUno(el) {
   // Se reutiliza un renderizador de un gato anterior si hay (crear un
   // contexto WebGL y compilar sus shaders es lo que trababa la pantalla).
   const renderer = poolRenderizadores.pop() ?? new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  renderer.setPixelRatio(resolucion(1.5));
   if (!('outputColorSpace' in renderer)) {
     // three r147 (vista previa publicada): mismo color que r160.
     renderer.outputEncoding = THREE.sRGBEncoding;

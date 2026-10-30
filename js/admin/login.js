@@ -7,7 +7,6 @@ import { isLoggedIn } from '../store.js';
 import { login } from '../auth.js?v=20261029b';
 import { renderEncabezado } from '../encabezado.js';
 import { renderMascota, decir } from '../mascota.js';
-import { renderPaisaje } from '../paisaje.js';
 
 const MENSAJES = {
   reposo: '¡Hola, equipo! Entra con tu correo.',
@@ -39,7 +38,8 @@ export function render() {
         <div class="login-admin">
           <div class="login-dividido">
           <div class="login-dividido__arte">
-            ${renderPaisaje()}
+            <!-- La misma foto de la tarjeta del admin en Elige tu perfil -->
+            <img class="login-dividido__foto" src="assets/entrar/admin.jpg?v=20261030d" alt="" width="1300" height="620" />
             <p class="login-dividido__bienvenida" aria-hidden="true">BIENVENIDO</p>
           </div>
           <div class="tarjeta-entrada">

@@ -13,6 +13,7 @@ import { getCentros, getCentrosPorSubcategoria } from '../store.js';
 import { renderGato } from '../gato.js';
 import { cargarMiniaturas } from '../ilustraciones.js';
 import { renderBotonInicio } from '../boton-inicio.js?v=20261028c';
+import { factorEscala } from '../escala.js';
 
 // Recuerda la zona elegida por subcategoría, para que al volver
 // de la ficha (D5) el mapa siga enfocado donde estaba.
@@ -311,7 +312,7 @@ export function render({ subcategoriaId }) {
       }
 
       // Carga diferida del mapa 3D.
-      import('../mapa3d.js?v=20261030m')
+      import('../mapa3d.js?v=20261030p')
         .then(({ montarMapa3D }) => {
           if (destruido) return;
           const necesidades = Object.fromEntries(
@@ -333,23 +334,22 @@ export function render({ subcategoriaId }) {
               const zonasNav = contenedor.querySelector('.mapa3d__zonas')?.getBoundingClientRect();
               const gato = gatoEl.getBoundingClientRect();
               const pie = contenedor.querySelector('.mapa3d__pie')?.getBoundingClientRect();
-              const angosta = r.width < 700;
+              // Los rectángulos vienen escalados en pantallas grandes
+              // (escala.js); el mapa trabaja sin escalar.
+              const z = factorEscala();
+              const angosta = r.width / z < 700;
               if (angosta) {
                 // Celular: zonas en una fila arriba; el mensaje y el gato abajo.
                 // La ciudad se encuadra en el espacio libre del medio.
                 const bajo = Math.max(encabezado?.bottom ?? r.top, zonasNav?.bottom ?? r.top);
                 const techoAbajo = Math.min(gato.height ? gato.top : r.bottom, pie?.height ? pie.top : r.bottom);
-                return { arriba: bajo - r.top + 10, abajo: r.bottom - techoAbajo + 10, izquierda: 12, derecha: 12 };
+                return { arriba: (bajo - r.top) / z + 10, abajo: (r.bottom - techoAbajo) / z + 10, izquierda: 12, derecha: 12 };
               }
               return {
-                arriba: encabezado ? encabezado.bottom - r.top + 12 : 0,
-                // En celular el gato se descuenta abajo (no al lado): si no,
-                // la ciudad queda muy angosta.
-                abajo: angosta && gato.height
-                  ? r.bottom - gato.top + 8
-                  : pie?.height ? r.bottom - pie.top + 12 : 24, // deja libre el mensaje del pie
-                izquierda: zonasNav ? zonasNav.right - r.left + 12 : 0,
-                derecha: !angosta && gato.width ? r.right - gato.left + 8 : 12,
+                arriba: encabezado ? (encabezado.bottom - r.top) / z + 12 : 0,
+                abajo: pie?.height ? (r.bottom - pie.top) / z + 12 : 24, // deja libre el mensaje del pie
+                izquierda: zonasNav ? (zonasNav.right - r.left) / z + 12 : 0,
+                derecha: gato.width ? (r.right - gato.left) / z + 8 : 12,
               };
             },
             // (oct 2026) Con la ubicación el mapa se queda fijo: ya no se corre

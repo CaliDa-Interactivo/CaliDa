@@ -12,6 +12,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { cargarGLB, RUTA_MODELOS } from './cargar-glb.js';
 import { MODELOS_SUBCATEGORIA } from './estanteria3d.js';
 import { ajustarModelo } from './ajustes-modelos.js';
+import { factorEscala, resolucion } from './escala.js';
 
 const mate = (color) => new THREE.MeshStandardMaterial({ color, roughness: 0.85, metalness: 0 });
 
@@ -102,7 +103,7 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
   // `camara` ({ posicion, mira, fov }) y `capturable` sirven para sacar
   // "fotos" de la isla (p. ej. la tarjeta del admin en Elige tu perfil).
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: capturable });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  renderer.setPixelRatio(resolucion(1.5));
   // Sin sombras proyectadas: cada mesa y caja lleva una sombra suave
   // pintada (sombraSuave), igual de difusa y del mismo tono que la del gato.
   renderer.shadowMap.enabled = false;
@@ -411,7 +412,10 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
       p.set(Math.cos(a) * 2.05, 0, Math.sin(a) * 2.05).applyMatrix4(mundo.matrixWorld).project(camara);
       maxX = Math.max(maxX, rect.left + (p.x * 0.5 + 0.5) * rect.width);
     }
-    const margen = Math.max(16, Math.round(document.documentElement.clientWidth - maxX));
+    // maxX viene escalado (pantallas grandes, escala.js); el margen se usa
+    // en CSS, sin escalar.
+    const derecha = document.documentElement.getBoundingClientRect().right;
+    const margen = Math.max(16, Math.round((derecha - maxX) / factorEscala()));
     portada.style.setProperty('--margen-isla', `${margen}px`);
     // Los logos se muestran ya en su lugar (y la próxima vez salen así de una).
     portada.classList.add('portada--margen-listo');

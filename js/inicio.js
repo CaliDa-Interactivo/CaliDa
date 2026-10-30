@@ -7,7 +7,7 @@
 import { LOGO_CRUZ_ROJA } from './encabezado.js';
 import { renderMascota, decir } from './mascota.js';
 import { isLoggedIn } from './store.js';
-import { montarGatos } from './gatos.js?v=20261030m';
+import { montarGatos } from './gatos.js?v=20261030p';
 
 // Recorrido del donante: estantería → subcategorías → mapa → ficha.
 export const RUTA_DONANTE = '#/donante/estanteria';
@@ -136,7 +136,7 @@ export function renderBienvenida({ sinIntro = false } = {}) {
           gato.setAttribute('data-gato3d', '');
           montarGatos(contenedor.querySelector('.portada__escena'));
         }
-        import('./inicio3d.js?v=20261030n')
+        import('./inicio3d.js?v=20261030p')
           .then(({ montarIsla }) => {
             if (!salir) liberarIsla = montarIsla(contenedor.querySelector('.portada__isla'));
           })

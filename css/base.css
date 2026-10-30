@@ -89,7 +89,7 @@ body {
   background: var(--fondo-pantalla);
   color: var(--color-texto);
   font-family: var(--fuente-texto);
-  min-height: 100vh;
+  min-height: calc(100 * var(--vh, 1vh));
   -webkit-font-smoothing: antialiased;
 }
 
@@ -197,7 +197,7 @@ button {
 
 /* Contenedor raíz donde el router monta cada vista */
 #app {
-  min-height: 100vh;
+  min-height: calc(100 * var(--vh, 1vh));
   display: flex;
   flex-direction: column;
 }
@@ -340,4 +340,16 @@ body {
     font-size: 0.82rem;
     padding: 0.4rem 0.85rem;
   }
+}
+
+/* Pantallas muy grandes (escala.js): la página se escala con `zoom` y las
+   unidades de pantalla se dividen por el factor (--z) para seguir midiendo
+   la pantalla. En pantallas normales --z es 1. */
+:root {
+  --z: 1;
+  --vh: calc(1vh / var(--z));
+  --dvh: calc(1dvh / var(--z));
+  --vw: calc(1vw / var(--z));
+  --vmin: calc(1vmin / var(--z));
+  --vmax: calc(1vmax / var(--z));
 }

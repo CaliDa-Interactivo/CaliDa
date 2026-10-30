@@ -49,13 +49,20 @@ export function montarVistaEstanteria3D(contenedor, opciones) {
     opciones.alFallar?.();
   };
 
-  import('./estanteria3d.js?v=20261030l')
+  import('./estanteria3d.js?v=20261030q')
     .then(({ montarEstanteria3D }) => {
       if (destruido) return;
       api = montarEstanteria3D({
         ...opciones,
         lienzo: escena.querySelector('.escena3d__lienzo'),
-        margenSuperior: () => escena.querySelector('.escena3d__arriba')?.offsetHeight * 0.85 || 0,
+        margenSuperior: () => {
+          const arriba = escena.querySelector('.escena3d__arriba')?.offsetHeight * 0.85 || 0;
+          // En pantallas angostas el gato con su globo va en una fila arriba:
+          // el mueble se encuadra debajo de esa fila (si no, el globo lo tapa).
+          const lado = escena.querySelector('.escena3d__lado');
+          if (!lado || escena.dataset.cerca === 'si' || escena.clientWidth >= 760) return arriba;
+          return Math.max(arriba, lado.offsetTop + lado.offsetHeight + 10);
+        },
         // Con el gato al lado, el mueble se encuadra en el 64 % izquierdo de
         // la pantalla (en celular el gato va arriba: no se reserva nada).
         margenDerecho: () => {

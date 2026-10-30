@@ -24,6 +24,7 @@
 
 import { obtenerCategoria } from './data.js';
 import { cargarMiniaturas } from './ilustraciones.js';
+import { factorEscala } from './escala.js';
 
 const DURACION = 420;
 
@@ -72,8 +73,11 @@ export function activarZoomEstanteria(contenedor, opciones) {
     if (!r || !r.width) return 'scale(0.6)';
     const f = panel.getBoundingClientRect();
     const escala = r.width / f.width;
-    const dx = r.left + r.width / 2 - (f.left + f.width / 2);
-    const dy = r.top + r.height / 2 - (f.top + f.height / 2);
+    // Los rectángulos vienen escalados en pantallas grandes (escala.js);
+    // el translate del CSS va sin escalar.
+    const z = factorEscala();
+    const dx = (r.left + r.width / 2 - (f.left + f.width / 2)) / z;
+    const dy = (r.top + r.height / 2 - (f.top + f.height / 2)) / z;
     return `translate(${dx}px, ${dy}px) scale(${escala})`;
   }
 

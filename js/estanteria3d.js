@@ -22,6 +22,7 @@ import { CATEGORIAS } from './data.js';
 import { ilustracion, productoPrincipal } from './ilustraciones.js';
 import { cargarGLB, precargarGLB } from './cargar-glb.js';
 import { ajustarModelo } from './ajustes-modelos.js';
+import { factorEscala, resolucion } from './escala.js';
 
 // --- Modelos ------------------------------------------------------------
 
@@ -312,7 +313,7 @@ export function montarEstanteria3D(o) {
   // --- Escena ---
   const renderer = rendererLibre ?? new THREE.WebGLRenderer({ antialias: true, alpha: true });
   rendererLibre = null;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(resolucion(2));
   renderer.shadowMap.enabled = true;
   // PCF con radio: sombras más difusas (como la del gato).
   renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -672,10 +673,31 @@ export function montarEstanteria3D(o) {
   }
 
   // Compila los shaders de un objeto en paralelo (sin trabar la página)
-  // antes de ponerlo en la escena, con las luces de la escena.
+  // antes de ponerlo en la escena, con las luces de la escena. Es como
+  // renderer.compileAsync, pero sin su falla de three 0.160 (se caía con
+  // materiales sin programa todavía) y con un máximo de 3 s de espera.
   function compilar(objeto) {
-    return renderer.compileAsync ? renderer.compileAsync(objeto, camara, escena).catch(() => {}) : Promise.resolve();
+    let materiales;
+    try {
+      materiales = renderer.compile(objeto, camara, escena);
+    } catch {
+      return Promise.resolve();
+    }
+    if (!materiales?.size) return Promise.resolve();
+    const inicio = performance.now();
+    return new Promise((listo) => {
+      const revisar = () => {
+        for (const m of materiales) {
+          const programa = renderer.properties.get(m)?.currentProgram;
+          if (!programa || programa.isReady()) materiales.delete(m);
+        }
+        if (!materiales.size || performance.now() - inicio > 3000) listo();
+        else setTimeout(revisar, 10);
+      };
+      revisar();
+    });
   }
+
 
   async function cargarTodo() {
     // Los letreros se dibujan con Roboto: se espera a que cargue.
@@ -951,11 +973,13 @@ export function montarEstanteria3D(o) {
     const a = aPantalla(c.x0, c.y1, FRENTE_Z);
     const b = aPantalla(c.x1, c.y0, FRENTE_Z);
     const r = lienzo.getBoundingClientRect();
+    // r viene escalado (pantallas grandes, escala.js); a y b, sin escalar.
+    const z = factorEscala();
     return {
-      left: r.left + Math.min(a.x, b.x),
-      top: r.top + Math.min(a.y, b.y),
-      width: Math.abs(b.x - a.x),
-      height: Math.abs(b.y - a.y),
+      left: r.left + Math.min(a.x, b.x) * z,
+      top: r.top + Math.min(a.y, b.y) * z,
+      width: Math.abs(b.x - a.x) * z,
+      height: Math.abs(b.y - a.y) * z,
     };
   }
 

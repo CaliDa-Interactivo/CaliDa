@@ -16,6 +16,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { cargarGLB, MODELO_CASA, estilizarCasa, RUTA_MODELOS } from './cargar-glb.js';
+import { resolucion } from './escala.js';
 
 // Escena del equipo (escena_mapa.blend), exportada con compresión Draco.
 const MODELO_CERROS = `${RUTA_MODELOS}cali_montanas.glb`;
@@ -240,7 +241,7 @@ export function montarMapa3D(opciones) {
   // --- Renderizador, escena, cámara ------------------------------------
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(resolucion(2));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   lienzo.appendChild(renderer.domElement);
