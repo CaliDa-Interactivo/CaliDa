@@ -35,7 +35,7 @@ const OPCIONES = [
 // Íconos 3D mates guardados como imágenes (assets/iconos): se ven siempre,
 // sin tener que dibujarlos en 3D al abrir el menú. El de insumos es la caja
 // con la cruz roja del archivo del equipo (cajas.glb).
-const VERSION_ICONOS = '20261030g';
+const VERSION_ICONOS = '20261030h';
 export const ICONO_MENU = (clave) => `assets/iconos/menu-${clave}.png?v=${VERSION_ICONOS}`;
 function icono(o) {
   return `<img src="${ICONO_MENU(o.clave)}" alt="" width="256" height="256" />`;
@@ -76,6 +76,34 @@ export const render = conSesion((_params, centro) => ({
       logout();
       location.hash = '#/entrar';
     });
+    // Mientras se elige la tarea, se preparan en segundo plano los modelos
+    // de la estantería y las "fotos" de los productos (eran lo que trababa
+    // al abrir Gestionar insumos y Registrar donación). Las fotos se hacen
+    // de una en una, cuando el navegador está libre.
+    let activo = true;
+    const libre = (f) => (window.requestIdleCallback ?? ((g) => setTimeout(g, 30)))(f, { timeout: 800 });
+    const temporizador = setTimeout(() => {
+      libre(async () => {
+        try {
+          const [{ precargarEstanteria, MODELOS_SUBCATEGORIA }, { generarMiniatura }] = await Promise.all([
+            import('../estanteria3d.js?v=20261030h'),
+            import('../miniaturas3d.js'),
+          ]);
+          precargarEstanteria();
+          for (const sub of Object.keys(MODELOS_SUBCATEGORIA)) {
+            if (!activo) return;
+            await new Promise((ok) => libre(ok));
+            await generarMiniatura(sub);
+          }
+        } catch {
+          /* sin 3D: no pasa nada */
+        }
+      });
+    }, 1200);
+    return () => {
+      activo = false;
+      clearTimeout(temporizador);
+    };
 
   },
 }));

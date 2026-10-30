@@ -9,9 +9,9 @@
 import { estadoDeNivel, ETIQUETA_ESTADO, NIVEL_MAX, EJEMPLOS_NECESIDADES } from '../data.js';
 import { actualizarNivelInsumo, actualizarNecesidades, getCentroAdminActual } from '../store.js';
 import { renderRepisaNivel, cargarMiniaturas } from '../ilustraciones.js';
-import { montarGatos } from '../gatos.js';
+import { montarGatos } from '../gatos.js?v=20261030h';
 import { activarZoomEstanteria, renderCapaZoom, renderCabeceraZoom } from '../zoom-estanteria.js';
-import { renderEscena3D, montarVistaEstanteria3D } from '../estanteria-vista.js?v=20261030f';
+import { renderEscena3D, montarVistaEstanteria3D } from '../estanteria-vista.js?v=20261030h';
 import {
   ESTADOS,
   conSesion,
@@ -303,7 +303,21 @@ export const renderEstanteria = conSesion(({ categoriaId = null } = {}, centro) 
           activarBuscador(contenedor);
         },
       });
+      // "Volver" de arriba con el panel abierto: del paso 2 regresa a las
+      // cantidades y del paso 1 a la estantería (no al menú).
+      const alVolver = (evento) => {
+        if (!evento.target.closest('.escena3d__arriba .boton-atras')) return;
+        const capa = contenedor.querySelector('.zoom-capa');
+        if (!capa || capa.hidden) return;
+        evento.preventDefault();
+        evento.stopPropagation();
+        const pasos = capa.querySelector('.pasos-insumo');
+        if (pasos?.dataset.paso === '2') capa.querySelector('[data-paso-atras]')?.click();
+        else capa.querySelector('[data-cerrar-zoom]')?.click();
+      };
+      contenedor.addEventListener('click', alVolver, true);
       return () => {
+        contenedor.removeEventListener('click', alVolver, true);
         limpiar3D();
         zoom?.();
       };

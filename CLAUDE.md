@@ -488,3 +488,23 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   (`assets/iconos/menu-donacion.png`, hecho con three.js: superficie implícita del corazón con
   MarchingCubes y `MeshPhysicalMaterial`); `VERSION_ICONOS` en `js/admin/menu.js`.
 - Versión actual: `?v=20261030g`.
+
+## Ajustes de oct 2026 (23)
+- La intro (la cámara baja y el gato habla) se mantiene igual; la isla de la portada sigue quieta.
+- **Menos lag al abrir las funciones del admin:** desde el menú, cuando el navegador está libre,
+  se descargan los modelos de la estantería (`precargarEstanteria()` → `precargarGLB()` en
+  `cargar-glb.js`) y se hacen de una en una las "fotos" de los productos (`generarMiniatura`).
+  La estantería reutiliza su renderizador entre pantallas (`rendererLibre` en
+  `estanteria3d.js`) y compila los shaders en paralelo antes de poner cada modelo
+  (`renderer.compileAsync`). Abrir insumos pasó de ~1,3 s de traba a ~0,4 s; donación, a ~0,06 s.
+- **Sombra del gato en las estanterías:** sombra suave y marcada bajo los pies, del estilo de la
+  isla (`.escena3d__lado .gato3d::before`, café en donante y azul oscuro en admin). La sombra 3D del
+  gato quedaba cortada en el borde de abajo de su lienzo.
+- **Torre de Cali:** `apoyarEnZona(torre, 'Centro')` en `mapa3d.js` la corre hacia adentro de la
+  zona hasta que las cuatro esquinas de su base quedan sobre ella (antes una esquina quedaba en el aire).
+- **Corazón de Registrar donación:** la misma forma inflada, pero mate (`MeshStandardMaterial`
+  roughness 0,85, #CC0100) y con las luces de los otros íconos.
+- **Gestionar insumos:** el "Volver" de arriba, con el panel abierto, regresa del paso 2 al paso 1
+  y del paso 1 a la estantería (ya no al menú).
+- `gatos.js` se importa con `?v=` en todos lados (una sola copia del módulo). Versión actual:
+  `?v=20261030h`.

@@ -7,7 +7,7 @@
 import { LOGO_CRUZ_ROJA } from './encabezado.js';
 import { renderMascota, decir } from './mascota.js';
 import { isLoggedIn } from './store.js';
-import { montarGatos } from './gatos.js';
+import { montarGatos } from './gatos.js?v=20261030h';
 
 // Recorrido del donante: estantería → subcategorías → mapa → ficha.
 export const RUTA_DONANTE = '#/donante/estanteria';

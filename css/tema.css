@@ -5779,3 +5779,33 @@ html[data-rol="admin"] #app .vista-3d .escena3d::before {
 #app.vista--entrando:has(> .vista.portada) {
   animation: none !important;
 }
+
+/* ===================================================================
+   AJUSTES (oct 2026, 23)
+   =================================================================== */
+
+/* Estanterías: el gato con la misma sombra suave y marcada de la isla,
+   bajo los pies (en el tono oscuro del fondo de cada rol). */
+#app .escena3d__lado .gato3d {
+  position: relative;
+}
+#app .escena3d__lado .gato3d::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -1.6%; /* los pies llegan al borde de abajo del lienzo */
+  width: 54%;
+  height: 8%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(48, 20, 6, 0.6) 0%, rgba(48, 20, 6, 0.36) 45%, rgba(48, 20, 6, 0) 100%);
+  filter: blur(2px);
+  pointer-events: none;
+}
+html[data-rol="admin"] #app .escena3d__lado .gato3d::before {
+  background: radial-gradient(closest-side, rgba(6, 26, 52, 0.6) 0%, rgba(6, 26, 52, 0.36) 45%, rgba(6, 26, 52, 0) 100%);
+}
+#app .escena3d__lado .gato3d .gato3d__canvas {
+  position: relative;
+  z-index: 1;
+}

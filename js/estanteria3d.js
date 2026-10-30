@@ -20,7 +20,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { CATEGORIAS } from './data.js';
 import { ilustracion, productoPrincipal } from './ilustraciones.js';
-import { cargarGLB } from './cargar-glb.js';
+import { cargarGLB, precargarGLB } from './cargar-glb.js';
 import { ajustarModelo } from './ajustes-modelos.js';
 
 // --- Modelos ------------------------------------------------------------
@@ -45,6 +45,15 @@ export const MODELOS_SUBCATEGORIA = {
   'ropa-mujer': `${RUTA}vestido.glb`,
   'ropa-ninos': `${RUTA}overol.glb`,
 };
+
+/** Descarga el mueble y los productos antes de abrir la estantería (menú del admin). */
+export function precargarEstanteria() {
+  precargarGLB([MODELO_ESTANTERIA, ...Object.values(MODELOS_SUBCATEGORIA)]);
+}
+
+// El renderizador se reutiliza entre estanterías: crear el contexto WebGL y
+// compilar los shaders era lo que trababa al abrir la pantalla.
+let rendererLibre = null;
 
 // --- Compartimientos (medidos en estanteria.glb del equipo, oct 2026) ---
 // El modelo sale de estanteria.blend ya de frente, del mismo tamaño que
@@ -297,7 +306,8 @@ export function montarEstanteria3D(o) {
   let mueblePuesto = false; // ya cargó estanteria.glb
 
   // --- Escena ---
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  const renderer = rendererLibre ?? new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  rendererLibre = null;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -603,6 +613,12 @@ export function montarEstanteria3D(o) {
     });
   }
 
+  // Compila los shaders de un objeto en paralelo (sin trabar la página)
+  // antes de ponerlo en la escena, con las luces de la escena.
+  function compilar(objeto) {
+    return renderer.compileAsync ? renderer.compileAsync(objeto, camara, escena).catch(() => {}) : Promise.resolve();
+  }
+
   async function cargarTodo() {
     // Los letreros se dibujan con Roboto: se espera a que cargue.
     await document.fonts?.load('900 40px Roboto').catch(() => {});
@@ -627,6 +643,7 @@ export function montarEstanteria3D(o) {
       }
     });
     // (el modelo nuevo ya viene de frente: no se gira)
+    await compilar(mueble);
     mueblePuesto = true;
     escena.add(mueble);
 
@@ -734,10 +751,11 @@ export function montarEstanteria3D(o) {
         if (ruta) {
           tareas.push(
             cargarGLB(cargador, ruta)
-              .then((gltf) => {
+              .then(async (gltf) => {
                 prepararMateriales(gltf.scene);
                 const encajado = encajar(gltf.scene, anchoMax, altoMax, 1.2); // fondo útil del mueble: ~1,37
                 ajustarModelo(sub.id, encajado, THREE);
+                await compilar(encajado);
                 colocar(encajado);
               })
               .catch((e) => {
@@ -994,7 +1012,9 @@ export function montarEstanteria3D(o) {
       canvas.removeEventListener('pointerup', alSoltar);
       controles.dispose();
       desechables.forEach((d) => d.dispose?.());
-      renderer.dispose();
+      // Se guarda para la próxima estantería (con sus shaders ya compilados).
+      renderer.renderLists.dispose();
+      rendererLibre = renderer;
       canvas.remove();
       capaEtiquetas.replaceChildren();
       botonVolver.remove();

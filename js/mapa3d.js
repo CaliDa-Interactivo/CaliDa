@@ -1140,6 +1140,40 @@ export function montarMapa3D(opciones) {
     return grupo;
   }
 
+  // Corre un objeto hacia adentro de su zona hasta que las cuatro esquinas
+  // de su base (con un margen por el borde biselado) quedan sobre ella:
+  // si no, una esquina de la Torre de Cali quedaba en el aire.
+  function dentroDe(puntos, x, z) {
+    let dentro = false;
+    for (let i = 0, j = puntos.length - 1; i < puntos.length; j = i++) {
+      const a = puntos[i];
+      const b = puntos[j];
+      if (a.z > z !== b.z > z && x < ((b.x - a.x) * (z - a.z)) / (b.z - a.z) + a.x) dentro = !dentro;
+    }
+    return dentro;
+  }
+  function apoyarEnZona(objeto, nombreZona) {
+    const puntos = zonas.get(nombreZona)?.puntos;
+    if (!puntos) return;
+    const centro = puntos.reduce((c, p) => ({ x: c.x + p.x / puntos.length, z: c.z + p.z / puntos.length }), { x: 0, z: 0 });
+    const MARGEN = 0.16;
+    for (let paso = 0; paso < 80; paso++) {
+      const caja = new THREE.Box3().setFromObject(objeto);
+      const esquinas = [
+        [caja.min.x - MARGEN, caja.min.z - MARGEN],
+        [caja.max.x + MARGEN, caja.min.z - MARGEN],
+        [caja.min.x - MARGEN, caja.max.z + MARGEN],
+        [caja.max.x + MARGEN, caja.max.z + MARGEN],
+      ];
+      if (esquinas.every(([x, z]) => dentroDe(puntos, x, z))) return;
+      const dx = centro.x - objeto.position.x;
+      const dz = centro.z - objeto.position.z;
+      const d = Math.hypot(dx, dz) || 1;
+      objeto.position.x += (dx / d) * 0.04;
+      objeto.position.z += (dz / d) * 0.04;
+    }
+  }
+
   const rayoSuelo = new THREE.Raycaster();
   function alturaDelTerreno(cerros, x, z) {
     rayoSuelo.set(new THREE.Vector3(x, 60, z), new THREE.Vector3(0, -1, 0));
@@ -1216,8 +1250,9 @@ export function montarMapa3D(opciones) {
         torre.position.set(LUGAR_TORRE.x, Y_SUPERFICIE, LUGAR_TORRE.z);
         noTocable(torre);
         escena.add(torre);
+        apoyarEnZona(torre, 'Centro');
         const caja = new THREE.Box3().setFromObject(torre);
-        puntosLugares.push({ x: LUGAR_TORRE.x, z: LUGAR_TORRE.z, y: caja.max.y });
+        puntosLugares.push({ x: torre.position.x, z: torre.position.z, y: caja.max.y });
         enfocarCamara(zonaSeleccionada, { animar: false });
       })
       .catch((e) => console.warn('No se pudo cargar la Torre de Cali:', e));

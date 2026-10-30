@@ -310,7 +310,7 @@ export function render({ subcategoriaId }) {
       }
 
       // Carga diferida del mapa 3D.
-      import('../mapa3d.js?v=20261030g')
+      import('../mapa3d.js?v=20261030h')
         .then(({ montarMapa3D }) => {
           if (destruido) return;
           const necesidades = Object.fromEntries(

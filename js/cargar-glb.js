@@ -30,6 +30,12 @@ function leerBuffer(url) {
   return bufferes.get(url);
 }
 
+// Descarga los modelos por adelantado (sin armarlos): así, al abrir la
+// pantalla que los usa, solo falta armarlos.
+export function precargarGLB(urls) {
+  for (const url of urls) leerBuffer(url).catch(() => bufferes.delete(url));
+}
+
 export async function cargarGLB(cargador, url) {
   const datos = await leerBuffer(url);
   // parse() no modifica el buffer: se puede reutilizar para varias copias.
