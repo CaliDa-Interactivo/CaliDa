@@ -86,7 +86,7 @@ export const render = conSesion((_params, centro) => ({
       libre(async () => {
         try {
           const [{ precargarEstanteria, MODELOS_SUBCATEGORIA }, { generarMiniatura }] = await Promise.all([
-            import('../estanteria3d.js?v=20261030i'),
+            import('../estanteria3d.js?v=20261030l'),
             import('../miniaturas3d.js'),
           ]);
           precargarEstanteria();

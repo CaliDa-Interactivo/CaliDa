@@ -880,7 +880,7 @@ export function montarMapa3D(opciones) {
     const objetivoPin = !zona && pinUsuario?.visible && !pinFuera ? opciones.objetivoUsuario?.() : null;
     // Sin la ubicación, "Toda Cali" queda un poco corrida a la derecha
     // (oct 2026, pedido del equipo).
-    if (!zona && !Number.isFinite(objetivoPin)) cx -= CORRIMIENTO_DERECHA_PX * s;
+    if (!zona && !Number.isFinite(objetivoPin) && ancho >= 700) cx -= CORRIMIENTO_DERECHA_PX * s;
     if (Number.isFinite(objetivoPin)) {
       const deseado = pinUsuario.position.x - (objetivoPin - ancho / 2) * s;
       const minimo = x1 - (ancho / 2 - 12) * s; // el borde derecho de la ciudad sigue a la vista
@@ -1293,6 +1293,8 @@ export function montarMapa3D(opciones) {
     resaltarCentro,
     acercar,
     restablecerVista: () => seleccionarZona(null),
+    // Vuelve a encuadrar (p. ej. cuando el gato o las zonas cambian de tamaño).
+    reencuadrar: () => enfocarCamara(zonaSeleccionada, { animar: false }),
     getZonaSeleccionada: () => zonaSeleccionada,
     destruir,
   };

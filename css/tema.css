@@ -5891,3 +5891,141 @@ html[data-rol="admin"] #app .escena3d__lado .gato3d::before {
     z-index: 6;
   }
 }
+
+/* ===================================================================
+   AJUSTES (oct 2026, 27) — versión para celular sin superposiciones
+   =================================================================== */
+
+/* Mapa en celular: la ruta entre los botones (en dos líneas si hace
+   falta), las zonas en una fila debajo del encabezado y, abajo, el
+   mensaje a la izquierda y el gato con su globo a la derecha. La ciudad
+   se encuadra en el espacio libre del medio (mapa.js, margenes()). */
+@media (max-width: 700px) {
+  #app :is(.vista-mapa-completo, .vista-columnas) .mapa3d__encabezado .mapa__indicador:not(#x) {
+    grid-area: auto !important; /* en la ficha el encabezado es una cuadrícula */
+    top: calc(var(--tam-nav) / 2) !important;
+    transform: translateY(-50%) !important;
+    left: 72px !important;
+    right: 124px !important;
+    width: auto !important;
+    max-width: none !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    text-align: center !important;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+  }
+  #app .vista-mapa-completo .mapa3d__zonas:not(#x) {
+    top: calc(var(--margen-arriba) + var(--tam-nav) + 10px) !important;
+    left: var(--margen-lado) !important;
+    right: var(--margen-lado) !important;
+    bottom: auto !important;
+    width: auto !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+  #app .vista-mapa-completo .mapa3d__gato:not(#x) {
+    right: var(--margen-lado) !important;
+    bottom: var(--margen-abajo) !important;
+    width: 46% !important;
+    max-width: 200px !important;
+  }
+  #app .vista-mapa-completo .mapa3d__gato .gato-guia__globo:not(#x) {
+    padding: 10px 12px !important;
+  }
+  #app .vista-mapa-completo .mapa3d__gato .gato3d:not(#x) {
+    width: 96px !important;
+    height: 120px !important;
+    margin-left: auto !important;
+  }
+  #app .vista-mapa-completo .mapa3d__pie:not(#x) {
+    left: var(--margen-lado) !important;
+    right: auto !important;
+    bottom: var(--margen-abajo) !important;
+    max-width: calc(54% - var(--margen-lado) - 12px) !important;
+  }
+}
+
+/* "¡Todo listo…!" en celular: la tarjeta empieza debajo del botón de
+   inicio (antes el botón quedaba encima del título). */
+@media (max-width: 900px) {
+  #app .vista-llegar:not(#x) {
+    padding-top: calc(var(--margen-arriba) + var(--tam-nav) + 12px) !important;
+  }
+}
+
+/* Elige tu perfil en celular: el gato y su globo empiezan debajo del
+   botón de volver (antes el globo lo rozaba). */
+@media (max-width: 899px) {
+  #app .vista-perfiles .perfiles:not(#x) {
+    padding-top: calc(var(--tam-nav) + 10px) !important;
+  }
+}
+
+/* Admin en celular: el título del encabezado deja libre el botón del menú
+   (arriba a la derecha) y baja de línea si no cabe. */
+@media (max-width: 700px) {
+  #app .vista-admin .admin-encabezado:not(#x),
+  #app .vista-bandeja .admin-encabezado:not(#x) {
+    padding-right: calc(var(--tam-nav) + 10px) !important;
+    box-sizing: border-box;
+  }
+  #app :is(.vista-admin, .vista-bandeja) .admin-encabezado h1:not(#x) {
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Estanterías del admin en celular: el encabezado arriba, a la altura del
+   botón del menú (que ya no tapa el título), y la leyenda de estados de
+   vuelta, en dos columnas de pastillas debajo del buscador. */
+@media (max-width: 700px) {
+  #app .vista-admin.vista-3d .escena3d__arriba:not(#x) {
+    padding-top: var(--margen-arriba) !important;
+  }
+  #app .vista-admin.vista-3d .escena3d__arriba .admin-barra:not(#x) {
+    flex-wrap: wrap !important;
+    margin-top: 12px !important;
+    gap: 10px !important;
+  }
+  #app .vista-admin.vista-3d .escena3d__arriba .admin-barra .leyenda-estados:not(#x) {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: static !important;
+    transform: none !important;
+  }
+  #app .vista-admin.vista-3d .escena3d__arriba .admin-barra .leyenda-estados li:not(#x) {
+    justify-content: center !important;
+    font-size: 12px !important;
+    padding: 4px 8px !important;
+    margin: 0 !important;
+  }
+}
+
+/* Panel de cantidades del admin en celular: los botones (Siguiente /
+   Guardar y volver a las cantidades) van en su propia fila, arriba a la
+   derecha del panel, sin tapar "Volver a la estantería" ni el título. */
+@media (max-width: 700px) {
+  #app .vista-admin .zoom-capa__panel .pasos-insumo__botones:not(#x) {
+    position: static !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin: 0 0 10px !important;
+    order: -1;
+  }
+  #app .vista-admin .zoom-capa__panel .pasos-insumo__barra:not(#x) {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+}

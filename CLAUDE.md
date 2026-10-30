@@ -558,3 +558,23 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - **Recuadros de vuelta:** insumos, donación, despacho y pre-registro con sus recuadros blancos y
   azul claro, como antes.
 - Versión actual: `?v=20261030k`.
+
+## Ajustes de oct 2026 (27) — celular sin superposiciones
+- Revisado a 375 × 812 y 360 × 740 con un detector de elementos que se tapan (y de desbordes).
+- **Mapa en celular:** la ruta entre los botones (puede ir en dos líneas), las zonas en una fila
+  debajo del encabezado, abajo el mensaje (izquierda) y el gato con su globo (derecha);
+  `margenes()` en `donante/mapa.js` encuadra la ciudad en el espacio libre del medio, sin el
+  corrimiento a la derecha ni el pin junto al globo (solo en computador). El mapa se vuelve a
+  encuadrar cuando cambian de tamaño el encabezado, las zonas, el gato o el pie
+  (`reencuadrar()` en `mapa3d.js` + ResizeObserver): antes el encuadre se calculaba antes de que
+  el gato tuviera su tamaño y la ciudad quedaba debajo del globo.
+- **Ficha y pre-registro:** la ruta del encabezado ya no se corta ("Alime…") ni baja a la fila del
+  gato (`grid-area: auto`: en la ficha el encabezado es una cuadrícula).
+- **"¡Todo listo…!"** y **Elige tu perfil:** el contenido empieza debajo de los botones de
+  navegación.
+- **Admin:** los títulos dejan libre el botón del menú; en las estanterías el encabezado sube a la
+  altura del menú y vuelve la leyenda de estados (2 columnas de pastillas bajo el centro); en el
+  panel de cantidades los botones Siguiente / Guardar van en su propia fila.
+- **Estantería de cerca en celular:** se ocultan los productos (y sus sombras) de las otras
+  categorías, porque "Ver toda la estantería" tapaba los de la repisa de abajo.
+- Versión actual: `?v=20261030l`.

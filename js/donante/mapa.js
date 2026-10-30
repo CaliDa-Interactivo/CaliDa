@@ -185,6 +185,7 @@ export function render({ subcategoriaId }) {
       const movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       let mapa = null;
+      let observadorEncima = null;
       let destruido = false;
       let filtroListo = movimientoReducido;
       let zonaActual = zonaRecordada.get(subcategoriaId) ?? null;
@@ -310,7 +311,7 @@ export function render({ subcategoriaId }) {
       }
 
       // Carga diferida del mapa 3D.
-      import('../mapa3d.js?v=20261030h')
+      import('../mapa3d.js?v=20261030l')
         .then(({ montarMapa3D }) => {
           if (destruido) return;
           const necesidades = Object.fromEntries(
@@ -333,6 +334,13 @@ export function render({ subcategoriaId }) {
               const gato = gatoEl.getBoundingClientRect();
               const pie = contenedor.querySelector('.mapa3d__pie')?.getBoundingClientRect();
               const angosta = r.width < 700;
+              if (angosta) {
+                // Celular: zonas en una fila arriba; el mensaje y el gato abajo.
+                // La ciudad se encuadra en el espacio libre del medio.
+                const bajo = Math.max(encabezado?.bottom ?? r.top, zonasNav?.bottom ?? r.top);
+                const techoAbajo = Math.min(gato.height ? gato.top : r.bottom, pie?.height ? pie.top : r.bottom);
+                return { arriba: bajo - r.top + 10, abajo: r.bottom - techoAbajo + 10, izquierda: 12, derecha: 12 };
+              }
               return {
                 arriba: encabezado ? encabezado.bottom - r.top + 12 : 0,
                 // En celular el gato se descuenta abajo (no al lado): si no,
@@ -346,6 +354,7 @@ export function render({ subcategoriaId }) {
             },
             // Con la ubicación: el pin queda a 2 cm (≈ 76 px) del globo del gato.
             objetivoUsuario: () => {
+              if (mapaEl.getBoundingClientRect().width < 700) return null; // celular: centrada
               const globo = gatoEl.querySelector('.gato-guia__globo')?.getBoundingClientRect();
               if (!globo?.width) return null;
               return globo.left - mapaEl.getBoundingClientRect().left - 76;
@@ -362,6 +371,18 @@ export function render({ subcategoriaId }) {
             },
           });
           mapaEl.dataset.estado = 'animando';
+          // Lo que va encima del mapa (encabezado, zonas, gato, mensaje) puede
+          // cambiar de tamaño después (el gato 3D carga luego, las letras…):
+          // la ciudad se vuelve a encuadrar en el espacio que queda libre.
+          let pendiente = 0;
+          observadorEncima = new ResizeObserver(() => {
+            cancelAnimationFrame(pendiente);
+            pendiente = requestAnimationFrame(() => mapa?.reencuadrar?.());
+          });
+          ['.mapa3d__encabezado', '.mapa3d__zonas', '.mapa3d__gato', '.mapa3d__pie'].forEach((sel) => {
+            const el = contenedor.querySelector(sel);
+            if (el) observadorEncima.observe(el);
+          });
           if (miUbicacion) {
             const dentro = mapa.marcarUsuario?.(miUbicacion);
             if (dentro === 'borde')
@@ -384,6 +405,7 @@ export function render({ subcategoriaId }) {
       // El router llama esta función al salir de la pantalla.
       return () => {
         destruido = true;
+        observadorEncima?.disconnect();
         mapa?.destruir();
       };
     },

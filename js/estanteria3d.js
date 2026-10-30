@@ -556,9 +556,15 @@ export function montarEstanteria3D(o) {
       z.placa3d.material.color.set(z.atenuada ? '#9AA6B2' : '#FFFFFF');
       z.placa.classList.toggle('estanteria3d__placa--activa', hover === cat && !abierta);
       z.placa.classList.toggle('estanteria3d__placa--atenuada', z.atenuada);
+      // En celular, de cerca se alcanza a ver la repisa de al lado y el botón
+      // "Ver toda la estantería" tapaba sus productos: se ocultan los de las
+      // otras categorías mientras se está de cerca.
+      const ocultarOtros = Boolean(abierta) && abierta !== cat && lienzo.clientWidth < 700;
       for (const p of z.productos) {
         p.boton.hidden = abierta !== cat;
         if (p.etiqueta3d) p.etiqueta3d.visible = abierta === cat;
+        if (p.raiz) p.raiz.visible = !ocultarOtros;
+        p.sombras?.forEach((m) => (m.visible = !ocultarOtros));
       }
     }
     botonVolver.hidden = !abierta;
@@ -662,6 +668,7 @@ export function montarEstanteria3D(o) {
     fondo.position.set((caja.min.x + caja.max.x) / 2 + Math.max(tam.x * 0.42, 0.12), base.y + tam.y * 0.38, FONDO_Z + 0.032);
     fondo.raycast = () => {};
     productosRaiz.add(fondo);
+    return [sombra, fondo];
   }
 
   // Compila los shaders de un objeto en paralelo (sin trabar la página)
@@ -808,7 +815,7 @@ export function montarEstanteria3D(o) {
                 ajustarModelo(sub.id, encajado, THREE);
                 await compilar(encajado);
                 colocar(encajado);
-                sombraBajo(encajado, producto.base);
+                producto.sombras = sombraBajo(encajado, producto.base);
               })
               .catch((e) => {
                 console.warn(e);
