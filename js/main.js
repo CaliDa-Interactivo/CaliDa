@@ -13,7 +13,7 @@ import { inicializarStore } from './store.js';
 import { agregarBotonInicio, botonesNavSoloIcono } from './boton-inicio.js?v=20261029e';
 import { montarGatos, limpiarGatos } from './gatos.js?v=20261030m';
 import { cargarMiniaturas } from './ilustraciones.js';
-import * as inicio from './inicio.js?v=20261030m';
+import * as inicio from './inicio.js?v=20261030n';
 import * as estanteriaDonante from './donante/estanteria.js?v=20261030l';
 import * as mapaDonante from './donante/mapa.js?v=20261030m';
 import * as fichaDonante from './donante/ficha.js?v=20261030j';

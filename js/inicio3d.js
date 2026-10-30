@@ -127,11 +127,11 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
   escena.add(mundo);
   mundo.add(isla());
 
-  // Una sola mesa larga, justo DETRÁS del gato (el gato, en otro lienzo,
-  // está parado en x = -0,3, z = 0,87 del mundo), de frente a la cámara:
-  // encima van todas las donaciones de la estantería. Las cajas van en el
-  // suelo (ver más abajo).
-  const MESA = { x: -0.85, z: 0.2, giro: 0.985, largo: 2.1, fondo: 0.62 };
+  // Una sola mesa larga al lado DERECHO de la isla (el gato, en otro lienzo,
+  // está parado a la izquierda, en x = -0,3, z = 0,87 del mundo), de frente
+  // a la cámara: encima van todas las donaciones de la estantería. Las cajas
+  // van en el suelo, a la izquierda y atrás (ver más abajo).
+  const MESA = { x: 0.85, z: -0.25, giro: 0.985, largo: 1.75, fondo: 0.64 };
   const mesaGrande = mesa(MESA.largo, MESA.fondo, 0.62);
   mesaGrande.position.set(MESA.x, 0, MESA.z);
   mesaGrande.rotation.y = MESA.giro;
@@ -156,39 +156,95 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
   // Todas las donaciones de la estantería sobre la mesa, en dos filas:
   // atrás las más altas y adelante las más bajas (así se ven todas).
   // [subcategoría, alto, fila (0 atrás, 1 adelante)]
+  // Todas las donaciones de la estantería sobre la mesa, en tres filas
+  // sueltas (atrás las más altas). Se acomodan de forma orgánica: cada una
+  // con su espacio, un poco girada, corrida y de tamaño algo distinto
+  // (azar con semilla fija: siempre quedan igual). [subcategoría, alto, fila]
   const DONACIONES = [
     ['alimento-agua', 0.36, 0],
-    ['alimento-animal', 0.3, 0],
-    ['alimento-bebe', 0.28, 0],
-    ['aseo-bucal', 0.28, 0],
     ['ropa-hombre', 0.3, 0],
+    ['alimento-animal', 0.3, 0],
     ['ropa-mujer', 0.3, 0],
-    ['ropa-ninos', 0.3, 0],
-    ['construccion-herramientas', 0.28, 0],
+    ['aseo-bucal', 0.28, 0],
+    ['alimento-bebe', 0.27, 0],
+    ['construccion-herramientas', 0.26, 1],
+    ['medicamentos-cronicos', 0.21, 1],
+    ['ropa-ninos', 0.26, 1],
+    ['aseo-limpieza-hogar', 0.14, 1],
     ['alimento-no-perecederos', 0.2, 1],
-    ['aseo-corporal', 0.18, 1],
-    ['aseo-limpieza-hogar', 0.18, 1],
-    ['medicamentos-analgesicos', 0.18, 1],
-    ['medicamentos-antibioticos', 0.18, 1],
-    ['medicamentos-cronicos', 0.2, 1],
-    ['construccion-materiales', 0.18, 1],
-    ['construccion-proteccion', 0.18, 1],
+    ['aseo-corporal', 0.17, 2],
+    ['medicamentos-analgesicos', 0.17, 2],
+    ['construccion-proteccion', 0.17, 2],
+    ['medicamentos-antibioticos', 0.17, 2],
+    ['construccion-materiales', 0.16, 2],
   ];
-  const POR_FILA = 8;
-  // Pone una donación (ya escalada, apoyada en y = 0 y centrada) en su puesto
-  // de la mesa, girada con ella y, si no cabe en su puesto, más pequeña.
-  function colocarEnMesa(envoltura, fila, puesto) {
-    envoltura.updateMatrixWorld(true);
-    const tam = new THREE.Box3().setFromObject(envoltura, true).getSize(new THREE.Vector3());
-    const anchoPuesto = (MESA.largo - 0.12) / POR_FILA;
-    const fondoFila = (MESA.fondo - 0.08) / 2;
-    const k = Math.min(1, (anchoPuesto - 0.02) / tam.x, (fondoFila - 0.02) / tam.z);
-    envoltura.scale.multiplyScalar(k);
-    const lx = -MESA.largo / 2 + 0.06 + anchoPuesto * (puesto + 0.5);
-    const lz = (fila === 0 ? -1 : 1) * (fondoFila / 2 + 0.01);
-    const p = new THREE.Vector3(lx, SOBRE_MESA, lz).applyAxisAngle(new THREE.Vector3(0, 1, 0), MESA.giro);
-    envoltura.position.set(MESA.x + p.x, p.y, MESA.z + p.z);
-    envoltura.rotation.y = MESA.giro;
+  const FILAS_Z = [-0.2, 0.0, 0.2]; // en la mesa: atrás, medio, adelante
+  const azar = (() => {
+    let x = 20261031;
+    return () => ((x = (x * 1664525 + 1013904223) >>> 0) / 4294967296);
+  })();
+  const entre = (a, b) => a + (b - a) * azar();
+  // Reparte las donaciones (envolturas ya escaladas, apoyadas en y = 0 y
+  // centradas) sobre la mesa: cada fila a lo largo, con espacios disparejos
+  // y un giro distinto; luego se corre a lo largo lo que choque con la fila
+  // de al lado. Todo se calcula en el marco de la mesa (x a lo largo, z a lo
+  // hondo) y al final se pasa al mundo.
+  function acomodarMesa(filas) {
+    const largoUtil = MESA.largo - 0.12;
+    const fondoFila = 0.17;
+    const todos = [];
+    filas.forEach((items, fila) => {
+      const medidas = items.map((env) => {
+        // Giro propio (la ropa y lo largo casi de frente) y su huella ya girada.
+        const plana = env.userData.sub?.startsWith('ropa');
+        env.rotation.set(0, plana ? entre(-0.2, 0.2) : entre(-0.55, 0.55), 0);
+        env.updateMatrixWorld(true);
+        let tam = new THREE.Box3().setFromObject(env, true).getSize(new THREE.Vector3());
+        if (tam.x > 0.24) {
+          // Lo largo (p. ej. el martillo) va casi derecho para no invadir.
+          env.rotation.y *= 0.3;
+          env.updateMatrixWorld(true);
+          tam = new THREE.Box3().setFromObject(env, true).getSize(new THREE.Vector3());
+        }
+        const k = Math.min(1, (largoUtil / items.length - 0.025) / tam.x, fondoFila / tam.z) * entre(0.9, 1.03);
+        env.scale.multiplyScalar(k);
+        return { env, ancho: tam.x * k, fondo: tam.z * k, fila };
+      });
+      const libre = Math.max(0, largoUtil - medidas.reduce((a, m) => a + m.ancho, 0));
+      const pesos = Array.from({ length: medidas.length + 1 }, () => entre(0.4, 1.6));
+      const sumaPesos = pesos.reduce((a, b) => a + b, 0);
+      let x = -largoUtil / 2 + (libre * pesos[0]) / sumaPesos;
+      medidas.forEach((m, i) => {
+        m.x = x + m.ancho / 2;
+        x += m.ancho + (libre * pesos[i + 1]) / sumaPesos;
+        m.z = FILAS_Z[fila] + entre(-0.02, 0.02);
+        todos.push(m);
+      });
+    });
+    // Lo que choca con la fila de al lado se corre a lo largo de la mesa.
+    const choca = (a, b) =>
+      Math.abs(a.x - b.x) < (a.ancho + b.ancho) / 2 + 0.01 && Math.abs(a.z - b.z) < (a.fondo + b.fondo) / 2 + 0.005;
+    for (let vuelta = 0; vuelta < 30; vuelta++) {
+      let hubo = false;
+      for (const a of todos) {
+        for (const b of todos) {
+          if (a === b || a.fila === b.fila || !choca(a, b)) continue;
+          hubo = true;
+          const mover = a.fila > b.fila ? a : b; // se mueve el de adelante
+          const otro = mover === a ? b : a;
+          const paso = (mover.ancho + otro.ancho) / 2 + 0.012 - Math.abs(mover.x - otro.x);
+          mover.x += (mover.x >= otro.x ? 1 : -1) * paso;
+          const lim = largoUtil / 2 - mover.ancho / 2;
+          mover.x = Math.max(-lim, Math.min(lim, mover.x));
+        }
+      }
+      if (!hubo) break;
+    }
+    for (const m of todos) {
+      const p = new THREE.Vector3(m.x, SOBRE_MESA, m.z).applyAxisAngle(new THREE.Vector3(0, 1, 0), MESA.giro);
+      m.env.position.set(MESA.x + p.x, p.y, MESA.z + p.z);
+      m.env.rotation.y += MESA.giro;
+    }
   }
 
   // Copia de una o varias cajas del archivo (con sus posiciones relativas),
@@ -234,16 +290,17 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
     return envoltura;
   }
 
-  // Varias cajas en el suelo, a la derecha del gato (sin taparlo).
+  // Varias cajas en el suelo: adelante, a los lados del gato y frente a la
+  // mesa, y un par atrás (la mesa va a la derecha).
   const listasCajas = cargarGLB(cargador, MODELO_CAJAS).then(({ scene: modelo }) => {
     if (destruido) return null;
     modelo.updateMatrixWorld(true);
     const cajas = [
-      [['Caja_Botiquin'], 0.6, [0.75, 0.8], 0.3],
-      [['Caja_Derecha'], 0.5, [1.45, 0.45], -0.4],
-      [['Caja_Base'], 0.55, [1.3, -0.45], -0.5],
-      [['Caja_Base', 'Caja_Arriba'], 0.5, [0.55, -0.95], 0.2],
-      [['Caja_Frontal'], 0.46, [-0.15, -1.35], -0.2],
+      [['Caja_Botiquin'], 0.55, [0.95, 1.05], 0.3],
+      [['Caja_Derecha'], 0.46, [0.2, 1.5], -0.4],
+      [['Caja_Frontal'], 0.44, [-1.05, 1.1], -0.2],
+      [['Caja_Base', 'Caja_Arriba'], 0.5, [-0.6, -1.15], 0.2],
+      [['Caja_Base'], 0.52, [-1.35, -0.4], -0.5],
     ].map(([nombres, ancho, [x, z], giro]) => {
       const caja = cajaDelModelo(modelo, nombres, ancho);
       caja.position.set(x, 0, z);
@@ -266,7 +323,7 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
     new Promise((ok) => (window.requestIdleCallback ?? ((f) => setTimeout(f, 16)))(ok, { timeout: 300 }));
   listasCajas.then(async (listas) => {
     if (!listas || destruido) return;
-    const puestos = [0, 0];
+    const filas = [[], [], []];
     for (const [sub, alto, fila] of DONACIONES) {
     const ruta = MODELOS_SUBCATEGORIA[sub];
     if (!ruta) continue;
@@ -288,7 +345,8 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
         const envoltura = new THREE.Group();
         modelo.position.sub(new THREE.Vector3(centro.x, caja2.min.y, centro.z));
         envoltura.add(modelo);
-        colocarEnMesa(envoltura, fila, puestos[fila]++);
+        envoltura.userData.sub = sub;
+        filas[fila].push(envoltura);
         envoltura.traverse((n) => {
           if (n.isMesh) {
             n.castShadow = true;
@@ -297,11 +355,15 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
             });
           }
         });
-        mundo.add(envoltura);
-        dibujar();
       })
       .catch(() => {});
     }
+    if (destruido) return;
+    // Con todas cargadas se reparten en la mesa (cada fila según los anchos
+    // reales de lo que lleva) y aparecen juntas.
+    acomodarMesa(filas);
+    filas.forEach((items) => mundo.add(...items));
+    dibujar();
   });
 
   // La isla ya no gira sola: el gato (otro lienzo) no gira con ella y

@@ -598,3 +598,15 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   (antes se estiraba en alto y el gato se cortaba). Además `gato3d.js` abre el ángulo de la cámara
   cuando el recuadro es más angosto que 4:5: el gato nunca se corta por los lados.
 - Versión actual: `?v=20261030m`.
+
+## Ajustes de oct 2026 (29) — isla de la portada
+- La mesa larga va al **lado derecho** de la isla (`MESA` en `js/inicio3d.js`: x 0,85, z -0,25,
+  1,75 × 0,64), de frente a la cámara; el gato queda a la izquierda.
+- **Donaciones acomodadas de forma orgánica** (`acomodarMesa()`): tres filas sueltas (atrás las
+  altas), cada una con espacios disparejos, un giro propio (la ropa casi de frente; lo largo, como el
+  martillo, casi derecho), un poco corrida y de tamaño algo distinto, con azar de semilla fija
+  (siempre quedan igual). Se mide la huella ya girada y lo que choca con la fila de al lado se corre
+  a lo largo de la mesa. Se cargan todas y aparecen juntas.
+- Cajas en el suelo: tres adelante (a los lados del gato y frente a la mesa) y dos atrás, todas
+  dentro de la isla.
+- Versión actual: módulos de la portada `?v=20261030n` (CSS sigue en `?v=20261030m`).

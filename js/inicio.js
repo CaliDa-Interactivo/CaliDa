@@ -136,7 +136,7 @@ export function renderBienvenida({ sinIntro = false } = {}) {
           gato.setAttribute('data-gato3d', '');
           montarGatos(contenedor.querySelector('.portada__escena'));
         }
-        import('./inicio3d.js?v=20261030m')
+        import('./inicio3d.js?v=20261030n')
           .then(({ montarIsla }) => {
             if (!salir) liberarIsla = montarIsla(contenedor.querySelector('.portada__isla'));
           })
