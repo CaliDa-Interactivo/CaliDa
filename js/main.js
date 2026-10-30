@@ -13,10 +13,10 @@ import { inicializarStore } from './store.js';
 import { agregarBotonInicio, botonesNavSoloIcono } from './boton-inicio.js?v=20261029e';
 import { montarGatos, limpiarGatos } from './gatos.js?v=20261030i';
 import { cargarMiniaturas } from './ilustraciones.js';
-import * as inicio from './inicio.js?v=20261030i';
+import * as inicio from './inicio.js?v=20261030j';
 import * as estanteriaDonante from './donante/estanteria.js?v=20261030i';
 import * as mapaDonante from './donante/mapa.js?v=20261030h';
-import * as fichaDonante from './donante/ficha.js?v=20261030i';
+import * as fichaDonante from './donante/ficha.js?v=20261030j';
 import * as prerregistroDonante from './donante/prerregistro.js?v=20261030i';
 import * as llegarDonante from './donante/llegar.js?v=20261029b';
 import * as loginAdmin from './admin/login.js?v=20261029c';
@@ -25,9 +25,9 @@ import * as bienvenidaAdmin from './admin/bienvenida.js';
 import * as menuAdmin from './admin/menu.js?v=20261030i';
 import * as insumosAdmin from './admin/insumos.js?v=20261030i';
 import * as donacionAdmin from './admin/donacion.js?v=20261030i';
-import * as despachoAdmin from './admin/despacho.js?v=20261030d';
+import * as despachoAdmin from './admin/despacho.js?v=20261030j';
 import * as confirmacionAdmin from './admin/confirmacion.js';
-import * as bandejaCorreos from './correos.js';
+import * as bandejaCorreos from './correos.js?v=20261030j';
 
 const contenedor = document.getElementById('app');
 

@@ -35,7 +35,8 @@ export function slugMunicipio(nombre) {
     .replace(/^-|-$/g, '');
 }
 
-const urlMapa = (destino) => `${URL_PUBLICA}assets/correo/mapas/${slugMunicipio(destino.nombre)}.png`;
+// ?v= para que Gmail no use la versión vieja guardada (sin el océano, oct 2026).
+const urlMapa = (destino) => `${URL_PUBLICA}assets/correo/mapas/${slugMunicipio(destino.nombre)}.png?v=20261030i`;
 
 const MESES = [
   'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',

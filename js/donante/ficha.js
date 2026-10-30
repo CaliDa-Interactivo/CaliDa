@@ -154,6 +154,15 @@ export function render({ centroId, subcategoriaId }) {
     // La repisa de cantidad muestra los mismos productos 3D de la estantería.
     init(contenedor) {
       cargarMiniaturas(contenedor);
+      // "Pre-registrar mi donación" mide lo mismo que la repisa de 0 a 5.
+      const repisa = contenedor.querySelector('.ficha-centro__inventario .nivel');
+      const boton = contenedor.querySelector('.ficha-centro__prerregistrar');
+      if (!repisa || !boton) return;
+      const igualar = () => (boton.style.width = `${repisa.offsetWidth}px`);
+      const observador = new ResizeObserver(igualar);
+      observador.observe(repisa);
+      igualar();
+      return () => observador.disconnect();
     },
   };
 }

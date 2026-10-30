@@ -5,7 +5,7 @@
 // ============================================================
 
 import { getCorreosEnviados, vaciarCorreosEnviados } from './store.js';
-import { fechaLarga, emailjsConfigurado } from './email.js';
+import { fechaLarga, emailjsConfigurado } from './email.js?v=20261030i';
 
 // Estado del envío real (EmailJS). "simulado": EmailJS sin configurar.
 const ESTADOS = {

@@ -81,7 +81,7 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   1) **Intro**: la cámara baja del cielo (sol, nubes, paralaje) hasta el gato en una colina, que
   dice **dos mensajes** en un globo grande: el principal ("En una emergencia…") y luego "Aquí te
   mostraré a dónde llevar tus donaciones.". **Se ve cada vez que se llega a la pantalla principal**,
-  botón "Saltar"; sin intro si el sistema pide reducir el movimiento. Globo proporcional al gato (hasta 32px;
+  botón "Saltar"; **se ve también si el sistema pide reducir el movimiento** (oct 2026, ajustes 25). Globo proporcional al gato (hasta 32px;
   ojo: la regla general de párrafos a 14px excluye `.intro__globo` y `.portada__colabora`). 2) **Portada** como la referencia: sin
   encabezado de logos; a la izquierda "CaliDa" grande con los colores del logo (Cali #F67751,
   Da #CC0100), "En colaboración con" (16px, negrilla) + logo de la Cruz Roja sobre blanco, el mensaje y
@@ -527,3 +527,21 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - **Gato `feliz`:** cámara más lejos y más alta para que no se le corten las orejas al saltar
   (confirmación del pre-registro).
 - Versión actual: `?v=20261030i`.
+
+## Ajustes de oct 2026 (25)
+- **La intro se ve siempre**, también con "reducir el movimiento" (en Windows con los "Efectos de
+  animación" apagados no se veía nunca: `inicio.js` la saltaba y `base.css` deja todas las
+  animaciones en 0 ms). `inicio.js` ya no la salta y el final de `css/tema.css` devuelve sus
+  duraciones dentro de `@media (prefers-reduced-motion: reduce)`.
+- **Ficha:** "Pre-registrar mi donación" mide lo mismo que la repisa de 0 a 5 (`ficha.js` iguala
+  el ancho con un ResizeObserver) y va centrado debajo de "Lo que necesitan".
+- **Sin recuadros blancos / azul claro:** Gestionar insumos (panel y bandeja), Registrar donación,
+  despacho y el pre-registro quedan directo sobre el fondo del rol; sin recuadro en el encabezado
+  del producto / "Despacho de la semana" / resumen del pre-registro. Textos en azul oscuro
+  (#0D3459) en admin y cafés en donante. Se quedan los campos y las tarjetas de cada producto.
+- **Estanterías del admin (computador):** la leyenda de estados en columna a la izquierda, centrada
+  en el alto; el buscador arriba a la derecha, centrado con el botón del menú.
+- **Correo de despacho:** los 42 mapas (`assets/correo/mapas/`) sin el Océano Pacífico ni su
+  letrero (el mar se pintó del color de la tierra con Pillow; el script original que los generó no
+  está en el proyecto). Las imágenes llevan `?v=` en `email.js` para que Gmail no use las viejas.
+- Versión actual: `?v=20261030j`.

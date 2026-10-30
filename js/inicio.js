@@ -114,7 +114,10 @@ export function renderBienvenida({ sinIntro = false } = {}) {
       // Si el 3D no carga, los logos se muestran igual.
       setTimeout(() => portada.classList.add('portada--margen-listo'), 4000);
       const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const saltarIntro = reducido || sinIntro;
+      // La intro se ve SIEMPRE (pedido del equipo, oct 2026), aunque el
+      // sistema pida reducir el movimiento: en Windows con los "Efectos de
+      // animación" apagados no se veía nunca.
+      const saltarIntro = sinIntro;
       let temporizador = 0;
 
       // Para que la intro no se trabe, la isla 3D y el gato de la portada
@@ -172,7 +175,6 @@ export function renderBienvenida({ sinIntro = false } = {}) {
       }
 
       function mostrarIntro() {
-        if (reducido) return;
         intro.hidden = false;
         portada.classList.remove('portada--entrando');
         // reinicia la animación de la cámara
