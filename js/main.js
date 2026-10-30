@@ -25,9 +25,9 @@ import * as bienvenidaAdmin from './admin/bienvenida.js';
 import * as menuAdmin from './admin/menu.js?v=20261030l';
 import * as insumosAdmin from './admin/insumos.js?v=20261030m';
 import * as donacionAdmin from './admin/donacion.js?v=20261030l';
-import * as despachoAdmin from './admin/despacho.js?v=20261030j';
+import * as despachoAdmin from './admin/despacho.js?v=20261030o';
 import * as confirmacionAdmin from './admin/confirmacion.js';
-import * as bandejaCorreos from './correos.js?v=20261030j';
+import * as bandejaCorreos from './correos.js?v=20261030o';
 
 const contenedor = document.getElementById('app');
 

@@ -3169,11 +3169,11 @@ html:is([data-rol="donante"], [data-rol="admin"]) .pasos-insumo .seccion-nivel__
    de centros sin brillo, mapa y espacios parejos (computador y celular).
    =================================================================== */
 
-/* --- Roboto en toda la página; mensajes pequeños en Roboto Condensed --- */
+/* --- Roboto en toda la página (los mensajes pequeños también: solo cambia el grosor) --- */
 :root {
   --fuente-titulo: 'Roboto', 'Segoe UI', Arial, sans-serif;
   --fuente-texto: 'Roboto', 'Segoe UI', Arial, sans-serif;
-  --fuente-condensada: 'Roboto Condensed', 'Roboto', 'Segoe UI', Arial, sans-serif;
+  --fuente-condensada: 'Roboto', 'Segoe UI', Arial, sans-serif;
 }
 body,
 button,
@@ -6093,4 +6093,17 @@ html[data-rol="admin"] #app .escena3d__lado .gato3d::before {
   flex-direction: column !important;
   justify-content: center !important;
   align-items: center !important;
+}
+
+/* ===================================================================
+   AJUSTES (oct 2026, 30) — una sola tipografía
+   =================================================================== */
+/* Toda la tipografía es Roboto, absolutamente toda (también campos,
+   botones y textos de las ilustraciones SVG). La jerarquía y el contraste
+   salen solo del grosor (300 a 900) y del tamaño. */
+html body *:not(#x),
+html body *:not(#x)::before,
+html body *:not(#x)::after,
+html body :is(input, button, select, textarea, code, kbd, pre, svg text):not(#x) {
+  font-family: 'Roboto', 'Segoe UI', Arial, sans-serif !important;
 }

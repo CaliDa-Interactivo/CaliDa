@@ -51,7 +51,9 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
     en la ficha del centro.
   - Paleta de referencia del equipo (más saturada): donador #AF2000, #E47832, #E68D36, #FDC254,
     #FEB454, #FCDEA8; admin #FCDEA8, #58B0DC, #459FD4, #236CB5, #093E7E.
-- **Tipografía: Roboto** (títulos 900/700) y **Roboto Condensed** en mensajes pequeños; títulos
+- **Tipografía: solo Roboto, en absolutamente todo** (oct 2026, ajustes 30: página, letreros 3D,
+  ilustraciones y correos; ya no hay Roboto Condensed ni Montserrat). La jerarquía sale solo del
+  grosor (300–900) y del tamaño (títulos 900/700); títulos
   40px, subtítulos 28px, párrafos 14px, pequeños textos 12px (en celular títulos 30px y
   subtítulos 22px). **Pequeños textos sin recuadro** (solo texto: café en donador; en admin,
   blanco sobre el fondo azul y azul oscuro dentro de los paneles). Los letreros 3D también usan Roboto.
@@ -610,3 +612,11 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Cajas en el suelo: tres adelante (a los lados del gato y frente a la mesa) y dos atrás, todas
   dentro de la isla.
 - Versión actual: módulos de la portada `?v=20261030n` (CSS sigue en `?v=20261030m`).
+
+## Ajustes de oct 2026 (30) — una sola tipografía
+- Toda la tipografía es **Roboto**: se quitó Roboto Condensed (mensajes pequeños; `--fuente-condensada`
+  ahora es Roboto) y Montserrat (valores viejos de `base.css` y los correos de `email.js`); el texto de
+  la ilustración del cemento (Arial) también. `index.html` solo carga Roboto 300/400/500/700/900. Al
+  final de `css/tema.css` una regla obliga a Roboto en todo (campos, botones, `::before/::after`,
+  textos SVG). Para jerarquía y contraste: solo grosor y tamaño.
+- Versión actual: `?v=20261030o`.

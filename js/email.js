@@ -70,7 +70,7 @@ function unirFechas(fechas) {
 // página: fondo salvia, tarjeta marfil muy redondeada, botones en
 // píldora con relieve y la paleta oficial.
 
-const FUENTE = 'font-family:Montserrat,Arial,Helvetica,sans-serif;';
+const FUENTE = 'font-family:Roboto,Arial,Helvetica,sans-serif;';
 
 export function plantillaCorreo({ fechas, numeroLote, otrasPersonas, destino, origen, centroNombre }) {
   const variasDonaciones = new Set(fechas).size > 1;
@@ -92,13 +92,13 @@ export function plantillaCorreo({ fechas, numeroLote, otrasPersonas, destino, or
 
   // Pensado para Gmail: fondos también con bgcolor (Gmail a veces ignora
   // "background" en style), relieve con bordes en vez de sombras, cada
-  // style en una sola línea y la fuente con respaldo (Gmail no carga
-  // Montserrat: usa Arial).
+  // style en una sola línea y la fuente con respaldo (la misma Roboto de
+  // la página; si el correo no la carga, usa Arial).
   return `<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>CaliDa</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 </head>
 <body style="margin:0;padding:0;background-color:#86B5A9;" bgcolor="#86B5A9">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#86B5A9" style="background-color:#86B5A9;">

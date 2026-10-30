@@ -388,7 +388,7 @@ const PRODUCTOS = {
     <path d="M20 46 Q18 38 26 36 L74 36 Q82 38 80 46 L82 82 Q82 90 74 90 L26 90 Q18 90 18 82 Z" fill="${g.vert('#c9b99b', 0.25, -0.2)}"/>
     <path d="M26 36 L30 30 L70 30 L74 36" fill="${tono('#c9b99b', -0.15)}"/>
     <rect x="28" y="52" width="44" height="22" rx="3" fill="#7a7f87"/>
-    <text x="50" y="67.5" font-family="Arial, sans-serif" font-size="9.5" font-weight="700" fill="#fff" text-anchor="middle">CEMENTO</text>
+    <text x="50" y="67.5" font-family="Roboto, Arial, sans-serif" font-size="9.5" font-weight="700" fill="#fff" text-anchor="middle">CEMENTO</text>
     ${brillo(28, 46, 6, 2, -5, 0.4)}`,
 
   // Plástico doblado (lona).

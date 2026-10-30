@@ -7,7 +7,7 @@
 // ============================================================
 
 import { registrarDespacho, getCentroAdminActual } from '../store.js';
-import { generarCorreosDespacho } from '../email.js?v=20261030i';
+import { generarCorreosDespacho } from '../email.js?v=20261030o';
 import { MUNICIPIOS_VALLE } from '../data.js';
 import {
   conSesion,

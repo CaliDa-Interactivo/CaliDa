@@ -62,8 +62,8 @@
   --color-foco: var(--color-petroleo);
 
 /* Tipografía */
-  --fuente-titulo: 'Montserrat', 'Segoe UI', Arial, sans-serif;
-  --fuente-texto: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+  --fuente-titulo: 'Roboto', 'Segoe UI', Arial, sans-serif;
+  --fuente-texto: 'Roboto', 'Segoe UI', Arial, sans-serif;
 
   /* Geometría del estilo "clay" (esquinas redondeadas, sombra suave) */
   --radio-chico: 12px;
