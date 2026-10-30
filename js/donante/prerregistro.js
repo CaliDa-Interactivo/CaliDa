@@ -13,7 +13,7 @@ import { renderGato } from '../gato.js';
 import { obtenerUbicacion, ubicacionGuardada } from '../ubicacion.js';
 import { recordarPrerregistro, horaVencimiento } from './prerregistro-sesion.js';
 import { renderBotonInicio } from '../boton-inicio.js?v=20261028c';
-import { montarGatos } from '../gatos.js?v=20261030i';
+import { montarGatos } from '../gatos.js?v=20261030m';
 
 function hoyISO() {
   const d = new Date();

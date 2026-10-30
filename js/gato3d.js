@@ -297,11 +297,19 @@ async function montarUno(el) {
   el.appendChild(canvas);
   el.classList.add('gato3d--listo');
 
+  // El encuadre está pensado para un recuadro de 4:5. Si el recuadro es
+  // más angosto (p. ej. pantallas altas), se abre el ángulo vertical para
+  // conservar el ancho: así el gato nunca se corta por los lados.
+  const FOV_BASE = camara.fov;
   const ajustar = () => {
     const w = el.clientWidth || 100;
     const h = el.clientHeight || w * 1.25;
     renderer.setSize(w, h, false);
     camara.aspect = w / h;
+    const aspectoBase = 0.8;
+    camara.fov = camara.aspect < aspectoBase
+      ? THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(FOV_BASE / 2)) * aspectoBase / camara.aspect))
+      : FOV_BASE;
     camara.updateProjectionMatrix();
   };
   const observador = new ResizeObserver(ajustar);

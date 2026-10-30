@@ -873,20 +873,10 @@ export function montarMapa3D(opciones) {
     // v + cz·cos; se elige cz para que el centro de [z0, z1] quede en el
     // centro del espacio libre (dy píxeles más abajo que el del lienzo).
     let cx = (x0 + x1) / 2 - dx * s;
-    // Toda Cali con la ubicación de la persona: el mapa se corre a la
-    // derecha para que su pin quede a 2 cm del globo del gato
-    // (opciones.objetivoUsuario() = x en píxeles), sin sacar la ciudad
-    // de la pantalla.
-    const objetivoPin = !zona && pinUsuario?.visible && !pinFuera ? opciones.objetivoUsuario?.() : null;
-    // Sin la ubicación, "Toda Cali" queda un poco corrida a la derecha
-    // (oct 2026, pedido del equipo).
-    if (!zona && !Number.isFinite(objetivoPin) && ancho >= 700) cx -= CORRIMIENTO_DERECHA_PX * s;
-    if (Number.isFinite(objetivoPin)) {
-      const deseado = pinUsuario.position.x - (objetivoPin - ancho / 2) * s;
-      const minimo = x1 - (ancho / 2 - 12) * s; // el borde derecho de la ciudad sigue a la vista
-      const maximo = x0 + (ancho / 2 - (m.izquierda || 12)) * s; // y el izquierdo
-      cx = Math.min(Math.max(deseado, minimo), maximo);
-    }
+    // Sin zona elegida, "Toda Cali" queda un poco corrida a la derecha en
+    // computador (oct 2026, pedido del equipo). Con la ubicación de la
+    // persona el mapa no se mueve: queda igual, fijo.
+    if (!zona && ancho >= 700) cx -= CORRIMIENTO_DERECHA_PX * s;
     return {
       cx,
       cz: (-dy * s - (z0 + z1) / 2) / cos,

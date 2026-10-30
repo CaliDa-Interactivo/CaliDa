@@ -5875,21 +5875,6 @@ html[data-rol="admin"] #app .escena3d__lado .gato3d::before {
     margin: 0 !important;
     z-index: 6;
   }
-  #app .vista-admin.vista-3d .escena3d__arriba .admin-barra .leyenda-estados:not(#x) {
-    position: fixed !important;
-    /* pegada al lado izquierdo del mueble (estanteria-vista.js mide dónde queda) */
-    left: auto !important;
-    right: calc(100vw - var(--mueble-izq, 260px) + 14px) !important;
-    top: var(--mueble-centro-y, 50%) !important;
-    align-items: flex-end !important;
-    transform: translateY(-50%) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-    margin: 0 !important;
-    width: auto !important;
-    z-index: 6;
-  }
 }
 
 /* ===================================================================
@@ -5991,22 +5976,6 @@ html[data-rol="admin"] #app .escena3d__lado .gato3d::before {
     margin-top: 12px !important;
     gap: 10px !important;
   }
-  #app .vista-admin.vista-3d .escena3d__arriba .admin-barra .leyenda-estados:not(#x) {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 6px !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    position: static !important;
-    transform: none !important;
-  }
-  #app .vista-admin.vista-3d .escena3d__arriba .admin-barra .leyenda-estados li:not(#x) {
-    justify-content: center !important;
-    font-size: 12px !important;
-    padding: 4px 8px !important;
-    margin: 0 !important;
-  }
 }
 
 /* Panel de cantidades del admin en celular: los botones (Siguiente /
@@ -6028,4 +5997,100 @@ html[data-rol="admin"] #app .escena3d__lado .gato3d::before {
     flex-direction: column !important;
     align-items: stretch !important;
   }
+}
+
+/* (oct 2026, 28) Sin la lista de estados junto a la estantería del admin:
+   los estados se explican dentro del panel de cantidades. */
+#app .vista-admin.vista-3d .escena3d__arriba .admin-barra .leyenda-estados {
+  display: none !important;
+}
+
+/* Formularios (pre-registro, registrar donación y registrar despacho):
+   el mismo interlineado y los mismos espacios en los tres. Etiqueta, campo
+   y texto de ayuda a 8 px entre sí; 18 px entre un campo y el siguiente. */
+#app :is(.vista-prerregistro, .vista-formulario-admin) form:not(#x) {
+  row-gap: 18px !important;
+}
+#app :is(.vista-prerregistro, .vista-formulario-admin) form .campo:not(#x) {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+#app :is(.vista-prerregistro, .vista-formulario-admin) form .campo > :is(label, .campo__etiqueta, legend, p):not(#x) {
+  font-size: 16px !important;
+  line-height: 1.35 !important;
+  margin: 0 !important;
+}
+#app :is(.vista-prerregistro, .vista-formulario-admin) form .campo :is(input, select):not([type="checkbox"]):not([type="radio"]):not(#x) {
+  height: 52px !important;
+  min-height: 52px !important;
+  font-size: 16px !important;
+  line-height: 1.35 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+#app :is(.vista-prerregistro, .vista-formulario-admin) form .campo :is(.campo__ayuda, .campo__error, .prerregistro__ubicacion-estado):not(#x) {
+  font-size: 14px !important;
+  line-height: 1.35 !important;
+  margin: 0 !important;
+}
+
+/* Menú del admin en pantallas grandes (p. ej. Mac): el gato conserva su
+   proporción (4:5) y se apoya abajo, con las patas en la línea del último
+   botón; antes su recuadro se estiraba en alto y el gato se cortaba. */
+@media (min-width: 900px) {
+  #app .vista-menu-admin .menu-admin__gato :is(.gato-guia__imagen, .gato3d):not(#gato-menu):not(#x) {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    aspect-ratio: 4 / 5 !important;
+    flex: 0 0 auto !important;
+    margin-top: auto !important;
+    transform: translateY(6%) !important; /* las patas en la línea del último botón */
+  }
+}
+
+/* Pantallas grandes (más de 1800 px): el contenido queda en la parte
+   central de la pantalla, con un ancho máximo, en vez de estirarse de borde
+   a borde (ficha, pre-registro y su confirmación, "¡Todo listo…!",
+   formularios del admin, confirmaciones, bandeja, login y registro). Las
+   pantallas 3D a pantalla completa (estantería y mapa) siguen ocupando todo. */
+@media (min-width: 1800px) {
+  #app > .vista:is(.vista-columnas, .vista-formulario-admin, .vista-bandeja, .vista-confirmacion,
+    .vista-llegar, .vista-bienvenida, .vista-registro, .vista-menu-admin):not(#x),
+  #app > .vista.pantalla-entrada:not(.portada):not(.vista-perfiles):not(#x) {
+    max-width: 1600px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  /* Panel de cantidades del admin: mismo ancho central */
+  #app .vista-admin .zoom-capa__panel:not(#x) {
+    left: max(var(--margen-lado), calc((100vw - 1600px) / 2)) !important;
+    right: max(var(--margen-lado), calc((100vw - 1600px) / 2)) !important;
+  }
+  /* Portada: los logos y la isla se acercan al centro */
+  #app .vista.portada .portada__contenido:not(#x) {
+    max-width: 1800px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+  }
+}
+@media (min-width: 1800px) {
+  /* El botón del menú (fijo) del admin queda en el borde del bloque central */
+  #app .vista-admin > .barra-inicio:not(#x) {
+    right: max(var(--margen-lado), calc((100vw - 1600px) / 2 + var(--margen-lado))) !important;
+  }
+}
+
+/* Mensajes de confirmación ("¡Todo listo…!" y la confirmación del admin):
+   en el centro de la pantalla, también en pantallas grandes. */
+#app > .vista:is(.vista-llegar, .vista-confirmacion):not(#x) {
+  min-height: 100dvh !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
 }

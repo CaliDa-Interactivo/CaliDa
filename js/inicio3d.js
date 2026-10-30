@@ -1,8 +1,9 @@
 // ============================================================
 // inicio3d.js — escena 3D de la pantalla principal: una isla
-// flotante con mesas de madera y las cajas de cartón del equipo
-// (cajas.glb) llenas de donaciones (los mismos modelos de la estantería). El gato 3D va
-// encima, en su propio lienzo (gato3d.js), parado al frente.
+// flotante con una mesa de madera detrás del gato con todas las donaciones
+// de la estantería (los mismos modelos) y varias cajas de cartón del equipo
+// (cajas.glb) en el suelo. El gato 3D va encima, en su propio lienzo
+// (gato3d.js), parado al frente.
 // Material mate, como el resto de la página.
 // ============================================================
 
@@ -126,57 +127,69 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
   escena.add(mundo);
   mundo.add(isla());
 
-  // Dos mesas al fondo y a la derecha; el gato (otro lienzo) va al frente
-  // a la izquierda.
-  const mesaA = mesa(1.3, 0.7, 0.62);
-  mesaA.position.set(0.35, 0, -0.75);
-  const mesaB = mesa(1.0, 0.65, 0.62);
-  mesaB.position.set(1.15, 0, 0.45);
-  mesaB.rotation.y = -0.5;
-  // Mesita para el vaso de los cepillos (antes flotaba junto a la mesa B).
-  const mesaC = mesa(0.45, 0.4, 0.62);
-  mesaC.position.set(1.65, 0, -0.3);
-  mesaC.rotation.y = -0.5;
-  mundo.add(mesaA, mesaB, mesaC);
-  // Sombra suave de cada mesa sobre el césped, corrida hacia donde cae la
+  // Una sola mesa larga, justo DETRÁS del gato (el gato, en otro lienzo,
+  // está parado en x = -0,3, z = 0,87 del mundo), de frente a la cámara:
+  // encima van todas las donaciones de la estantería. Las cajas van en el
+  // suelo (ver más abajo).
+  const MESA = { x: -0.85, z: 0.2, giro: 0.985, largo: 2.1, fondo: 0.62 };
+  const mesaGrande = mesa(MESA.largo, MESA.fondo, 0.62);
+  mesaGrande.position.set(MESA.x, 0, MESA.z);
+  mesaGrande.rotation.y = MESA.giro;
+  mundo.add(mesaGrande);
+  // Sombra suave de la mesa sobre el césped, corrida hacia donde cae la
   // luz (como la del gato).
-  for (const [m, ancho, fondo] of [[mesaA, 1.3, 0.7], [mesaB, 1.0, 0.65], [mesaC, 0.45, 0.4]]) {
-    const s = sombraSuave(ancho * 1.2, fondo * 1.45, 'cesped', 0.78);
+  {
+    const s = sombraSuave(MESA.largo * 1.2, MESA.fondo * 1.45, 'cesped', 0.78);
     s.position.set(0.12, 0.004, -0.06);
-    m.add(s);
+    mesaGrande.add(s);
   }
-
   let id = 0;
   let destruido = false;
   const dibujar = () => {
     if (!destruido) renderer.render(escena, camara);
   };
 
-  // Cajas del equipo (assets/modelos/cajas.glb, de cajas.blend): abiertas
-  // sobre la mesa de atrás, una cerrada con el papel y el tarro encima, la
-  // pila de dos cajas cerradas (tal como viene en el archivo) y una caja
-  // abierta en el piso. Cada una se escala al ancho de la caja que reemplaza
-  // y las donaciones se apoyan según su alto real.
+  // Cajas del equipo (assets/modelos/cajas.glb, de cajas.blend), todas en
+  // el suelo; las donaciones van sobre la mesa.
   const SOBRE_MESA = 0.655;
   const cargador = new GLTFLoader();
-  // Cada donación va DENTRO de una caja abierta, ENCIMA de una caja
-  // cerrada o sobre una mesa. Las de las cajas se acomodan según las paredes
-  // reales del cuerpo de la caja (ver colocarEnCaja): cada una en su puesto
-  // a lo largo de la caja y, si no cabe, un poco más pequeña. Así nada
-  // atraviesa el cartón.
-  const productos = (c) => [
-    ['alimento-agua', 0.4, { caja: c.A, modo: 'dentro', puesto: 0, de: 2 }],
-    ['alimento-no-perecederos', 0.24, { caja: c.A, modo: 'dentro', puesto: 1, de: 2 }],
-    // La ropa es ancha y delgada: una detrás de la otra (a lo hondo).
-    ['ropa-hombre', 0.34, { caja: c.B, modo: 'dentro', puesto: 0, de: 2, eje: 'z' }],
-    ['ropa-mujer', 0.34, { caja: c.B, modo: 'dentro', puesto: 1, de: 2, eje: 'z' }],
-    ['medicamentos-analgesicos', 0.22, { caja: c.C, modo: 'encima', puesto: 0, de: 2 }],
-    ['aseo-corporal', 0.2, { caja: c.C, modo: 'encima', puesto: 1, de: 2 }],
-    ['alimento-bebe', 0.3, [0.85, SOBRE_MESA, -0.47]],
-    ['aseo-bucal', 0.3, [1.65, SOBRE_MESA, -0.3]],
-    // La bolsa de comida para animales, encima de la pila de cajas cerradas.
-    ['alimento-animal', 0.3, { caja: c.pila, modo: 'encima', puesto: 0, de: 1 }],
+  // Todas las donaciones de la estantería sobre la mesa, en dos filas:
+  // atrás las más altas y adelante las más bajas (así se ven todas).
+  // [subcategoría, alto, fila (0 atrás, 1 adelante)]
+  const DONACIONES = [
+    ['alimento-agua', 0.36, 0],
+    ['alimento-animal', 0.3, 0],
+    ['alimento-bebe', 0.28, 0],
+    ['aseo-bucal', 0.28, 0],
+    ['ropa-hombre', 0.3, 0],
+    ['ropa-mujer', 0.3, 0],
+    ['ropa-ninos', 0.3, 0],
+    ['construccion-herramientas', 0.28, 0],
+    ['alimento-no-perecederos', 0.2, 1],
+    ['aseo-corporal', 0.18, 1],
+    ['aseo-limpieza-hogar', 0.18, 1],
+    ['medicamentos-analgesicos', 0.18, 1],
+    ['medicamentos-antibioticos', 0.18, 1],
+    ['medicamentos-cronicos', 0.2, 1],
+    ['construccion-materiales', 0.18, 1],
+    ['construccion-proteccion', 0.18, 1],
   ];
+  const POR_FILA = 8;
+  // Pone una donación (ya escalada, apoyada en y = 0 y centrada) en su puesto
+  // de la mesa, girada con ella y, si no cabe en su puesto, más pequeña.
+  function colocarEnMesa(envoltura, fila, puesto) {
+    envoltura.updateMatrixWorld(true);
+    const tam = new THREE.Box3().setFromObject(envoltura, true).getSize(new THREE.Vector3());
+    const anchoPuesto = (MESA.largo - 0.12) / POR_FILA;
+    const fondoFila = (MESA.fondo - 0.08) / 2;
+    const k = Math.min(1, (anchoPuesto - 0.02) / tam.x, (fondoFila - 0.02) / tam.z);
+    envoltura.scale.multiplyScalar(k);
+    const lx = -MESA.largo / 2 + 0.06 + anchoPuesto * (puesto + 0.5);
+    const lz = (fila === 0 ? -1 : 1) * (fondoFila / 2 + 0.01);
+    const p = new THREE.Vector3(lx, SOBRE_MESA, lz).applyAxisAngle(new THREE.Vector3(0, 1, 0), MESA.giro);
+    envoltura.position.set(MESA.x + p.x, p.y, MESA.z + p.z);
+    envoltura.rotation.y = MESA.giro;
+  }
 
   // Copia de una o varias cajas del archivo (con sus posiciones relativas),
   // escalada a `ancho`, apoyada en y = 0 y centrada en x/z.
@@ -221,79 +234,40 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
     return envoltura;
   }
 
-  // Pone un producto (ya escalado, apoyado en y = 0 y centrado) dentro o
-  // encima de una caja: su puesto a lo largo de la caja, girado con ella y,
-  // si no cabe entre las paredes, más pequeño.
-  const PARED = 0.035; // grosor del cartón + un respiro (el modelo tiene ranuras en las esquinas)
-  function colocarEnCaja(envoltura, { caja, modo, puesto, de, eje = 'x' }) {
-    const c = caja.userData.cuerpo;
-    if (!c) return false;
-    envoltura.updateMatrixWorld(true);
-    const tam = new THREE.Box3().setFromObject(envoltura, true).getSize(new THREE.Vector3());
-    const margen = modo === 'dentro' ? PARED : 0.01;
-    const ancho = c.max.x - c.min.x - 2 * margen;
-    const fondo = c.max.z - c.min.z - 2 * margen;
-    // Los puestos van a lo largo (x) o a lo hondo (z) de la caja, con 3 cm
-    // de espacio entre vecinos (no se tocan).
-    const enX = eje === 'x';
-    const largoPuesto = (enX ? ancho : fondo) / de;
-    const k = enX
-      ? Math.min(1, (largoPuesto - 0.03) / tam.x, (fondo - 0.01) / tam.z)
-      : Math.min(1, (ancho - 0.01) / tam.x, (largoPuesto - 0.03) / tam.z);
-    envoltura.scale.multiplyScalar(k);
-    const lx = enX ? c.min.x + margen + largoPuesto * (puesto + 0.5) : (c.min.x + c.max.x) / 2;
-    const lz = enX ? (c.min.z + c.max.z) / 2 : c.min.z + margen + largoPuesto * (puesto + 0.5);
-    const ly = modo === 'dentro' ? c.min.y + 0.006 : c.max.y;
-    const giro = caja.rotation.y;
-    const p = new THREE.Vector3(lx, ly, lz).applyAxisAngle(new THREE.Vector3(0, 1, 0), giro);
-    envoltura.position.copy(caja.position).add(p);
-    envoltura.rotation.y = giro;
-    return true;
-  }
-
+  // Varias cajas en el suelo, a la derecha del gato (sin taparlo).
   const listasCajas = cargarGLB(cargador, MODELO_CAJAS).then(({ scene: modelo }) => {
     if (destruido) return null;
     modelo.updateMatrixWorld(true);
-    const cajaA = cajaDelModelo(modelo, ['Caja_Botiquin'], 0.62);
-    cajaA.position.set(0.05, SOBRE_MESA, -0.72);
-    const cajaB = cajaDelModelo(modelo, ['Caja_Derecha'], 0.5);
-    cajaB.position.set(0.68, SOBRE_MESA, -0.78);
-    // La caja del papel va cerrada (la caja con la cruz); el papel y el
-    // tarro van encima.
-    const cajaC = cajaDelModelo(modelo, ['Caja_Base'], 0.55);
-    cajaC.position.set(1.15, SOBRE_MESA, 0.45);
-    cajaC.rotation.y = -0.5;
-    const pila = cajaDelModelo(modelo, ['Caja_Base', 'Caja_Arriba'], 0.5);
-    pila.position.set(-1.25, 0, -0.55);
-    pila.rotation.y = 0.2;
-    const cajaPiso = cajaDelModelo(modelo, ['Caja_Frontal'], 0.46);
-    cajaPiso.position.set(-0.7, 0, -1.2);
-    cajaPiso.rotation.y = -0.2;
-    mundo.add(cajaA, cajaB, cajaC, pila, cajaPiso);
-    // Sombras suaves: las cajas del piso sobre el césped; las de las mesas
-    // sobre la madera.
-    for (const [caja, ancho, sobre] of [
-      [pila, 0.5, 'cesped'], [cajaPiso, 0.46, 'cesped'],
-      [cajaA, 0.62, 'madera'], [cajaB, 0.5, 'madera'], [cajaC, 0.55, 'madera'],
-    ]) {
-      const s = sombraSuave(ancho * 1.45, ancho * 1.25, sobre);
+    const cajas = [
+      [['Caja_Botiquin'], 0.6, [0.75, 0.8], 0.3],
+      [['Caja_Derecha'], 0.5, [1.45, 0.45], -0.4],
+      [['Caja_Base'], 0.55, [1.3, -0.45], -0.5],
+      [['Caja_Base', 'Caja_Arriba'], 0.5, [0.55, -0.95], 0.2],
+      [['Caja_Frontal'], 0.46, [-0.15, -1.35], -0.2],
+    ].map(([nombres, ancho, [x, z], giro]) => {
+      const caja = cajaDelModelo(modelo, nombres, ancho);
+      caja.position.set(x, 0, z);
+      caja.rotation.y = giro;
+      // Sombra suave sobre el césped, como la del gato.
+      const s = sombraSuave(ancho * 1.45, ancho * 1.25, 'cesped');
       s.position.set(0.06, 0.004, -0.04);
       caja.add(s);
-    }
+      return caja;
+    });
+    mundo.add(...cajas);
     dibujar();
-    return { A: cajaA, B: cajaB, C: cajaC, pila };
+    return true;
   });
 
-  // Donaciones: los modelos de la estantería, asomándose de las cajas y
-  // sueltas sobre las mesas. Cada uno se apoya en algo: el fondo de una
-  // caja, el tablero de una mesa o la tapa de una caja cerrada.
+  // Donaciones: los modelos de la estantería, todos sobre la mesa.
   // Se cargan uno por uno, dejando respirar al navegador entre cada uno
   // (todos a la vez trababan la portada).
   const respiro = () =>
     new Promise((ok) => (window.requestIdleCallback ?? ((f) => setTimeout(f, 16)))(ok, { timeout: 300 }));
-  listasCajas.then(async (alturas) => {
-    if (!alturas || destruido) return;
-    for (const [sub, alto, lugar] of productos(alturas)) {
+  listasCajas.then(async (listas) => {
+    if (!listas || destruido) return;
+    const puestos = [0, 0];
+    for (const [sub, alto, fila] of DONACIONES) {
     const ruta = MODELOS_SUBCATEGORIA[sub];
     if (!ruta) continue;
     await respiro();
@@ -314,8 +288,7 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
         const envoltura = new THREE.Group();
         modelo.position.sub(new THREE.Vector3(centro.x, caja2.min.y, centro.z));
         envoltura.add(modelo);
-        if (Array.isArray(lugar)) envoltura.position.set(...lugar);
-        else if (!colocarEnCaja(envoltura, lugar)) return;
+        colocarEnMesa(envoltura, fila, puestos[fila]++);
         envoltura.traverse((n) => {
           if (n.isMesh) {
             n.castShadow = true;

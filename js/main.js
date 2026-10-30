@@ -11,19 +11,19 @@
 
 import { inicializarStore } from './store.js';
 import { agregarBotonInicio, botonesNavSoloIcono } from './boton-inicio.js?v=20261029e';
-import { montarGatos, limpiarGatos } from './gatos.js?v=20261030i';
+import { montarGatos, limpiarGatos } from './gatos.js?v=20261030m';
 import { cargarMiniaturas } from './ilustraciones.js';
-import * as inicio from './inicio.js?v=20261030k';
+import * as inicio from './inicio.js?v=20261030m';
 import * as estanteriaDonante from './donante/estanteria.js?v=20261030l';
-import * as mapaDonante from './donante/mapa.js?v=20261030l';
+import * as mapaDonante from './donante/mapa.js?v=20261030m';
 import * as fichaDonante from './donante/ficha.js?v=20261030j';
-import * as prerregistroDonante from './donante/prerregistro.js?v=20261030i';
+import * as prerregistroDonante from './donante/prerregistro.js?v=20261030m';
 import * as llegarDonante from './donante/llegar.js?v=20261029b';
 import * as loginAdmin from './admin/login.js?v=20261029c';
 import * as registroAdmin from './admin/registro.js?v=20261029c';
 import * as bienvenidaAdmin from './admin/bienvenida.js';
 import * as menuAdmin from './admin/menu.js?v=20261030l';
-import * as insumosAdmin from './admin/insumos.js?v=20261030l';
+import * as insumosAdmin from './admin/insumos.js?v=20261030m';
 import * as donacionAdmin from './admin/donacion.js?v=20261030l';
 import * as despachoAdmin from './admin/despacho.js?v=20261030j';
 import * as confirmacionAdmin from './admin/confirmacion.js';

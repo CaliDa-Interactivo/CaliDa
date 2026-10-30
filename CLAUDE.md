@@ -578,3 +578,23 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - **Estantería de cerca en celular:** se ocultan los productos (y sus sombras) de las otras
   categorías, porque "Ver toda la estantería" tapaba los de la repisa de abajo.
 - Versión actual: `?v=20261030l`.
+
+## Ajustes de oct 2026 (28)
+- **Isla de la portada:** una sola mesa larga (`MESA` en `js/inicio3d.js`, 2,1 × 0,62) justo detrás
+  del gato (el gato, en otro lienzo, está parado en x = -0,3, z = 0,87 del mundo), de frente a la
+  cámara, con **todas** las donaciones de la estantería (`DONACIONES`, dos filas de 8: atrás las
+  altas, adelante las bajas; `colocarEnMesa()` las achica si no caben en su puesto). Las cajas
+  (`cajas.glb`) van todas en el suelo, a la derecha del gato. Se quitaron las otras mesas.
+- **Mapa:** con la ubicación de la persona el mapa ya no se corre (se quitó `objetivoUsuario`).
+- **Gestionar insumos:** sin la lista de estados junto a la estantería (computador y celular).
+- **Formularios** (pre-registro, registrar donación y despacho): el mismo interlineado en los tres
+  (etiqueta 16 px, campo 52 px, 8 px entre etiqueta, campo y ayuda, 18 px entre filas).
+- **Pantallas grandes (> 1800 px):** ficha, pre-registro, formularios, bandeja, bienvenida, login,
+  registro y menú con un ancho máximo de 1600 px centrado (el botón fijo del menú del admin se
+  alinea con ese bloque); la portada en un bloque de 1800 px. "¡Todo listo…!" y la confirmación del
+  admin quedan en el centro de la pantalla. (Se probó `zoom` para agrandar todo: se descarta porque
+  los altos de pantalla completa también crecían y quedaban botones fuera de la vista.)
+- **Gato del menú del admin en pantallas altas (Mac):** su recuadro mantiene 4:5 y se apoya abajo
+  (antes se estiraba en alto y el gato se cortaba). Además `gato3d.js` abre el ángulo de la cámara
+  cuando el recuadro es más angosto que 4:5: el gato nunca se corta por los lados.
+- Versión actual: `?v=20261030m`.
