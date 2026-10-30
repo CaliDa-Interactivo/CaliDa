@@ -66,6 +66,10 @@ export function montarVistaEstanteria3D(contenedor, opciones) {
         // El gato (con su globo) mide lo mismo que el mueble y queda al mismo
         // margen del borde derecho que el mueble del izquierdo.
         alMoverMueble: (rect) => {
+          // Dónde queda el mueble: la leyenda de estados del admin va pegada
+          // a su lado izquierdo, centrada en su alto (css/tema.css).
+          escena.style.setProperty('--mueble-izq', `${Math.round(rect.left)}px`);
+          escena.style.setProperty('--mueble-centro-y', `${Math.round((rect.topInterior + rect.bottom) / 2)}px`);
           const lado = escena.querySelector('.escena3d__lado');
           lado?.classList.add('escena3d__lado--puesto'); // ya sabe dónde va: se muestra
           if (!lado || rect.ancho < 760) {

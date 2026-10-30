@@ -535,13 +535,26 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   duraciones dentro de `@media (prefers-reduced-motion: reduce)`.
 - **Ficha:** "Pre-registrar mi donación" mide lo mismo que la repisa de 0 a 5 (`ficha.js` iguala
   el ancho con un ResizeObserver) y va centrado debajo de "Lo que necesitan".
-- **Sin recuadros blancos / azul claro:** Gestionar insumos (panel y bandeja), Registrar donación,
-  despacho y el pre-registro quedan directo sobre el fondo del rol; sin recuadro en el encabezado
-  del producto / "Despacho de la semana" / resumen del pre-registro. Textos en azul oscuro
-  (#0D3459) en admin y cafés en donante. Se quedan los campos y las tarjetas de cada producto.
-- **Estanterías del admin (computador):** la leyenda de estados en columna a la izquierda, centrada
-  en el alto; el buscador arriba a la derecha, centrado con el botón del menú.
+- (Se probó quitar los recuadros blancos / azul claro de insumos, donación, despacho y
+  pre-registro; el equipo pidió volver a ponerlos: ajustes 26.)
+- **Estanterías del admin (computador):** la leyenda de estados en columna, pegada al lado izquierdo
+  del mueble (ajustes 26); el buscador arriba a la derecha, centrado con el botón del menú.
 - **Correo de despacho:** los 42 mapas (`assets/correo/mapas/`) sin el Océano Pacífico ni su
   letrero (el mar se pintó del color de la tierra con Pillow; el script original que los generó no
   está en el proyecto). Las imágenes llevan `?v=` en `email.js` para que Gmail no use las viejas.
 - Versión actual: `?v=20261030j`.
+
+## Ajustes de oct 2026 (26)
+- **Isla: nada atraviesa las cajas.** El centro de cada caja se calculaba con las solapas
+  (disparejas) y el cuerpo quedaba corrido ~24 cm de donde se ponían las donaciones (la lata y el
+  vestido se salían, y el tarro, el papel y la bolsa de comida flotaban junto a su caja).
+  `cajaDelModelo()` guarda el cuerpo real (`userData.cuerpo`, sin solapas; en la pila, la de
+  arriba) y `colocarEnCaja()` pone cada donación `dentro` o `encima` en su puesto, a lo largo (`x`)
+  o a lo hondo (`eje: 'z'`, la ropa de la caja B), girada con la caja y más pequeña si no cabe
+  (`PARED` 3,5 cm: el modelo tiene ranuras en las esquinas; 3 cm entre vecinos). Cartón con
+  `DoubleSide`. Medir con `Box3.setFromObject(obj, true)` (la caja aproximada se infla).
+- **Leyenda de estados (admin):** pegada al lado izquierdo de la estantería, centrada en su alto
+  (`--mueble-izq` y `--mueble-centro-y`, que pone `estanteria-vista.js` en `alMoverMueble`).
+- **Recuadros de vuelta:** insumos, donación, despacho y pre-registro con sus recuadros blancos y
+  azul claro, como antes.
+- Versión actual: `?v=20261030k`.

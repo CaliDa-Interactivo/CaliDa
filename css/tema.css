@@ -5861,46 +5861,6 @@ html[data-rol="admin"] #app .escena3d__lado .gato3d::before {
   }
 }
 
-/* Sin los recuadros blancos y azul claro: el contenido de Gestionar
-   insumos, Registrar donación, despacho y el pre-registro queda directo
-   sobre el fondo del rol (azul o amarillo), con textos oscuros que
-   mantienen el contraste. Los campos y las tarjetas de cada producto se
-   quedan. */
-#app .vista-admin .zoom-capa__panel:not(#x),
-html[data-rol="admin"] #app .vista-funcion-insumos .zoom-capa__panel:not(#x),
-html[data-rol="admin"] #app :is(.vista-funcion-donacion, .vista-funcion-despacho) form.tarjeta.formulario:not(#x),
-#app .vista-admin form.tarjeta.formulario:not(#x),
-#app .vista-prerregistro .pantalla-panel.prerregistro:not(#x) {
-  background: none !important;
-  box-shadow: none !important;
-  border: none !important;
-  backdrop-filter: none !important;
-}
-#app .vista-admin .zoom-capa__panel .pasos-insumo > .mueble:not(#x),
-#app .vista-admin .zoom-capa__panel .mueble__cuerpo:not(#x) {
-  background: none !important;
-  box-shadow: none !important;
-  border: none !important;
-}
-/* Encabezado del producto / "Despacho de la semana" / resumen del
-   pre-registro: sin recuadro, solo ícono y texto. */
-#app .vista-admin form.tarjeta.formulario .formulario__categoria:not(#x),
-#app .vista-prerregistro .prerregistro__resumen:not(#x) {
-  background: none !important;
-  box-shadow: none !important;
-  border: none !important;
-}
-html[data-rol="admin"] #app form.tarjeta.formulario .formulario__categoria:not(#x),
-html[data-rol="admin"] #app form.tarjeta.formulario .formulario__categoria:not(#x) * {
-  color: #0D3459 !important;
-}
-html[data-rol="admin"] #app :is(form.tarjeta.formulario, .zoom-capa__panel) :is(label, .campo__etiqueta, .campo__ayuda, h2, .zoom-capa__titulo, .pasos-insumo__indicador, .pasos-insumo__explicacion):not(#x) {
-  color: #0D3459 !important;
-}
-html[data-rol="admin"] #app .zoom-capa__panel .zoom-capa__cerrar:not(#x) {
-  color: #0D3459 !important;
-}
-
 /* Estantería del admin: la leyenda de estados va en columna a la
    izquierda de la estantería y el buscador arriba a la derecha, en la
    misma fila (y a la misma altura) que el botón del menú. */
@@ -5917,12 +5877,14 @@ html[data-rol="admin"] #app .zoom-capa__panel .zoom-capa__cerrar:not(#x) {
   }
   #app .vista-admin.vista-3d .escena3d__arriba .admin-barra .leyenda-estados:not(#x) {
     position: fixed !important;
-    left: var(--margen-lado) !important;
-    top: 50% !important;
+    /* pegada al lado izquierdo del mueble (estanteria-vista.js mide dónde queda) */
+    left: auto !important;
+    right: calc(100vw - var(--mueble-izq, 260px) + 14px) !important;
+    top: var(--mueble-centro-y, 50%) !important;
+    align-items: flex-end !important;
     transform: translateY(-50%) !important;
     display: flex !important;
     flex-direction: column !important;
-    align-items: flex-start !important;
     gap: 12px !important;
     margin: 0 !important;
     width: auto !important;

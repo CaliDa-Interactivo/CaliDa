@@ -159,22 +159,23 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
   // y las donaciones se apoyan según su alto real.
   const SOBRE_MESA = 0.655;
   const cargador = new GLTFLoader();
-  const productos = (alto) => [
-    // La botella (0,21 de ancho) queda dentro de las paredes de la caja A
-    // (interior de ±0,238 alrededor de x = 0,05); antes atravesaba la pared.
-    ['alimento-agua', 0.4, [-0.05, alto.enCaja, -0.72]],
-    ['alimento-no-perecederos', 0.24, [0.17, alto.enCaja, -0.66]],
-    ['ropa-hombre', 0.34, [0.57, alto.enCaja, -0.8]],
-    ['ropa-mujer', 0.34, [0.8, alto.enCaja, -0.78]],
-    // Tarro y papel lado a lado sobre la tapa de la caja C (girada -0,5),
-    // sin meterse uno en el otro: el papel mide 0,35 de ancho y el tarro
-    // 0,17; van a 0,09 y a -0,185 del centro de la caja, a lo largo.
-    ['medicamentos-analgesicos', 0.22, [0.988, alto.sobreCajaC, 0.361]],
-    ['aseo-corporal', 0.2, [1.229, alto.sobreCajaC, 0.493]],
+  // Cada donación va DENTRO de una caja abierta, ENCIMA de una caja
+  // cerrada o sobre una mesa. Las de las cajas se acomodan según las paredes
+  // reales del cuerpo de la caja (ver colocarEnCaja): cada una en su puesto
+  // a lo largo de la caja y, si no cabe, un poco más pequeña. Así nada
+  // atraviesa el cartón.
+  const productos = (c) => [
+    ['alimento-agua', 0.4, { caja: c.A, modo: 'dentro', puesto: 0, de: 2 }],
+    ['alimento-no-perecederos', 0.24, { caja: c.A, modo: 'dentro', puesto: 1, de: 2 }],
+    // La ropa es ancha y delgada: una detrás de la otra (a lo hondo).
+    ['ropa-hombre', 0.34, { caja: c.B, modo: 'dentro', puesto: 0, de: 2, eje: 'z' }],
+    ['ropa-mujer', 0.34, { caja: c.B, modo: 'dentro', puesto: 1, de: 2, eje: 'z' }],
+    ['medicamentos-analgesicos', 0.22, { caja: c.C, modo: 'encima', puesto: 0, de: 2 }],
+    ['aseo-corporal', 0.2, { caja: c.C, modo: 'encima', puesto: 1, de: 2 }],
     ['alimento-bebe', 0.3, [0.85, SOBRE_MESA, -0.47]],
     ['aseo-bucal', 0.3, [1.65, SOBRE_MESA, -0.3]],
     // La bolsa de comida para animales, encima de la pila de cajas cerradas.
-    ['alimento-animal', 0.3, [-1.25, alto.sobrePila, -0.55]],
+    ['alimento-animal', 0.3, { caja: c.pila, modo: 'encima', puesto: 0, de: 1 }],
   ];
 
   // Copia de una o varias cajas del archivo (con sus posiciones relativas),
@@ -201,10 +202,53 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
       (Array.isArray(n.material) ? n.material : [n.material]).forEach((m) => {
         m.roughness = 0.85;
         m.metalness = 0;
+        // El cartón por las dos caras: si no, por las paredes de una sola
+        // cara se veía lo que hay dentro de la caja.
+        m.side = THREE.DoubleSide;
       });
     });
     envoltura.userData.alto = tam.y * escala;
+    // Cuerpo de la caja (sin las solapas, que son disparejas) en el marco de
+    // la envoltura: paredes y fondo para acomodar lo que va dentro o encima.
+    // En una pila, la de arriba.
+    envoltura.updateMatrixWorld(true);
+    const cuerpos = [];
+    envoltura.traverse((n) => n.isMesh && /Cuerpo/.test(n.name) && cuerpos.push(n));
+    const arriba = cuerpos.filter((n) => /Arriba/.test(n.name));
+    const cuerpo = new THREE.Box3();
+    (arriba.length ? arriba : cuerpos).forEach((n) => cuerpo.expandByObject(n, true));
+    if (!cuerpo.isEmpty()) envoltura.userData.cuerpo = cuerpo;
     return envoltura;
+  }
+
+  // Pone un producto (ya escalado, apoyado en y = 0 y centrado) dentro o
+  // encima de una caja: su puesto a lo largo de la caja, girado con ella y,
+  // si no cabe entre las paredes, más pequeño.
+  const PARED = 0.035; // grosor del cartón + un respiro (el modelo tiene ranuras en las esquinas)
+  function colocarEnCaja(envoltura, { caja, modo, puesto, de, eje = 'x' }) {
+    const c = caja.userData.cuerpo;
+    if (!c) return false;
+    envoltura.updateMatrixWorld(true);
+    const tam = new THREE.Box3().setFromObject(envoltura, true).getSize(new THREE.Vector3());
+    const margen = modo === 'dentro' ? PARED : 0.01;
+    const ancho = c.max.x - c.min.x - 2 * margen;
+    const fondo = c.max.z - c.min.z - 2 * margen;
+    // Los puestos van a lo largo (x) o a lo hondo (z) de la caja, con 3 cm
+    // de espacio entre vecinos (no se tocan).
+    const enX = eje === 'x';
+    const largoPuesto = (enX ? ancho : fondo) / de;
+    const k = enX
+      ? Math.min(1, (largoPuesto - 0.03) / tam.x, (fondo - 0.01) / tam.z)
+      : Math.min(1, (ancho - 0.01) / tam.x, (largoPuesto - 0.03) / tam.z);
+    envoltura.scale.multiplyScalar(k);
+    const lx = enX ? c.min.x + margen + largoPuesto * (puesto + 0.5) : (c.min.x + c.max.x) / 2;
+    const lz = enX ? (c.min.z + c.max.z) / 2 : c.min.z + margen + largoPuesto * (puesto + 0.5);
+    const ly = modo === 'dentro' ? c.min.y + 0.006 : c.max.y;
+    const giro = caja.rotation.y;
+    const p = new THREE.Vector3(lx, ly, lz).applyAxisAngle(new THREE.Vector3(0, 1, 0), giro);
+    envoltura.position.copy(caja.position).add(p);
+    envoltura.rotation.y = giro;
+    return true;
   }
 
   const listasCajas = cargarGLB(cargador, MODELO_CAJAS).then(({ scene: modelo }) => {
@@ -237,12 +281,7 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
       caja.add(s);
     }
     dibujar();
-    return {
-      // el fondo de una caja abierta (el cartón tiene ~2 cm de grosor)
-      enCaja: SOBRE_MESA + 0.02,
-      sobreCajaC: SOBRE_MESA + cajaC.userData.alto,
-      sobrePila: pila.userData.alto,
-    };
+    return { A: cajaA, B: cajaB, C: cajaC, pila };
   });
 
   // Donaciones: los modelos de la estantería, asomándose de las cajas y
@@ -254,7 +293,7 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
     new Promise((ok) => (window.requestIdleCallback ?? ((f) => setTimeout(f, 16)))(ok, { timeout: 300 }));
   listasCajas.then(async (alturas) => {
     if (!alturas || destruido) return;
-    for (const [sub, alto, [x, y, z]] of productos(alturas)) {
+    for (const [sub, alto, lugar] of productos(alturas)) {
     const ruta = MODELOS_SUBCATEGORIA[sub];
     if (!ruta) continue;
     await respiro();
@@ -275,7 +314,8 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
         const envoltura = new THREE.Group();
         modelo.position.sub(new THREE.Vector3(centro.x, caja2.min.y, centro.z));
         envoltura.add(modelo);
-        envoltura.position.set(x, y, z);
+        if (Array.isArray(lugar)) envoltura.position.set(...lugar);
+        else if (!colocarEnCaja(envoltura, lugar)) return;
         envoltura.traverse((n) => {
           if (n.isMesh) {
             n.castShadow = true;
