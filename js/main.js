@@ -14,7 +14,7 @@ import { aplicarEscala } from './escala.js';
 import { agregarBotonInicio, botonesNavSoloIcono } from './boton-inicio.js?v=20261029e';
 import { montarGatos, limpiarGatos } from './gatos.js?v=20261031a';
 import { cargarMiniaturas } from './ilustraciones.js';
-import * as inicio from './inicio.js?v=20261031d';
+import * as inicio from './inicio.js?v=20261031e';
 import * as estanteriaDonante from './donante/estanteria.js?v=20261030r';
 import * as mapaDonante from './donante/mapa.js?v=20261030p';
 import * as fichaDonante from './donante/ficha.js?v=20261030j';
