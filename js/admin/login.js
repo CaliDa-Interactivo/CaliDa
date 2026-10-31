@@ -40,7 +40,6 @@ export function render() {
           <div class="login-dividido__arte">
             <!-- La misma foto de la tarjeta del admin en Elige tu perfil -->
             <img class="login-dividido__foto" src="assets/entrar/admin.jpg?v=20261030d" alt="" width="1300" height="620" />
-            <p class="login-dividido__bienvenida" aria-hidden="true">BIENVENIDO</p>
           </div>
           <div class="tarjeta-entrada">
             <h1>Entra a tu centro</h1>

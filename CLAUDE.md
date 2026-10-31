@@ -651,3 +651,19 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   pre-registro, formularios, Elige tu perfil y panel de insumos; las tarjetas centradas ("¡Todo
   listo…!", bandeja) con el mismo espacio a cada lado.
 - Versión actual: CSS `?v=20261030s`.
+
+## Ajustes de oct 2026 (33)
+- **Márgenes de 32 px a los cuatro lados** desde 1200 px de ancho (`--margen-arriba/abajo/lado`;
+  en pantallas enormes se escalan con `escala.js`). Celular: 16 px.
+- **Login y registro:** la tarjeta y el gato forman un grupo centrado (gato junto a la tarjeta, a
+  40 px), ya no pegado al borde derecho. Sin el letrero "BIENVENIDO" encima de la foto.
+- **Títulos alineados con los botones de arriba:** los `h1` del admin miden lo mismo que el botón
+  (`--tam-nav`) y centran su texto en ese alto (y solo ocupan el ancho de su texto: no pasan por
+  debajo del buscador ni del menú). El título del panel de cantidades no pasa bajo "Siguiente".
+- **Botones de abajo y espacios:** los botones del pie con el mismo espacio arriba y abajo; en los
+  formularios del admin 24 px del encabezado a los campos y de los campos al botón (18 px entre
+  filas); el pre-registro con 24 px entre título, resumen y campos, centrado en su recuadro.
+- **Tablet (761–1100 px):** la ficha en una sola columna (la repisa se salía del panel) y la fila de
+  abajo solo bajo el panel (no bajo el gato).
+- Revisado con el detector de superposiciones a 375, 768, 1536 × 730, 1920 y 4480 × 2520.
+- Versión actual: CSS y `main.js` `?v=20261030t`.

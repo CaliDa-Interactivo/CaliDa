@@ -6157,3 +6157,88 @@ html body :is(input, button, select, textarea, code, kbd, pre, svg text):not(#x)
     order: -1 !important;
   }
 }
+
+/* ===================================================================
+   AJUSTES (oct 2026, 33)
+   =================================================================== */
+/* Computador y pantallas grandes: 32 px de margen a los cuatro lados
+   (en pantallas enormes se escala con escala.js). Celular: 16 px. */
+@media (min-width: 1200px) {
+  :root {
+    --margen-arriba: 32px;
+    --margen-abajo: 32px;
+    --margen-lado: 32px;
+  }
+}
+
+/* Login y registro del admin: la tarjeta y el gato forman un grupo
+   centrado (el gato junto a la tarjeta, no pegado al borde). */
+@media (min-width: 900px) {
+  #app .login-admin:not(#x) {
+    grid-template-columns: minmax(0, 860px) 220px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    column-gap: 40px !important;
+  }
+}
+
+/* Títulos de arriba alineados con los botones de navegación: el título
+   ocupa el mismo alto que el botón y su texto va centrado en ese alto. */
+#app :is(.vista-admin, .vista-bandeja) .admin-encabezado h1:not(#x) {
+  min-height: var(--tam-nav) !important;
+  display: inline-flex !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  align-items: center !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  line-height: 1.1 !important;
+}
+
+/* Formularios del admin: el mismo espacio entre secciones (24 px:
+   encabezado → campos y campos → botón) y 18 px entre filas de campos. */
+#app .vista-formulario-admin form .formulario__categoria:not(#x) {
+  margin-top: 0 !important;
+  margin-bottom: 6px !important;
+}
+#app .vista-formulario-admin form > :is(button, .boton):not(#x) {
+  margin-top: 6px !important;
+  margin-bottom: 0 !important;
+}
+
+/* Pre-registro: título, resumen y campos con el mismo espacio entre
+   secciones (24 px) y el bloque centrado en su recuadro (mismo espacio
+   arriba y abajo). */
+#app .vista-prerregistro .pantalla-panel.prerregistro:not(#x) {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 24px !important;
+}
+#app .vista-prerregistro .pantalla-panel.prerregistro > *:not(#x) {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Panel de cantidades: el título ("Alimento") mide lo que su texto, sin
+   pasar por debajo del botón Siguiente / Guardar. */
+#app .vista-admin .zoom-capa__panel .zoom-capa__titulo:not(#x) {
+  width: fit-content !important;
+  max-width: calc(100% - 260px) !important;
+}
+
+/* Tablet (761–1100 px): el panel de la ficha es angosto (el gato va en su
+   columna al lado); los datos del centro arriba y la repisa con el botón
+   debajo, en una sola columna, para que nada se monte. */
+@media (min-width: 761px) and (max-width: 1100px) {
+  #app .vista-columnas .ficha-centro:not(#x) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  /* La fila de abajo (botones y "Toma un minuto…") solo bajo el panel,
+     sin pasar por debajo de la columna del gato. */
+  #app .vista-columnas .mapa3d__barra:not(#x) {
+    max-width: calc(100% - 300px - 1.25rem) !important;
+  }
+}

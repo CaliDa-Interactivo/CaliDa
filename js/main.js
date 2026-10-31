@@ -20,7 +20,7 @@ import * as mapaDonante from './donante/mapa.js?v=20261030p';
 import * as fichaDonante from './donante/ficha.js?v=20261030j';
 import * as prerregistroDonante from './donante/prerregistro.js?v=20261030p';
 import * as llegarDonante from './donante/llegar.js?v=20261029b';
-import * as loginAdmin from './admin/login.js?v=20261030p';
+import * as loginAdmin from './admin/login.js?v=20261030t';
 import * as registroAdmin from './admin/registro.js?v=20261029c';
 import * as bienvenidaAdmin from './admin/bienvenida.js';
 import * as menuAdmin from './admin/menu.js?v=20261030q';
