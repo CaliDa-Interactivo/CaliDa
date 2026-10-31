@@ -1,0 +1,13 @@
+{
+  "name": "calida",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CaliDa: plataforma de la Cruz Roja para coordinar donaciones en Cali.",
+  "scripts": {
+    "dev": "node servidor.mjs",
+    "start": "node servidor.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
