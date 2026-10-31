@@ -22,8 +22,8 @@ const MODELO_CAJAS = `${RUTA_MODELOS}cajas.glb`;
 // Radio de la tarima (borde de arriba): también lo usa medirMargenIsla.
 const RADIO = 2.05;
 
-// Tarima redonda de estudio: arriba crema con el borde redondeado y debajo
-// un escalón ámbar y una base cobriza, como un escenario.
+// Tarima redonda de estudio: un disco verde clarito (como las colinas del
+// mapa) con el borde redondeado, sin capas naranjas debajo.
 function tarima() {
   const g = new THREE.Group();
   const capa = (radio, alto, y, color) => {
@@ -37,8 +37,6 @@ function tarima() {
   borde.rotation.x = Math.PI / 2;
   borde.position.y = -0.07;
   g.add(borde);
-  capa(RADIO + 0.12, 0.2, -0.13, '#EDB06C');
-  capa(RADIO + 0.04, 0.14, -0.33, '#C9774A');
   return g;
 }
 
