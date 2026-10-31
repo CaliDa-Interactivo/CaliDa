@@ -679,7 +679,7 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 
 ## Ajustes de oct 2026 (35) — escenario de la portada
 - La isla pasó a ser un **escenario de estudio** como la referencia del equipo (MasterGo): tarima
-  redonda (crema arriba con borde redondeado, escalón ámbar y base cobriza; `tarima()` en
+  redonda (arriba verde clarito como las colinas del mapa, #B3D49F, con borde redondeado, escalón ámbar y base cobriza; `tarima()` en
   `js/inicio3d.js`, `RADIO` 2,05), que mira a la cámara (`mundo.rotation.y = 0.42`).
 - **El gato al centro** de la tarima (x = 0, z = 0,45 del escenario): `.portada__gato` con
   `left: 32.8%` y `bottom: 35.9%` (final de `css/tema.css`).
@@ -689,7 +689,7 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - **Nada flota en el cielo** (el equipo pidió quitar la tarjeta, la insignia, el corazón, el pin y
   las esferas): solo las cajas y los productos de la estantería sobre la tarima.
 - La sombra del gato de la portada (`data-luz="isla"`) es café, del tono de la tarima.
-- Versión actual: `?v=20261031a` (CSS, `gatos.js`, `gato3d.js`) / `?v=20261031b` (`main.js`, `inicio.js`,
+- Versión actual: `?v=20261031a` (CSS, `gatos.js`, `gato3d.js`) / `?v=20261031c` (`main.js`, `inicio.js`,
   `inicio3d.js`).
 
 ## Abrir el proyecto en otro computador

@@ -31,9 +31,9 @@ function tarima() {
     m.position.y = y - alto / 2;
     g.add(m);
   };
-  capa(RADIO - 0.06, 0.14, 0, '#FCE9CC');
+  capa(RADIO - 0.06, 0.14, 0, '#B3D49F');
   // Borde redondeado de la tapa (un toro alrededor).
-  const borde = new THREE.Mesh(new THREE.TorusGeometry(RADIO - 0.06, 0.07, 16, 96), mate('#FCE9CC'));
+  const borde = new THREE.Mesh(new THREE.TorusGeometry(RADIO - 0.06, 0.07, 16, 96), mate('#B3D49F'));
   borde.rotation.x = Math.PI / 2;
   borde.position.y = -0.07;
   g.add(borde);
