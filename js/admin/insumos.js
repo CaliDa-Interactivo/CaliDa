@@ -9,7 +9,7 @@
 import { estadoDeNivel, ETIQUETA_ESTADO, NIVEL_MAX, EJEMPLOS_NECESIDADES } from '../data.js';
 import { actualizarNivelInsumo, actualizarNecesidades, getCentroAdminActual } from '../store.js';
 import { renderRepisaNivel, cargarMiniaturas } from '../ilustraciones.js';
-import { montarGatos } from '../gatos.js?v=20261030p';
+import { montarGatos } from '../gatos.js?v=20261031a';
 import { activarZoomEstanteria, renderCapaZoom, renderCabeceraZoom } from '../zoom-estanteria.js?v=20261030p';
 import { renderEscena3D, montarVistaEstanteria3D } from '../estanteria-vista.js?v=20261030r';
 import {

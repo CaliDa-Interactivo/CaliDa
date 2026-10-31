@@ -6242,3 +6242,13 @@ html body :is(input, button, select, textarea, code, kbd, pre, svg text):not(#x)
     max-width: calc(100% - 300px - 1.25rem) !important;
   }
 }
+
+/* ===================================================================
+   AJUSTES (oct 2026, 35): escenario de la portada. El gato va al centro
+   de la tarima (x = 0, z = 0,45 del escenario en inicio3d.js), con las
+   cajas y las donaciones detrás y a los lados.
+   =================================================================== */
+.vista.portada .portada__gato:not(#x) {
+  left: 32.8% !important;
+  bottom: 35.9% !important;
+}
