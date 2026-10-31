@@ -2,16 +2,13 @@
 // inicio3d.js — escena 3D de la pantalla principal: un escenario de
 // estudio (como la referencia del equipo) con una tarima redonda, pilas de
 // cajas de cartón del equipo (cajas.glb) detrás, las donaciones de la
-// estantería (los mismos modelos) sobre las cajas y en el piso, y elementos
-// que flotan alrededor: una tarjeta de la app, la insignia de la Cruz Roja,
-// un corazón, un pin del mapa y esferas de la paleta.
+// estantería (los mismos modelos) sobre las cajas y en el piso. Nada flota.
 // El gato 3D va encima, en su propio lienzo (gato3d.js), parado al centro.
 // Material mate, como el resto de la página.
 // ============================================================
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { cargarGLB, RUTA_MODELOS } from './cargar-glb.js';
 import { MODELOS_SUBCATEGORIA } from './estanteria3d.js';
 import { ajustarModelo } from './ajustes-modelos.js';
@@ -76,93 +73,6 @@ function sombraSuave(ancho, fondo, sobre = 'tarima', fuerza = 0.5) {
   return plano;
 }
 
-// --- Elementos que flotan (como las tarjetas y esferas de la referencia) ---
-
-// Tarjeta de la app: ventana crema con los tres puntos arriba y la repisa
-// de estados de 0 a 5 (dos puestos llenos: urgente y desabastecido).
-function tarjetaApp() {
-  const g = new THREE.Group();
-  const fondo = new THREE.Mesh(new RoundedBoxGeometry(1.15, 0.78, 0.1, 5, 0.06), mate('#FFF6E6'));
-  g.add(fondo);
-  ['#CC0100', '#FDC254', '#86B5A9'].forEach((c, i) => {
-    const punto = new THREE.Mesh(new THREE.SphereGeometry(0.035, 20, 12), mate(c));
-    punto.position.set(-0.47 + i * 0.1, 0.29, 0.055);
-    g.add(punto);
-  });
-  const barra = new THREE.Mesh(new RoundedBoxGeometry(0.62, 0.07, 0.03, 3, 0.03), mate('#E8E1D5'));
-  barra.position.set(0.12, 0.29, 0.055);
-  g.add(barra);
-  ['#CC0100', '#F4C66E', '#E8E1D5', '#E8E1D5', '#E8E1D5'].forEach((c, i) => {
-    const puesto = new THREE.Mesh(new RoundedBoxGeometry(0.17, 0.2, 0.05, 3, 0.04), mate(c));
-    puesto.position.set(-0.42 + i * 0.21, 0.02, 0.06);
-    g.add(puesto);
-  });
-  [0.82, 0.55].forEach((largo, i) => {
-    const linea = new THREE.Mesh(new RoundedBoxGeometry(largo, 0.06, 0.03, 3, 0.025), mate('#E8E1D5'));
-    linea.position.set(-0.51 + largo / 2, -0.2 - i * 0.11, 0.055);
-    g.add(linea);
-  });
-  return g;
-}
-
-// Cruz de la Cruz Roja (extruida, con el borde redondeado).
-function cruz(tam, fondo, color) {
-  const a = tam / 2;
-  const b = tam / 6;
-  const forma = new THREE.Shape();
-  [[-b, a], [b, a], [b, b], [a, b], [a, -b], [b, -b], [b, -a], [-b, -a], [-b, -b], [-a, -b], [-a, b], [-b, b]].forEach(
-    ([x, y], i) => (i ? forma.lineTo(x, y) : forma.moveTo(x, y))
-  );
-  const geo = new THREE.ExtrudeGeometry(forma, { depth: fondo, bevelEnabled: true, bevelSize: tam * 0.04, bevelThickness: tam * 0.04, bevelSegments: 3 });
-  geo.center();
-  return new THREE.Mesh(geo, mate(color));
-}
-
-// Insignia: esfera marfil con la cruz roja al frente.
-function insigniaCruz() {
-  const g = new THREE.Group();
-  g.add(new THREE.Mesh(new THREE.SphereGeometry(0.3, 40, 24), mate('#FFF6E6')));
-  const c = cruz(0.3, 0.06, '#CC0100');
-  c.position.z = 0.29;
-  g.add(c);
-  return g;
-}
-
-// Corazón inflado (como el ícono de Registrar donación).
-function corazon(tam, color) {
-  const s = tam / 2;
-  const forma = new THREE.Shape();
-  forma.moveTo(0, -s);
-  forma.bezierCurveTo(-s * 0.2, -s * 0.72, -s, -s * 0.3, -s, s * 0.22);
-  forma.bezierCurveTo(-s, s * 0.78, -s * 0.38, s * 0.95, 0, s * 0.5);
-  forma.bezierCurveTo(s * 0.38, s * 0.95, s, s * 0.78, s, s * 0.22);
-  forma.bezierCurveTo(s, -s * 0.3, s * 0.2, -s * 0.72, 0, -s);
-  const geo = new THREE.ExtrudeGeometry(forma, {
-    depth: tam * 0.12,
-    bevelEnabled: true,
-    bevelSize: tam * 0.12,
-    bevelThickness: tam * 0.14,
-    bevelSegments: 8,
-    curveSegments: 32,
-  });
-  geo.center();
-  return new THREE.Mesh(geo, mate(color));
-}
-
-// Pin del mapa (gota roja con el centro marfil).
-function pin(tam) {
-  const g = new THREE.Group();
-  const cabeza = new THREE.Mesh(new THREE.SphereGeometry(tam * 0.5, 32, 20), mate('#CC0100'));
-  cabeza.position.y = tam * 0.55;
-  const punta = new THREE.Mesh(new THREE.ConeGeometry(tam * 0.43, tam * 0.7, 32), mate('#CC0100'));
-  punta.rotation.x = Math.PI;
-  punta.position.y = tam * 0.12;
-  const ojo = new THREE.Mesh(new THREE.SphereGeometry(tam * 0.2, 20, 12), mate('#FFF6E6'));
-  ojo.position.set(0, tam * 0.58, tam * 0.4);
-  g.add(cabeza, punta, ojo);
-  return g;
-}
-
 /**
  * Monta la escena en `contenedor` (un div). Devuelve una función para
  * liberar todo al salir de la pantalla.
@@ -203,41 +113,6 @@ export function montarIsla(contenedor, { camara: vistaCamara = null, capturable 
   const dibujar = () => {
     if (!destruido) renderer.render(escena, camara);
   };
-  const posCamara = camara.position.clone();
-  // Lo que flota mira a la cámara (con un pequeño giro propio).
-  const mirarCamara = (obj, giroY = 0, giroZ = 0) => {
-    mundo.updateMatrixWorld(true);
-    obj.lookAt(posCamara);
-    obj.rotateY(giroY);
-    obj.rotateZ(giroZ);
-  };
-
-  // --- Elementos flotantes ---
-  // Posiciones en el marco del escenario (x a la derecha, z hacia la
-  // cámara); el gato está en x = 0, z = 0,45.
-  const flotantes = [
-    { obj: tarjetaApp(), pos: [-1.6, 1.9, -1.05], giroY: 0.2, giroZ: 0.07, escala: 1.1 },
-    { obj: insigniaCruz(), pos: [1.62, 1.42, -0.4], giroY: -0.25, giroZ: 0, escala: 1 },
-    { obj: corazon(0.5, '#E8473A'), pos: [1.2, 1.95, -1.2], giroY: -0.2, giroZ: -0.2, escala: 1 },
-    { obj: pin(0.36), pos: [-1.78, 0.95, 0.55], giroY: 0.3, giroZ: 0.12, escala: 1 },
-  ];
-  for (const f of flotantes) {
-    f.obj.position.set(...f.pos);
-    f.obj.scale.setScalar(f.escala);
-    mundo.add(f.obj);
-    mirarCamara(f.obj, f.giroY, f.giroZ);
-  }
-  // Esferas de la paleta, sueltas.
-  [
-    ['#FDC254', 0.12, [-0.5, 2.05, -1.5]],
-    ['#86B5A9', 0.1, [2.05, 0.75, 0.2]],
-    ['#F67751', 0.08, [-2.0, 1.09, -0.3]],
-    ['#FDC254', 0.07, [0.89, 1.0, -1.0]],
-  ].forEach(([color, r, p]) => {
-    const esfera = new THREE.Mesh(new THREE.SphereGeometry(r, 32, 20), mate(color));
-    esfera.position.set(...p);
-    mundo.add(esfera);
-  });
 
   const cargador = new GLTFLoader();
   // Un poco de azar con semilla fija (siempre queda igual): cada caja algo

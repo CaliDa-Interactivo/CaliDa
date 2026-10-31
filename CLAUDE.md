@@ -686,11 +686,11 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 - Detrás, dos pilas de cajas (`CAJAS`, de `cajas.glb`) a los lados del gato, como las letras grandes
   de la referencia; las **donaciones de la estantería** (`DONACIONES`) encima de las cajas y en el
   piso, cada una con su sombra suave café.
-- Flotan alrededor (quietos, mirando a la cámara): una tarjeta de la app con los tres puntos y la
-  repisa de estados (`tarjetaApp`), la insignia de la Cruz Roja (`insigniaCruz`), un corazón, un pin
-  del mapa y esferas de la paleta. Todo dentro del lienzo también en celular.
+- **Nada flota en el cielo** (el equipo pidió quitar la tarjeta, la insignia, el corazón, el pin y
+  las esferas): solo las cajas y los productos de la estantería sobre la tarima.
 - La sombra del gato de la portada (`data-luz="isla"`) es café, del tono de la tarima.
-- Versión actual: `?v=20261031a` (CSS, `main.js`, `inicio.js`, `inicio3d.js`, `gatos.js`, `gato3d.js`).
+- Versión actual: `?v=20261031a` (CSS, `gatos.js`, `gato3d.js`) / `?v=20261031b` (`main.js`, `inicio.js`,
+  `inicio3d.js`).
 
 ## Abrir el proyecto en otro computador
 - `npm run dev` (o `npm start`): `package.json` + `servidor.mjs` en la raíz (servidor Node sin
