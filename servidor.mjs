@@ -1,7 +1,8 @@
 // ============================================================
 // servidor.mjs — servidor local para abrir CaliDa en el navegador.
-// Uso: `npm run dev` (o `node servidor.mjs`) y abrir la dirección que
-// muestra. No necesita instalar nada: solo Node.js.
+// Uso: `npm run dev` (o `node servidor.mjs`) y abrir http://localhost:8080.
+// Otro puerto: `npm run dev -- . 3000`. No necesita instalar nada: solo
+// Node.js.
 //
 // CaliDa no se puede abrir con doble clic en index.html: el navegador
 // bloquea los módulos de JavaScript y la carga de los modelos 3D desde
@@ -15,7 +16,7 @@ import { extname, join, normalize, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const RAIZ = resolve(process.argv[2] ?? fileURLToPath(new URL('.', import.meta.url)));
-const PUERTO = Number(process.argv[3] ?? process.env.PORT ?? 8000);
+const PUERTO = Number(process.argv[3] ?? process.env.PORT ?? 8080);
 
 const TIPOS = {
   '.html': 'text/html; charset=utf-8',
@@ -58,7 +59,7 @@ const servidor = http.createServer((req, res) => {
 
 servidor.on('error', (error) => {
   if (error.code === 'EADDRINUSE') {
-    console.error(`El puerto ${PUERTO} ya está en uso. Prueba con otro: node servidor.mjs . 8080`);
+    console.error(`El puerto ${PUERTO} ya está en uso. Prueba con otro: npm run dev -- . 3000`);
   } else {
     console.error(error);
   }

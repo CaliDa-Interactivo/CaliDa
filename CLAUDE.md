@@ -680,7 +680,7 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
 ## Abrir el proyecto en otro computador
 - `npm run dev` (o `npm start`): `package.json` + `servidor.mjs` en la raíz (servidor Node sin
   dependencias, sin caché; no hace falta `npm install`, solo Node ≥ 18). Abre en
-  `http://localhost:8000` (otro puerto: `PORT=8080 npm run dev` o `node servidor.mjs . 8080`).
+  `http://localhost:8080` (puerto fijo en `servidor.mjs`; otro: `npm run dev -- . 3000`).
   También sirve Live Server de VS Code. Con doble clic en `index.html` no funciona (módulos y
   modelos 3D bloqueados en `file://`).
 - Carpeta de entrega: `git archive` de `index.html`, `css`, `js`, `assets`, `package.json` y
