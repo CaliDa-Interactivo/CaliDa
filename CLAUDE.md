@@ -667,3 +667,12 @@ El mapa solo muestra centros en 0–2. Casas: roja = urgente, amarilla = desabas
   abajo solo bajo el panel (no bajo el gato).
 - Revisado con el detector de superposiciones a 375, 768, 1536 × 730, 1920 y 4480 × 2520.
 - Versión actual: CSS y `main.js` `?v=20261030t`.
+
+## Ajustes de oct 2026 (34)
+- **Isla de la portada:** sin la mesa ni las donaciones; al lado derecho una **pila de cajas
+  cerradas** (`PILA` y `PILA_CAJAS` en `js/inicio3d.js`, con `Caja_Base` y `Caja_Arriba` de
+  `cajas.glb`): tres abajo, dos encima, una arriba y dos sueltas al frente, como la referencia del
+  equipo. Cada caja se apoya en la de abajo según su alto real, un poco girada (azar con semilla
+  fija); sombra suave en el césped o, sobre otra caja, en café.
+- **Login del admin:** vuelve el letrero "BIENVENIDO" sobre la foto (en Roboto, como todo).
+- Versión actual: `main.js` `?v=20261030u`.
